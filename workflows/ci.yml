@@ -25,14 +25,14 @@ jobs:
           java-version: '17'
 
       # application.properties를 프로젝트에 포함
-      - name: add Application.properties
+      - name: add Application.yml
         run:
-          touch ./src/main/resources/application.properties
+          touch ./src/main/resources/application.yml
         shell: bash
 
-      - name: copy Application.properties
+      - name: copy Application.yml
         run:
-          echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+          echo "${{ secrets.YML }}" > ./src/main/resources/application.yml
         shell: bash
 
       # gradle 권한 설정
