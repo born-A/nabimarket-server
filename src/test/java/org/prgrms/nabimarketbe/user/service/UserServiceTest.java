@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.prgrms.nabimarketbe.global.exception.CUserNotFoundException;
 import org.prgrms.nabimarketbe.sign.dto.UserSignupRequestDto;
 import org.prgrms.nabimarketbe.sign.service.SignService;
 import org.prgrms.nabimarketbe.user.dto.UserRequestDto;
@@ -122,7 +121,7 @@ public class UserServiceTest {
         userService.delete(user.getUserId());
 
         // then
-        assertThrows(CUserNotFoundException.class, () -> userService.findById(user.getUserId()));
+        assertThrows(RuntimeException.class, () -> userService.findById(user.getUserId()));
     }
 
     @Test

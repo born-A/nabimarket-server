@@ -6,7 +6,6 @@ import org.prgrms.nabimarketbe.config.security.JwtProvider;
 import org.prgrms.nabimarketbe.config.security.jwt.dto.TokenDto;
 import org.prgrms.nabimarketbe.config.security.jwt.dto.TokenRequestDto;
 import org.prgrms.nabimarketbe.oauth.dto.social.KakaoProfile;
-import org.prgrms.nabimarketbe.global.exception.CUserNotFoundException;
 import org.prgrms.nabimarketbe.global.model.CommonResult;
 import org.prgrms.nabimarketbe.global.model.SingleResult;
 import org.prgrms.nabimarketbe.oauth.service.response.ResponseService;

@@ -8,8 +8,6 @@ import org.prgrms.nabimarketbe.user.entity.User;
 import org.prgrms.nabimarketbe.user.repository.UserJpaRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.prgrms.nabimarketbe.global.exception.CUserNotFoundException;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
