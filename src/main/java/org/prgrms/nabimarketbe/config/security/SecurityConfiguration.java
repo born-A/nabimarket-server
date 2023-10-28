@@ -5,58 +5,52 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
     private final JwtProvider jwtProvider;
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic().disable()
+                .httpBasic(Customizer.withDefaults())
                 .csrf().disable()
-
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
-                        "/v1/reissue", "/v1/social/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                .anyRequest().hasRole("USER")
-
-
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedHandler(customAccessDeniedHandler)
-
-                .and()
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeRequests(authorizeRequests -> authorizeRequests
+                        .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
+                                "/v1/reissue", "/v1/social/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
+                        .anyRequest().hasRole("USER"))
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
-
-
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs", "/webjars/**", "/swagger/**", "/h2-console/**");
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/v2/api-docs", "/webjars/**", "/swagger/**", "/h2-console/**");
     }
 }
