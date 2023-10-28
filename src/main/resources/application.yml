@@ -1,6 +1,6 @@
 social:
   kakao:
-    accessToken: ii-Xj09q6eckCENMFLYSgcii7848mixM0CUKKcjYAAABi3GvfeXOkqTnJF629A
+    accessToken: Tz5jSktsBlalDahhiVLbHUt8oxxK05bnyVgKPXLqAAABi3Ud8STOkqTnJF629A
     client-id: afe2e06e75ffbbcc136475a5cf4b7efc
     redirect: /oauth/kakao/redirect
     url:

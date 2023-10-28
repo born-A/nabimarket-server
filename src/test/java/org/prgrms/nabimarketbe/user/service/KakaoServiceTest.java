@@ -1,10 +1,10 @@
 package org.prgrms.nabimarketbe.user.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.prgrms.nabimarketbe.oauth.dto.social.KakaoProfile;
+import org.prgrms.nabimarketbe.domain.user.service.KakaoService;
+import org.prgrms.nabimarketbe.domain.security.oauth.dto.social.KakaoProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -12,7 +12,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

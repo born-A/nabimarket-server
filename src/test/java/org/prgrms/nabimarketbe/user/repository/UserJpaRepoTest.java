@@ -2,7 +2,8 @@ package org.prgrms.nabimarketbe.user.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.prgrms.nabimarketbe.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.repository.UserJpaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
