@@ -11,12 +11,12 @@ import java.util.List;
 @Service
 @Slf4j
 public class ResponseService {
-
     // 단일건 결과 처리 메소드
     public <T> SingleResult<T> getSingleResult(T data) {
         SingleResult<T> result = new SingleResult<>();
         result.setData(data);
         setSuccessResult(result);
+
         return result;
     }
 
@@ -25,6 +25,7 @@ public class ResponseService {
         ListResult<T> result = new ListResult<>();
         result.setList(list);
         setSuccessResult(result);
+
         return result;
     }
 
@@ -32,6 +33,7 @@ public class ResponseService {
     public CommonResult getSuccessResult() {
         CommonResult result = new CommonResult();
         setSuccessResult(result);
+
         return result;
     }
 
@@ -40,6 +42,7 @@ public class ResponseService {
         CommonResult result = new CommonResult();
         result.setSuccess(false);
         setFailResult(result, code, msg);
+
         return result;
     }
 

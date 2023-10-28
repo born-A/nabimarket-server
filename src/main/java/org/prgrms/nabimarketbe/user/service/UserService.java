@@ -23,6 +23,7 @@ public class UserService {
     @Transactional
     public Long save(UserRequestDto userDto) {
         User saved = userJpaRepo.save(userDto.toEntity());
+
         return saved.getUserId();
     }
 
@@ -30,6 +31,7 @@ public class UserService {
     public UserResponseDto findById(Long id) {
         User user = userJpaRepo.findById(id)
                 .orElseThrow(CUserNotFoundException::new);
+
         return new UserResponseDto(user);
     }
 
@@ -37,6 +39,7 @@ public class UserService {
     public UserResponseDto findByNickName(String nickname) {
         User user = userJpaRepo.findByNickname(nickname)
                 .orElseThrow(CUserNotFoundException::new);
+
         return new UserResponseDto(user);
     }
 
@@ -53,6 +56,7 @@ public class UserService {
         User modifiedUser = userJpaRepo
                 .findById(id).orElseThrow(CUserNotFoundException::new);
         modifiedUser.updateNickname(userRequestDto.getNickName());
+
         return id;
     }
 

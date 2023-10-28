@@ -26,8 +26,6 @@ public class UserJpaRepoTest {
 
     @Autowired
     private UserJpaRepo userJpaRepo;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     private String nickname = "xinxinzara";
     private String password = "myPassWord";
@@ -37,7 +35,6 @@ public class UserJpaRepoTest {
 
         //given
         userJpaRepo.save(User.builder()
-                .password(passwordEncoder.encode(password))
                 .nickname(nickname)
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());

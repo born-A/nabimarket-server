@@ -47,10 +47,6 @@ dependencies {
 
     // 다국어 제공을 위한 i18n을 yml 파일로 적용하기 위한 의존성
     implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
-
-    // API 문서 자동화 swagger 2
-    implementation 'io.springfox:springfox-swagger2:2.6.1'
-    implementation 'io.springfox:springfox-swagger-ui:2.6.1'
 }
 
 tasks.named('test') {

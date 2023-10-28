@@ -14,25 +14,12 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserSignupRequestDto {
-    private String password;
     private String nickname;
     private String provider;
 
-    public User toEntity(PasswordEncoder passwordEncoder) {
-        return User.builder()
-//                .email(email)
-                .password(passwordEncoder.encode(password))
-                .nickname(nickname)
-//                .name(name)
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build();
-    }
-
     public User toEntity() {
         return User.builder()
-//                .email(email)
                 .nickname(nickname)
-//                .name(name)
                 .provider(provider)
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build();

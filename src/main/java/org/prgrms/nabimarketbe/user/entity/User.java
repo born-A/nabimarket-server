@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.user.BaseTimeEntity;
+import org.prgrms.nabimarketbe.user.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,21 +22,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User extends BaseTimeEntity implements UserDetails {
-
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(length = 100)
-    private String password;
-
-//    @Column(nullable = false, unique = true, length = 30)
-//    private String email;
-
-//    @Column(nullable = false, length = 100)
-//    private String name;
 
     @Column(name = "nick_name", nullable = false, length = 20)
     private String nickname;
@@ -53,7 +41,6 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.nickname = nickname;
     }
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles
                 .stream().map(SimpleGrantedAuthority::new)
@@ -62,35 +49,35 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return null;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getUsername() {
         return String.valueOf(this.userId);
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public boolean isEnabled() {
         return true;
     }

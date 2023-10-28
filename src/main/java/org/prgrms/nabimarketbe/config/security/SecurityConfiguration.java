@@ -11,13 +11,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
     private final JwtProvider jwtProvider;
+
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
@@ -55,7 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**",
-                "/swagger-ui.html", "/webjars/**", "/swagger/**", "/h2-console/**");
+        web.ignoring().antMatchers("/v2/api-docs", "/webjars/**", "/swagger/**", "/h2-console/**");
     }
 }

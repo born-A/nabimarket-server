@@ -51,9 +51,6 @@
 //    private UserJpaRepo userJpaRepo;
 //
 //    @Autowired
-//    PasswordEncoder passwordEncoder;
-//
-//    @Autowired
 //    Environment env;
 //
 //    private static String accessToken;
@@ -115,7 +112,7 @@
 //        long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
 //
 //        String object = objectMapper.writeValueAsString(UserSignupRequestDto.builder()
-//                .nickname("woonsik")
+//                .nickname("xinxinzara")
 //                .password("myPassword")
 //                .build());
 //        ResultActions actions = mockMvc.perform(
@@ -137,8 +134,7 @@
 //    public void 회원가입_실패() throws Exception {
 //        //given
 //        String object = objectMapper.writeValueAsString(UserSignupRequestDto.builder()
-//                .password("password")
-//                .nickname("woonsik")
+//                .nickname("xinxinzara")
 //                .build());
 //
 //        //when
@@ -205,7 +201,7 @@
 //    {
 //        //given
 //        userJpaRepo.save(User.builder()
-//                .nickname("woonsik")
+//                .nickname("xinxinzara")
 //                .provider("kakao")
 //                .build());
 //

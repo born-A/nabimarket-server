@@ -1,6 +1,5 @@
 package org.prgrms.nabimarketbe.oauth.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.prgrms.nabimarketbe.global.exception.CCommunicationException;
@@ -23,10 +22,12 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 @RequestMapping("/oauth/kakao")
 public class KOAuthController {
-
     private final RestTemplate restTemplate;
+
     private final Environment env;
+
     private final KakaoService kakaoService;
+
     private final ResponseService responseService;
 
     @Value("${spring.url.base}")
@@ -40,14 +41,15 @@ public class KOAuthController {
 
     @GetMapping("/login")
     public ModelAndView socialLogin(ModelAndView mav) {
-
         StringBuilder loginUri = new StringBuilder()
                 .append(env.getProperty("social.kakao.url.login"))
                 .append("?response_type=code")
                 .append("&client_id=").append(kakaoClientId)
                 .append("&redirect_uri=").append(baseUrl).append(kakaoRedirectUri);
+
         mav.addObject("loginUrl", loginUri);
         mav.setViewName("social/login");
+
         return mav;
     }
 
@@ -55,15 +57,14 @@ public class KOAuthController {
     public ModelAndView redirectKakao(
             ModelAndView mav,
             @RequestParam String code) {
-
         mav.addObject("authInfo", kakaoService.getKakaoTokenInfo(code));
         mav.setViewName("social/redirectKakao");
+
         return mav;
     }
 
     @GetMapping(value = "/unlink")
     public CommonResult unlinkKakao(@RequestParam String accessToken) {
-
         String unlinkUri = env.getProperty("social.kakao.url.unlink");
         if (unlinkUri == null) throw new CCommunicationException();
 
@@ -74,10 +75,13 @@ public class KOAuthController {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(unlinkUri, request, String.class);
+
         if (response.getStatusCode() == HttpStatus.OK) {
             log.info("unlink " + response.getBody());
+
             return responseService.getSuccessResult();
         }
+
         throw new CCommunicationException();
     }
 }

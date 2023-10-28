@@ -11,9 +11,13 @@ import java.util.List;
 @Getter
 public class UserResponseDto {
     private final Long userId;
+
     private final String nickName;
+
     private List<String> roles;
+
     private Collection<? extends GrantedAuthority> authorities;
+
     private final LocalDateTime modifiedDate;
 
     public UserResponseDto(User user) {

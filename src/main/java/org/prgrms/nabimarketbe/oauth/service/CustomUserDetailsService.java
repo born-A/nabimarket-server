@@ -8,12 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.prgrms.nabimarketbe.global.exception.CUserNotFoundException;
-
-
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final UserJpaRepo userJpaRepo;
 
     @Override

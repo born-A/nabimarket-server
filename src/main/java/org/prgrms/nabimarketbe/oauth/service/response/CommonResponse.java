@@ -10,5 +10,6 @@ public enum CommonResponse {
     FAIL(-1, "실패하였습니다.");
 
     private int code;
+
     private String msg;
 }

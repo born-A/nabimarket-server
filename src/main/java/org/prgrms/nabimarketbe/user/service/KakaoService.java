@@ -18,9 +18,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 @Service
 public class KakaoService {
-
     private final Environment env;
+
     private final RestTemplate restTemplate;
+
     private final Gson gson;
 
     @Value("${spring.url.base}")
@@ -38,9 +39,11 @@ public class KakaoService {
         headers.set("Authorization", "Bearer " + kakaoAccessToken);
 
         String requestUrl = env.getProperty("social.kakao.url.profile");
+
         if (requestUrl == null) throw new CCommunicationException();
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
+
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, request, String.class);
             if (response.getStatusCode() == HttpStatus.OK)
@@ -57,6 +60,7 @@ public class KakaoService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoClientId);
         params.add("redirect_uri", baseUrl + kakaoRedirectUri);
@@ -66,9 +70,12 @@ public class KakaoService {
         if (requestUri == null) throw new CCommunicationException();
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
         ResponseEntity<String> response = restTemplate.postForEntity(requestUri, request, String.class);
+
         if (response.getStatusCode() == HttpStatus.OK)
             return gson.fromJson(response.getBody(), RetKakaoOAuth.class);
+
         throw new CCommunicationException();
     }
 

@@ -23,24 +23,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
-
     @Value("spring.jwt.secret")
     private String secretKey;
     private String ROLES = "roles";
     private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; // 1 hour
     private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 60 * 1000L; // 14 day
+
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init() {
         // 암호화
         secretKey = Base64UrlCodec.BASE64URL.encode(secretKey.getBytes(StandardCharsets.UTF_8));
-//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
     // Jwt 생성
     public TokenDto createTokenDto(Long userPk, List<String> roles) {
-
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLES, roles);
@@ -72,7 +70,6 @@ public class JwtProvider {
 
     // Jwt 로 인증정보를 조회
     public Authentication getAuthentication(String token) {
-
         // Jwt 에서 claims 추출
         Claims claims = parseClaims(token);
 
@@ -113,6 +110,7 @@ public class JwtProvider {
         } catch (IllegalArgumentException e) {
             log.error("잘못된 토큰입니다.");
         }
+
         return false;
     }
 }

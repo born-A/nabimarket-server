@@ -49,7 +49,6 @@ public class UserControllerTest {
     @Before
     public void setUp() {
         User save = userJpaRepo.save(User.builder()
-                .password(passwordEncoder.encode("password"))
                 .nickname("xinxinzara")
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());

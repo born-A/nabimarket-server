@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,7 +40,6 @@ public class UserServiceTest {
 
     private UserSignupRequestDto getUserSignupRequestDto(int number) {
         return UserSignupRequestDto.builder()
-                .password("password" + number)
                 .nickname("nickName" + number)
                 .build();
     }
@@ -51,7 +49,7 @@ public class UserServiceTest {
         // given
         UserSignupRequestDto userA =
                 getUserSignupRequestDto(1);
-        User savedUser = userJpaRepo.save(userA.toEntity(passwordEncoder));
+        User savedUser = userJpaRepo.save(userA.toEntity());
 
         // when
         UserResponseDto userB = userService.findById(savedUser.getUserId());
@@ -69,7 +67,7 @@ public class UserServiceTest {
         // given
         UserSignupRequestDto userA =
                 getUserSignupRequestDto(1);
-        User user = userJpaRepo.save(userA.toEntity(passwordEncoder));
+        User user = userJpaRepo.save(userA.toEntity());
 
         // when
         UserResponseDto dtoA = userService.findById(user.getUserId());
@@ -87,8 +85,8 @@ public class UserServiceTest {
                 getUserSignupRequestDto(2);
 
         // when
-        userJpaRepo.save(userA.toEntity(passwordEncoder));
-        userJpaRepo.save(userB.toEntity(passwordEncoder));
+        userJpaRepo.save(userA.toEntity());
+        userJpaRepo.save(userB.toEntity());
 
         // then
         List<UserResponseDto> allUser = userService.findAllUser();
@@ -100,7 +98,7 @@ public class UserServiceTest {
         // given
         UserSignupRequestDto userA =
                 getUserSignupRequestDto(1);
-        User user = userJpaRepo.save(userA.toEntity(passwordEncoder));
+        User user = userJpaRepo.save(userA.toEntity());
 
         // when
         UserRequestDto updateUser = UserRequestDto.builder()
@@ -117,7 +115,7 @@ public class UserServiceTest {
         // given
         UserSignupRequestDto userA =
                 getUserSignupRequestDto(1);
-        User user = userJpaRepo.save(userA.toEntity(passwordEncoder));
+        User user = userJpaRepo.save(userA.toEntity());
 
         // when
         userService.delete(user.getUserId());
@@ -135,7 +133,7 @@ public class UserServiceTest {
                 getUserSignupRequestDto(1);
 
         //when
-        userJpaRepo.save(userA.toEntity(passwordEncoder));
+        userJpaRepo.save(userA.toEntity());
         List<User> users = userJpaRepo.findAll();
 
         //then

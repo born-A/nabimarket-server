@@ -3,7 +3,7 @@ package org.prgrms.nabimarketbe.config.security.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.user.BaseTimeEntity;
+import org.prgrms.nabimarketbe.user.BaseEntity;
 
 import javax.persistence.*;
 
@@ -11,8 +11,7 @@ import javax.persistence.*;
 @Table(name = "refresh_token")
 @Getter
 @NoArgsConstructor
-public class RefreshToken extends BaseTimeEntity {
-
+public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
@@ -25,11 +24,15 @@ public class RefreshToken extends BaseTimeEntity {
 
     public RefreshToken updateToken(String token) {
         this.token = token;
+
         return this;
     }
 
     @Builder
-    public RefreshToken(Long key, String token) {
+    public RefreshToken(
+            Long key,
+            String token
+    ) {
         this.key = key;
         this.token = token;
     }

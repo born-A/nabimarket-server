@@ -13,13 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Builder
 public class UserLoginRequestDto {
     private String nickname;
-    private String password;
 
-    public User toUser(PasswordEncoder passwordEncoder) {
+    public User toUser() {
         return User.builder()
                 .nickname(nickname)
-//                .email(email)
-                .password(passwordEncoder.encode(password))
                 .build();
     }
 }
