@@ -53,7 +53,8 @@ public class UserServiceTest {
 
         // when
         UserResponseDto userB = userService.findById(savedUser.getUserId());
-        User byId = userJpaRepo.findById(savedUser.getUserId()).orElseThrow(CUserNotFoundException::new);
+        User byId = userJpaRepo.findById(savedUser.getUserId())
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         // then
         assertThat(userA.getNickname()).isEqualTo(userB.getNickName());

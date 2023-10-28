@@ -61,10 +61,10 @@ public class SignController {
     public SingleResult<TokenDto> loginByKakao(@RequestBody UserSocialLoginRequestDto socialLoginRequestDto) {
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialLoginRequestDto.getAccessToken());
 
-        if (kakaoProfile == null) throw new CUserNotFoundException();
+        if (kakaoProfile == null) throw new RuntimeException("해당 회원이 없습니다.");
 
         User user = userJpaRepo.findByNicknameAndProvider(kakaoProfile.getProperties().getNickname(), "kakao")
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         return responseService.getSingleResult(jwtProvider.createTokenDto(user.getUserId(), user.getRoles()));
     }
@@ -74,7 +74,7 @@ public class SignController {
         KakaoProfile kakaoProfile =
                 kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
 
-        if (kakaoProfile == null) throw new CUserNotFoundException();
+        if (kakaoProfile == null) throw new RuntimeException("해당 회원이 없습니다.");
 
         Long userId = signService.socialSignup(UserSignupRequestDto.builder()
                 .nickname(kakaoProfile.getProperties().getNickname())

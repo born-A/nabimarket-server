@@ -40,7 +40,8 @@ public class UserJpaRepoTest {
                 .build());
 
         //when
-        User user = userJpaRepo.findByNickname(nickname).orElseThrow(CUserNotFoundException::new);
+        User user = userJpaRepo.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         //then
         assertNotNull(user);

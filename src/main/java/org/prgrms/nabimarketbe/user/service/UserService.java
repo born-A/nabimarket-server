@@ -30,7 +30,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userJpaRepo.findById(id)
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         return new UserResponseDto(user);
     }
@@ -38,7 +38,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto findByNickName(String nickname) {
         User user = userJpaRepo.findByNickname(nickname)
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         return new UserResponseDto(user);
     }
@@ -54,7 +54,7 @@ public class UserService {
     @Transactional
     public Long update(Long id, UserRequestDto userRequestDto) {
         User modifiedUser = userJpaRepo
-                .findById(id).orElseThrow(CUserNotFoundException::new);
+                .findById(id).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
         modifiedUser.updateNickname(userRequestDto.getNickName());
 
         return id;

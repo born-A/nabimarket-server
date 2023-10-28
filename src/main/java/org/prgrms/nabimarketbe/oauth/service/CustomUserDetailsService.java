@@ -17,6 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userPk) throws UsernameNotFoundException {
         return userJpaRepo.findById(Long.parseLong(userPk))
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
     }
 }

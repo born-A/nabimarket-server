@@ -7,9 +7,6 @@ import org.prgrms.nabimarketbe.config.security.domain.RefreshToken;
 import org.prgrms.nabimarketbe.config.security.domain.RefreshTokenJpaRepo;
 import org.prgrms.nabimarketbe.config.security.jwt.dto.TokenDto;
 import org.prgrms.nabimarketbe.config.security.jwt.dto.TokenRequestDto;
-import org.prgrms.nabimarketbe.global.exception.CRefreshTokenException;
-import org.prgrms.nabimarketbe.global.exception.CUserExistException;
-import org.prgrms.nabimarketbe.global.exception.CUserNotFoundException;
 import org.prgrms.nabimarketbe.sign.dto.UserLoginRequestDto;
 import org.prgrms.nabimarketbe.sign.dto.UserSignupRequestDto;
 import org.prgrms.nabimarketbe.user.entity.User;
@@ -35,7 +32,7 @@ public class SignService {
     public TokenDto login(UserLoginRequestDto userLoginRequestDto) {
         // 회원 정보 존재하는지 확인
         User user = userJpaRepo.findByNickname(userLoginRequestDto.getNickname())
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         // AccessToken, RefreshToken 발급
         TokenDto tokenDto = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
@@ -54,7 +51,7 @@ public class SignService {
     @Transactional
     public Long signup(UserSignupRequestDto userSignupDto) {
         if (userJpaRepo.findByNickname(userSignupDto.getNickname()).isPresent())
-            throw new CUserExistException();
+            throw new RuntimeException("이미 존재하는 회원입니다.");
 
         return userJpaRepo.save(userSignupDto.toEntity()).getUserId();
     }
@@ -64,7 +61,7 @@ public class SignService {
         if (userJpaRepo
                 .findByNicknameAndProvider(userSignupRequestDto.getNickname(), userSignupRequestDto.getProvider())
                 .isPresent()
-        ) throw new CUserExistException();
+        ) throw new RuntimeException("이미 존재하는 회원입니다.");
 
         return userJpaRepo.save(userSignupRequestDto.toEntity()).getUserId();
     }
@@ -73,7 +70,7 @@ public class SignService {
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 만료된 refresh token 에러
         if (!jwtProvider.validationToken(tokenRequestDto.getRefreshToken())) {
-            throw new CRefreshTokenException();
+            throw new RuntimeException("RefreshTokenException");
         }
 
         // AccessToken 에서 Username (pk) 가져오기
@@ -82,14 +79,14 @@ public class SignService {
 
         // user pk로 유저 검색 / repo 에 저장된 Refresh Token 이 없음
         User user = userJpaRepo.findById(Long.parseLong(authentication.getName()))
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(() ->new RuntimeException("RefreshTokenException"));
 
         RefreshToken refreshToken = tokenJpaRepo.findByKey(user.getUserId())
-                .orElseThrow(CRefreshTokenException::new);
+                .orElseThrow(() ->new RuntimeException("RefreshTokenException"));
 
         // 리프레시 토큰 불일치 에러
         if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
-            throw new CRefreshTokenException();
+            throw new RuntimeException("RefreshTokenException");
 
         // AccessToken, RefreshToken 토큰 재발급, 리프레쉬 토큰 저장
         TokenDto newCreatedToken = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());

@@ -2,7 +2,6 @@ package org.prgrms.nabimarketbe.oauth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.prgrms.nabimarketbe.global.exception.CCommunicationException;
 import org.prgrms.nabimarketbe.global.model.CommonResult;
 import org.prgrms.nabimarketbe.oauth.service.response.ResponseService;
 import org.prgrms.nabimarketbe.user.service.KakaoService;
@@ -66,7 +65,7 @@ public class KOAuthController {
     @GetMapping(value = "/unlink")
     public CommonResult unlinkKakao(@RequestParam String accessToken) {
         String unlinkUri = env.getProperty("social.kakao.url.unlink");
-        if (unlinkUri == null) throw new CCommunicationException();
+        if (unlinkUri == null) throw new RuntimeException("CommunicationException");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -82,6 +81,6 @@ public class KOAuthController {
             return responseService.getSuccessResult();
         }
 
-        throw new CCommunicationException();
+        throw new RuntimeException("CommunicationException");
     }
 }

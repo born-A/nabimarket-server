@@ -5,7 +5,6 @@ import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.prgrms.nabimarketbe.config.security.jwt.dto.TokenDto;
-import org.prgrms.nabimarketbe.global.exception.CAuthenticationEntryPointException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -75,7 +74,7 @@ public class JwtProvider {
 
         // 권한 정보가 없음
         if (claims.get(ROLES) == null) {
-            throw new CAuthenticationEntryPointException();
+            throw new RuntimeException("AuthenticationEntryPointException");
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());

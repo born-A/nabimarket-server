@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.prgrms.nabimarketbe.oauth.dto.social.KakaoProfile;
 import org.prgrms.nabimarketbe.oauth.dto.social.RetKakaoOAuth;
-import org.prgrms.nabimarketbe.global.exception.CCommunicationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
@@ -40,7 +39,7 @@ public class KakaoService {
 
         String requestUrl = env.getProperty("social.kakao.url.profile");
 
-        if (requestUrl == null) throw new CCommunicationException();
+        if (requestUrl == null) throw new RuntimeException("CommunicationException");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
 
@@ -50,9 +49,9 @@ public class KakaoService {
                 return gson.fromJson(response.getBody(), KakaoProfile.class);
         } catch (Exception e) {
             log.error(e.toString());
-            throw new CCommunicationException();
+            throw new RuntimeException("CommunicationException");
         }
-        throw new CCommunicationException();
+        throw new RuntimeException("CommunicationException");
     }
 
     public RetKakaoOAuth getKakaoTokenInfo(String code) {
@@ -67,7 +66,7 @@ public class KakaoService {
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");
-        if (requestUri == null) throw new CCommunicationException();
+        if (requestUri == null) throw new RuntimeException("CommunicationException");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
@@ -76,12 +75,12 @@ public class KakaoService {
         if (response.getStatusCode() == HttpStatus.OK)
             return gson.fromJson(response.getBody(), RetKakaoOAuth.class);
 
-        throw new CCommunicationException();
+        throw new RuntimeException("CommunicationException");
     }
 
     public void kakaoUnlink(String accessToken) {
         String unlinkUrl = env.getProperty("social.kakao.url.unlink");
-        if (unlinkUrl == null) throw new CCommunicationException();
+        if (unlinkUrl == null) throw new RuntimeException("CommunicationException");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -91,6 +90,6 @@ public class KakaoService {
         ResponseEntity<String> response = restTemplate.postForEntity(unlinkUrl, request, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) return;
-        throw new CCommunicationException();
+        throw new RuntimeException("CommunicationException");
     }
 }
