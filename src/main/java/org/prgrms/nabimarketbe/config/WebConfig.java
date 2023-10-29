@@ -12,9 +12,4 @@ public class WebConfig {
 		return new RestTemplate();
 	}
 
-	// @Bean
-	// public ObjectMapper objectMapper() {
-	// 	return new ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-	// }
-
 }

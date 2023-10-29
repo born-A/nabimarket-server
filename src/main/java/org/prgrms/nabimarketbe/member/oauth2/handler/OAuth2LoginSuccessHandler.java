@@ -4,11 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.prgrms.nabimarketbe.member.dao.UserRepository;
-import org.prgrms.nabimarketbe.member.domain.Role;
 import org.prgrms.nabimarketbe.member.domain.User;
 import org.prgrms.nabimarketbe.member.jwt.service.JwtService;
-import org.prgrms.nabimarketbe.member.oauth2.CustomOAuth2User;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -33,36 +32,25 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	) {
 		log.info("OAuth2 Login 성공!");
 		try {
-			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-
-			// User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-			if(oAuth2User.getRole() == Role.GUEST) {
-				String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-				response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-				response.sendRedirect("oauth2/sign-up"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
-
-				jwtService.sendAccessAndRefreshToken(response, accessToken, null);
-			    User findUser = userRepository.findByNickname(oAuth2User.getName())
-					.orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-			    findUser.authorizeUser();
-			} else {
-				loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			}
+			OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+			User user = userRepository.findByEmail(oAuth2User.getAttribute("email"))
+				.orElseThrow(() -> new RuntimeException("커스텀 에러로 바꿔주기"));
+			loginSuccess(response, user);
 		} catch (Exception e) {
-			throw new RuntimeException("나중에 커스텀 에러로 바꾸기");
+			throw e;
 		}
 
 	}
 
 	// TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
-	private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) {
-		String accessToken = jwtService.createAccessToken((String) oAuth2User.getAttributes().get("nickName"));
+	private void loginSuccess(HttpServletResponse response, User user) {
+		String accessToken = jwtService.createAccessToken(user.getEmail());
 		String refreshToken = jwtService.createRefreshToken();
 		response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
 		response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
 
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+		jwtService.updateRefreshToken(user.getNickname(), refreshToken);
 	}
 
 }

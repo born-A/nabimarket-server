@@ -21,12 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping
+@RequestMapping("api/v1/users/oauth2/authorize/google")
 public class OAuth2Controller {
 
 	private final OAuth2Service oauthService;
 
-	@GetMapping("/auth/{type}")
+	@GetMapping("/login")
 	public void socialLogin(
 		@PathVariable("type") String type,
 		HttpServletResponse response
@@ -35,15 +35,15 @@ public class OAuth2Controller {
 		response.sendRedirect(requestURL);
 	}
 
-	@GetMapping("/authorize/{type}/sign-up")
-	public void socialSignUp(
+	@GetMapping("/sign-up")
+	public String socialSignUp(
 		@PathVariable("type") String type,
 		HttpServletResponse response
 	) {
-
+		return "index";
 	}
 
-	@GetMapping("/auth/{type}/redirect")
+	@GetMapping("/redirect")
 	public ResponseEntity<?> callback(
 		@PathVariable(name = "type") String type,
 		@RequestParam(name = "code") String code
@@ -52,8 +52,4 @@ public class OAuth2Controller {
 		return ResponseEntity.ok(loginResponseDTO);
 	}
 
-	@GetMapping("/test")
-	public String test() {
-		return "index";
-	}
 }

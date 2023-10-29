@@ -21,8 +21,8 @@ public class OAuth2Service {
 	private final JwtService jwtService;
 
 	public String request(String type) {
-		String redirectURL;
-		redirectURL = oAuth2.getOAuth2RedirectURL();
+		String redirectURL = oAuth2.getOAuth2RedirectURL();
+
 		return redirectURL;
 	}
 

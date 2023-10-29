@@ -69,7 +69,6 @@ public class GoogleOAuth2 implements OAuth2 {
 		params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
 		params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
 		params.put("grant_type", "authorization_code");
-		// params.put("scope", GOOGLE_DATA_ACCESS_SCOPE);
 
 		ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_REQUEST_URL, params, String.class);
 
