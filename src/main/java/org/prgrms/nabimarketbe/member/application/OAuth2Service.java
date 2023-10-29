@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.member.application;
 
-import org.prgrms.nabimarketbe.member.domain.GetSocialOAuth2Res;
+import org.prgrms.nabimarketbe.member.domain.LoginResponseDTO;
 import org.prgrms.nabimarketbe.member.domain.GoogleOAuth2Token;
 import org.prgrms.nabimarketbe.member.domain.GoogleUser;
 import org.prgrms.nabimarketbe.member.domain.OAuth2;
@@ -26,7 +26,7 @@ public class OAuth2Service {
 		return redirectURL;
 	}
 
-	public GetSocialOAuth2Res oAuthLogin(String code) throws JsonProcessingException {
+	public LoginResponseDTO oAuthLogin(String code) throws JsonProcessingException {
 		ResponseEntity<String> accessToken = oAuth2.requestAccessToken(code);
 		GoogleOAuth2Token googleOAuth2Token = oAuth2.getAccessToken(accessToken);
 
@@ -36,7 +36,7 @@ public class OAuth2Service {
 
 		String user_id = googleUser.email();
 
-		return new GetSocialOAuth2Res("1234",1,"asdf", googleOAuth2Token.tokenType());
+		return new LoginResponseDTO("1234",1,"asdf", googleOAuth2Token.tokenType());
 	}
 
 }

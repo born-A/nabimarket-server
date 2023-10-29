@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.member.domain;
 
-public record GetSocialOAuth2Res(
+public record LoginResponseDTO(
 	String jwtToken,
 	int userNum,
 	String accessToken,

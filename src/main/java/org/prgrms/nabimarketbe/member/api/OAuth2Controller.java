@@ -5,8 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.prgrms.nabimarketbe.member.application.OAuth2Service;
-import org.prgrms.nabimarketbe.member.domain.GetSocialOAuth2Res;
-import org.springframework.http.HttpStatus;
+import org.prgrms.nabimarketbe.member.domain.LoginResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,9 +48,8 @@ public class OAuth2Controller {
 		@PathVariable(name = "type") String type,
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
-		log.info("redirected");
-		GetSocialOAuth2Res getSocialOAuth2Res = oauthService.oAuthLogin(code);
-		return new ResponseEntity<>(getSocialOAuth2Res, HttpStatus.OK);
+		LoginResponseDTO loginResponseDTO = oauthService.oAuthLogin(code);
+		return ResponseEntity.ok(loginResponseDTO);
 	}
 
 	@GetMapping("/test")

@@ -7,12 +7,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "users")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -26,8 +28,8 @@ public class User {
 	@Column(name = "user_email")
 	private String email;
 
-	@Column(name = "user_name")
-	private String name;
+	@Column(name = "nickname")
+	private String nickname;
 
 	@Column(name = "user_picture_source")
 	private String picture;
@@ -36,17 +38,19 @@ public class User {
 	@Column(name = "user_role")
 	private Role role;
 
+	private String refreshToken; // 리프레시 토큰
+
 	@Builder
-	public User(String email, String name, String picture, Role role){
-		this.email=email;
-		this.name=name;
-		this.picture=picture;
-		this.role=role;
+	public User(String email, String nickname, String picture, Role role){
+		this.email = email;
+		this.nickname = nickname;
+		this.picture = picture;
+		this.role = role;
 	}
 
-	public User update(String name, String picture){
-		this.name=name;
-		this.picture=picture;
+	public User update(String nickname, String picture){
+		this.nickname = nickname;
+		this.picture = picture;
 		return this;
 	}
 
@@ -54,5 +58,12 @@ public class User {
 		return role.getKey();
 	}
 
+	public void authorizeUser() {
+		this.role = Role.USER;
+	}
+
+	public void updateRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 
 }

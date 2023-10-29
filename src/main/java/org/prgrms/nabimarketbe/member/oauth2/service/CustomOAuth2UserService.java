@@ -29,7 +29,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+		OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
 		OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
 		log.info("loadUser : {} ", userRequest.toString());
@@ -42,13 +42,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		User user = saveOrUpdate(attributes);
 
-		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
-			attributes.getAttributes(), attributes.getNameAttributeKey());
+		return new DefaultOAuth2User(Collections.singleton(
+			new SimpleGrantedAuthority(user.getRoleKey())),
+			attributes.getAttributes(),
+			attributes.getNameAttributeKey()
+		);
 	}
 
+	// TODO : 메소드 기능에 맞게 수정하기
 	private User saveOrUpdate(OAuth2Attributes attributes){
-		return userRepository.findByEmail(attributes.getEmail())
-			.map(e -> e.update(e.getName(), e.getPicture()))
-			.orElse(attributes.toEntity());
+		return userRepository.save(attributes.toEntity());
 	}
 }

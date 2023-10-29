@@ -1,5 +1,6 @@
 package org.prgrms.nabimarketbe.config;
 
+import org.prgrms.nabimarketbe.member.oauth2.handler.OAuth2LoginSuccessHandler;
 import org.prgrms.nabimarketbe.member.oauth2.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
+
+	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
 	private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -26,7 +29,6 @@ public class SecurityConfig {
 			.csrf().disable() // csrf 보안 사용 X
 			.headers().frameOptions().disable()
 			.and()
-
 			// 세션 사용하지 않으므로 STATELESS로 설정
 			// .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			// .and()
@@ -37,12 +39,14 @@ public class SecurityConfig {
 			// 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
 			.antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
 			.antMatchers("/sign-up").permitAll() // 회원가입 접근 가능
+			// .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 			.and()
 			//== 소셜 로그인 설정 ==//
 			.oauth2Login()
-			.defaultSuccessUrl("/redirect")
 			.userInfoEndpoint()
-			.userService(customOAuth2UserService); // customUserService 설정
+			.userService(customOAuth2UserService) // customUserService 설정
+			.and()
+			.successHandler(oAuth2LoginSuccessHandler);
 
 		// 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
 		// 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정

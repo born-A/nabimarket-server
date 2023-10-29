@@ -42,6 +42,7 @@ public class GoogleOAuth2 implements OAuth2 {
 	private final ObjectMapper objectMapper;
 
 	private final RestTemplate restTemplate;
+
 	@Override
 	public String getOAuth2RedirectURL() {
 		Map<String,Object> params = new HashMap<>();
@@ -62,13 +63,14 @@ public class GoogleOAuth2 implements OAuth2 {
 	@Override
 	public ResponseEntity<String> requestAccessToken(String code) {
 		String GOOGLE_TOKEN_REQUEST_URL = "https://oauth2.googleapis.com/token";
-		RestTemplate restTemplate=new RestTemplate();
 		Map<String, Object> params = new HashMap<>();
 		params.put("code", code);
 		params.put("client_id", GOOGLE_SNS_CLIENT_ID);
 		params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
 		params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
 		params.put("grant_type", "authorization_code");
+		// params.put("scope", GOOGLE_DATA_ACCESS_SCOPE);
+
 		ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_REQUEST_URL, params, String.class);
 
 		return stringResponseEntity;
@@ -88,7 +90,7 @@ public class GoogleOAuth2 implements OAuth2 {
 		HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(headers);
 		headers.add("Authorization","Bearer "+googleOAuthToken.accessToken());
 		ResponseEntity<String> exchange = restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET, request, String.class);
-		System.out.println(exchange.getBody());
+		log.info(exchange.getBody());
 		return exchange;
 	}
 
