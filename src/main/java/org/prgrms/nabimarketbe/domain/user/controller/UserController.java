@@ -8,7 +8,7 @@ import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.model.CommonResult;
 import org.prgrms.nabimarketbe.global.model.ListResult;
 import org.prgrms.nabimarketbe.global.model.SingleResult;
-import org.prgrms.nabimarketbe.domain.security.oauth.service.response.ResponseService;
+import org.prgrms.nabimarketbe.global.ResponseService;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/user/nickname/{nickname}")
-    public SingleResult<UserResponseDto> findUserByNickName(@PathVariable String nickname, @RequestParam String lang) {
+    public SingleResult<UserResponseDto> findUserByNickName(@PathVariable String nickname) {
         return responseService.getSingleResult(userService.findByNickName(nickname));
     }
 
@@ -38,10 +38,10 @@ public class UserController {
     @PutMapping("/user")
     public SingleResult<Long> update (
             @RequestParam Long userId,
-            @RequestParam String nickName
+            @RequestParam String nickname
     ) {
         UserRequestDto userRequestDto = UserRequestDto.builder()
-                .nickName(nickName)
+                .nickName(nickname)
                 .build();
 
         return responseService.getSingleResult(userService.update(userId, userRequestDto));

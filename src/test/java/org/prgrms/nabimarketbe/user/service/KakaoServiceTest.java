@@ -3,7 +3,7 @@ package org.prgrms.nabimarketbe.user.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.prgrms.nabimarketbe.domain.user.service.KakaoService;
+import org.prgrms.nabimarketbe.domain.security.service.KakaoService;
 import org.prgrms.nabimarketbe.domain.security.oauth.dto.social.KakaoProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

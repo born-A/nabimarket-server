@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.user.service;
+package org.prgrms.nabimarketbe.domain.security.service;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;

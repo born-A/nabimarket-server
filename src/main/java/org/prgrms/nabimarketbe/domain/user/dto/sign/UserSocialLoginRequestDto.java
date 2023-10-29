@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.sign.dto;
+package org.prgrms.nabimarketbe.domain.user.dto.sign;
 
 import lombok.*;
 
@@ -7,6 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSocialSignupRequestDto {
+public class UserSocialLoginRequestDto {
     private String accessToken;
 }

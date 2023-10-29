@@ -1,6 +1,7 @@
-package org.prgrms.nabimarketbe.domain.security.oauth.service.response;
+package org.prgrms.nabimarketbe.global;
 
 import lombok.extern.slf4j.Slf4j;
+import org.prgrms.nabimarketbe.global.model.CommonResponse;
 import org.prgrms.nabimarketbe.global.model.CommonResult;
 import org.prgrms.nabimarketbe.global.model.ListResult;
 import org.prgrms.nabimarketbe.global.model.SingleResult;

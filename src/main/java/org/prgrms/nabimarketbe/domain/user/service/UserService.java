@@ -18,13 +18,6 @@ import java.util.stream.Collectors;
 public class UserService {
     private UserJpaRepo userJpaRepo;
 
-    @Transactional
-    public Long save(UserRequestDto userDto) {
-        User saved = userJpaRepo.save(userDto.toEntity());
-
-        return saved.getUserId();
-    }
-
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userJpaRepo.findById(id)

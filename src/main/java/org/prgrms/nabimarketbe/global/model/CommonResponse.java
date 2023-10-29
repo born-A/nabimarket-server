@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.security.oauth.service.response;
+package org.prgrms.nabimarketbe.global.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.sign.dto;
+package org.prgrms.nabimarketbe.domain.user.dto.sign;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
+import java.util.Collections;
+
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserLoginRequestDto {
+public class UserSignupRequestDto {
     private String nickname;
+    private String provider;
 
-    public User toUser() {
+    public User toEntity() {
         return User.builder()
                 .nickname(nickname)
+                .provider(provider)
+                .roles(Collections.singletonList("ROLE_USER"))
                 .build();
     }
 }
