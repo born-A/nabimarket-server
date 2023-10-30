@@ -33,7 +33,7 @@ jobs:
         shell: bash
         
       - name: copy Application.properties
-        run: echo "${{ secrets.YML }}" > ./src/main/resources/application.yml
+        run: echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
         shell: bash
         
       # gradle 권한 설정
