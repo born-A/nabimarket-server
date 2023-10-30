@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.prgrms.nabimarketbe.domain.security.jwt.dto.TokenDto;
+import org.prgrms.nabimarketbe.domain.security.jwt.dto.TokenResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,7 +37,7 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenDto createTokenDto(Long userPk, List<String> roles) {
+    public TokenResponseDto createTokenDto(Long userPk, List<String> roles) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLES, roles);
@@ -59,7 +59,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
-        return TokenDto.builder()
+        return TokenResponseDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

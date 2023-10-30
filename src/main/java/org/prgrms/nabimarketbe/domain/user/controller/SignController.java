@@ -9,7 +9,7 @@ import org.prgrms.nabimarketbe.domain.user.dto.sign.UserSocialLoginRequestDto;
 import org.prgrms.nabimarketbe.domain.user.dto.sign.UserSocialSignupRequestDto;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.domain.security.jwt.JwtProvider;
-import org.prgrms.nabimarketbe.domain.security.jwt.dto.TokenDto;
+import org.prgrms.nabimarketbe.domain.security.jwt.dto.TokenResponseDto;
 import org.prgrms.nabimarketbe.domain.security.oauth.dto.social.KakaoProfile;
 import org.prgrms.nabimarketbe.global.model.CommonResult;
 import org.prgrms.nabimarketbe.global.model.SingleResult;
@@ -38,8 +38,8 @@ public class SignController {
     private final ResponseService responseService;
 
     @PostMapping("/social/login/kakao")
-    public SingleResult<TokenDto> loginByKakao(@RequestBody UserSocialLoginRequestDto socialLoginRequestDto) {
-        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialLoginRequestDto.getAccessToken());
+    public SingleResult<TokenResponseDto> loginByKakao(@RequestBody UserSocialLoginRequestDto socialLoginRequestDto) {
+        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialLoginRequestDto.accessToken());
 
         if (kakaoProfile == null) throw new RuntimeException("해당 회원이 없습니다.");
 
@@ -51,7 +51,7 @@ public class SignController {
 
     @PostMapping("/social/signup/kakao")
     public CommonResult signupBySocial(@RequestBody UserSocialSignupRequestDto socialSignupRequestDto) {
-        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
+        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialSignupRequestDto.accessToken());
 
         if (kakaoProfile == null) throw new RuntimeException("해당 회원이 없습니다.");
 
@@ -65,7 +65,7 @@ public class SignController {
 
     //엑세스 토큰 만료시 회원 검증 후 리프레쉬 토큰을 검증해서 액세스 토큰과 리프레시 토큰을 재발급
     @PostMapping("/reissue")
-    public SingleResult<TokenDto> reissue(
+    public SingleResult<TokenResponseDto> reissue(
             @RequestBody TokenRequestDto tokenRequestDto) {
         return responseService.getSingleResult(signService.reissue(tokenRequestDto));
     }
