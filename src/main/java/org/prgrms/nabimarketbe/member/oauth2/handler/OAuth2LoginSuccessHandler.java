@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-//@Transactional
+@Transactional
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
@@ -36,6 +37,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			User user = userRepository.findByEmail(oAuth2User.getAttribute("email"))
 				.orElseThrow(() -> new RuntimeException("커스텀 에러로 바꿔주기"));
 			loginSuccess(response, user);
+
+			// TODO : 유저 리프레시토큰 등록하기
 		} catch (Exception e) {
 			throw e;
 		}
@@ -50,7 +53,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
 
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-		jwtService.updateRefreshToken(user.getNickname(), refreshToken);
+		jwtService.updateRefreshToken(user.getEmail(), refreshToken);
 	}
 
 }

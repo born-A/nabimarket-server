@@ -20,7 +20,7 @@ public class OAuth2Service {
 
 	private final JwtService jwtService;
 
-	public String request(String type) {
+	public String request() {
 		String redirectURL = oAuth2.getOAuth2RedirectURL();
 
 		return redirectURL;

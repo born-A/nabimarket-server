@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.member.oauth2.service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -40,7 +41,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		OAuth2Attributes attributes = OAuth2Attributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-		User user = saveOrUpdate(attributes);
+		User user = saveIfNotPresent(attributes);
 
 		return new DefaultOAuth2User(Collections.singleton(
 			new SimpleGrantedAuthority(user.getRoleKey())),
@@ -50,7 +51,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 
 	// TODO : 메소드 기능에 맞게 수정하기
-	private User saveOrUpdate(OAuth2Attributes attributes){
-		return userRepository.save(attributes.toEntity());
+	private User saveIfNotPresent(OAuth2Attributes attributes){
+		Optional<User> user = userRepository.findByEmail(attributes.getEmail());
+		if(user.isEmpty()) {
+			return userRepository.save(attributes.toEntity());
+		}
+
+		return user.get();
 	}
 }

@@ -30,8 +30,8 @@ public class GoogleOAuth2 implements OAuth2 {
 	@Value("${spring.security.oauth2.client.registration.google.client-id}")
 	private String GOOGLE_SNS_CLIENT_ID;
 
-	@Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-	private String GOOGLE_SNS_CALLBACK_URL;
+	// @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+	// private String GOOGLE_SNS_CALLBACK_URL;
 
 	@Value("${spring.security.oauth2.client.registration.google.client-secret}")
 	private String GOOGLE_SNS_CLIENT_SECRET;
@@ -50,7 +50,7 @@ public class GoogleOAuth2 implements OAuth2 {
 		params.put("scope",GOOGLE_DATA_ACCESS_SCOPE);
 		params.put("response_type","code");
 		params.put("client_id",GOOGLE_SNS_CLIENT_ID);
-		params.put("redirect_uri",GOOGLE_SNS_CALLBACK_URL);
+		// params.put("redirect_uri",GOOGLE_SNS_CALLBACK_URL);
 
 		String parameterString = params.entrySet().stream()
 			.map(x -> x.getKey() + "=" + x.getValue())
@@ -67,7 +67,7 @@ public class GoogleOAuth2 implements OAuth2 {
 		params.put("code", code);
 		params.put("client_id", GOOGLE_SNS_CLIENT_ID);
 		params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
-		params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
+		// params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
 		params.put("grant_type", "authorization_code");
 
 		ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_REQUEST_URL, params, String.class);

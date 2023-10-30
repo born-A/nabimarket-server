@@ -28,14 +28,14 @@ public class OAuth2Controller {
 
 	@GetMapping("/login")
 	public void socialLogin(
-		@PathVariable("type") String type,
 		HttpServletResponse response
 	) throws IOException {
-		String requestURL = oauthService.request(type.toUpperCase());
-		response.sendRedirect(requestURL);
+		String requestURL = oauthService.request();
+		response.sendRedirect("/oauth2/authorization/google");
+		// response.sendRedirect(requestURL);
 	}
 
-	@GetMapping("/sign-up")
+	@GetMapping("/home")
 	public String socialSignUp(
 		@PathVariable("type") String type,
 		HttpServletResponse response
@@ -45,9 +45,9 @@ public class OAuth2Controller {
 
 	@GetMapping("/redirect")
 	public ResponseEntity<?> callback(
-		@PathVariable(name = "type") String type,
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
+		log.info("redirected!!");
 		LoginResponseDTO loginResponseDTO = oauthService.oAuthLogin(code);
 		return ResponseEntity.ok(loginResponseDTO);
 	}

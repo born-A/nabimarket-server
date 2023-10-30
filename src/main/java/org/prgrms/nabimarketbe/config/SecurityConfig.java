@@ -40,15 +40,16 @@ public class SecurityConfig {
 			// 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
 			.antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
 			.antMatchers("/sign-up").permitAll() // 회원가입 접근 가능
-			.anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+			.anyRequest().permitAll()
 			.and()
 			//== 소셜 로그인 설정 ==//
 			.oauth2Login()
-			// .defaultSuccessUrl("/sign-up")
+			.loginPage("/api/v1/users/oauth2/authorize/google/login")
+			.permitAll()
+			.defaultSuccessUrl("/home")
+			.successHandler(oAuth2LoginSuccessHandler)
 			.userInfoEndpoint()
-			.userService(customOAuth2UserService) // customUserService 설정
-			.and()
-			.successHandler(oAuth2LoginSuccessHandler);
+			.userService(customOAuth2UserService); // customUserService 설정
 
 		// 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
 		// 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
