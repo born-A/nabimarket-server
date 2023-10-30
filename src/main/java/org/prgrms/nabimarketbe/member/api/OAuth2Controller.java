@@ -8,7 +8,6 @@ import org.prgrms.nabimarketbe.member.application.OAuth2Service;
 import org.prgrms.nabimarketbe.member.domain.LoginResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,15 +30,12 @@ public class OAuth2Controller {
 		HttpServletResponse response
 	) throws IOException {
 		String requestURL = oauthService.request();
-		response.sendRedirect("/oauth2/authorization/google");
-		// response.sendRedirect(requestURL);
+		// response.sendRedirect("/oauth2/authorization/google");
+		response.sendRedirect(requestURL);
 	}
 
-	@GetMapping("/home")
-	public String socialSignUp(
-		@PathVariable("type") String type,
-		HttpServletResponse response
-	) {
+	@GetMapping("/test")
+	public String testPage() {
 		return "index";
 	}
 
@@ -47,7 +43,6 @@ public class OAuth2Controller {
 	public ResponseEntity<?> callback(
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
-		log.info("redirected!!");
 		LoginResponseDTO loginResponseDTO = oauthService.oAuthLogin(code);
 		return ResponseEntity.ok(loginResponseDTO);
 	}

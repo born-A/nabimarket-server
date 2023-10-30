@@ -40,13 +40,14 @@ public class SecurityConfig {
 			// 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
 			.antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
 			.antMatchers("/sign-up").permitAll() // 회원가입 접근 가능
+			.antMatchers("/test").authenticated() // 토큰 인증된 사용자 용
 			.anyRequest().permitAll()
 			.and()
 			//== 소셜 로그인 설정 ==//
 			.oauth2Login()
 			.loginPage("/api/v1/users/oauth2/authorize/google/login")
 			.permitAll()
-			.defaultSuccessUrl("/home")
+			.defaultSuccessUrl("/home", true)
 			.successHandler(oAuth2LoginSuccessHandler)
 			.userInfoEndpoint()
 			.userService(customOAuth2UserService); // customUserService 설정
