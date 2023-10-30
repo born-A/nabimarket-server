@@ -35,6 +35,13 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    // Json을 결과로 매핑하기 위한 의존성
+    implementation 'com.google.code.gson:gson:2.8.8'
+
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.5.4'
+
+    // 다국어 제공을 위한 i18n을 yml 파일로 적용하기 위한 의존성
+    implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
 }
 
 tasks.named('test') {
