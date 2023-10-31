@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.domain.user.BaseEntity;
+import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +29,12 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "nick_name", nullable = false, length = 20)
     private String nickname;
+
+    @Column(name = "user_email")
+    private String email;
+
+    @Column(name = "user_image_url")
+    private String image_url;
 
     @Column(length = 100)
     private String provider;
