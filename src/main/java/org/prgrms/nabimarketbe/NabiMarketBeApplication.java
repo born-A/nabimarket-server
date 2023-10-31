@@ -14,9 +14,9 @@ public class NabiMarketBeApplication {
 		SpringApplication.run(NabiMarketBeApplication.class, args);
 	}
 
+
 	@Bean
-	public RestTemplate getRestTemplate() {
+	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-
 }
