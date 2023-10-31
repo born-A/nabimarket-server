@@ -1,14 +1,19 @@
 package org.prgrms.nabimarketbe.domain.user.dto;
 
-import lombok.Getter;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.springframework.security.core.GrantedAuthority;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.springframework.security.core.GrantedAuthority;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
 @Getter
+@AllArgsConstructor
 public class UserResponseDto {
     private final Long userId;
 
@@ -26,5 +31,15 @@ public class UserResponseDto {
         this.roles = user.getRoles();
         this.authorities = user.getAuthorities();
         this.modifiedDate = user.getModifiedDate();
+    }
+
+    public static UserResponseDto from(User user) {
+        return UserResponseDto.builder()
+            .userId(user.getUserId())
+            .nickName(user.getNickname())
+            .roles(user.getRoles())
+            .authorities(user.getAuthorities())
+            .modifiedDate(user.getModifiedDate())
+            .build();
     }
 }
