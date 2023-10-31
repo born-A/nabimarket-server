@@ -1,18 +1,18 @@
 package org.prgrms.nabimarketbe.domain.user.dto.sign;
 
-import lombok.Builder;
+import java.util.Collections;
+
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
-import java.util.Collections;
+import lombok.Builder;
 
 @Builder
 public record UserSignupRequestDto(String nickname, String provider) {
-    public User toEntity() {
-        return User.builder()
-                .nickname(nickname)
-                .provider(provider)
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build();
-    }
+	public User toEntity() {
+		return User.builder()
+			.nickname(nickname)
+			.provider(provider)
+			.roles(Collections.singletonList("ROLE_USER"))
+			.build();
+	}
 }
-

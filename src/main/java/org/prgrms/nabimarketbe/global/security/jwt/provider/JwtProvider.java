@@ -1,10 +1,13 @@
 package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.Base64UrlCodec;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDto;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,11 +15,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.List;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.impl.Base64UrlCodec;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +45,7 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenDto createTokenDto(Long userPk, List<String> roles) {
+    public TokenResponseDTO createTokenDto(Long userPk, List<String> roles) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLES, roles);
@@ -46,25 +54,25 @@ public class JwtProvider {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
 
         String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
 
-        return TokenDto.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpireDate(accessTokenValidMillisecond)
-                .build();
+        return TokenResponseDTO.builder()
+            .grantType("Bearer")
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .accessTokenExpireDate(accessTokenValidMillisecond)
+            .build();
     }
 
     // Jwt 로 인증정보를 조회

@@ -1,10 +1,16 @@
 package org.prgrms.nabimarketbe.global.security.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.prgrms.nabimarketbe.global.BaseEntity;
 
-import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "refresh_token")
@@ -28,8 +34,8 @@ public class RefreshToken extends BaseEntity {
     }
 
     public RefreshToken(
-            Long key,
-            String token
+        Long key,
+        String token
     ) {
         this.key = key;
         this.token = token;

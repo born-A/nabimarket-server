@@ -1,22 +1,23 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.prgrms.nabimarketbe.domain.user.dto.UserRequestDto;
 import org.prgrms.nabimarketbe.domain.user.dto.UserResponseDto;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.domain.user.repository.UserJpaRepo;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
-    private UserJpaRepo userJpaRepo;
+    private UserRepository userJpaRepo;
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
