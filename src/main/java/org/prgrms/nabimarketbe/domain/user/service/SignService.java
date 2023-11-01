@@ -2,6 +2,7 @@ package org.prgrms.nabimarketbe.domain.user.service;
 
 import java.util.Optional;
 
+import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.sign.UserSignupRequestDto;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class SignService {
-    private final UserRepository userJpaRepo;
+    private final UserRepository userRepository;
 
     private final OAuth2Service oAuth2Service;
 
@@ -52,7 +53,7 @@ public class SignService {
 
     @Transactional
     public CommonResult socialSignup(UserSignupRequestDto userSignupRequestDto) {
-        Optional<User> user = userJpaRepo.findByNicknameAndProvider(
+        Optional<User> user = userRepository.findByNicknameAndProvider(
                 userSignupRequestDto.nickname(),
                 userSignupRequestDto.provider()
         );
@@ -61,7 +62,7 @@ public class SignService {
             return responseFactory.getSingleResult(jwtProvider.createTokenDto(user.get().getUserId(), user.get().getRoles()));
         }
 
-        userJpaRepo.save(userSignupRequestDto.toEntity());
+        userRepository.save(userSignupRequestDto.toEntity());
         return responseFactory.getSingleResult(jwtProvider.createTokenDto(user.get().getUserId(), user.get().getRoles()));
     }
 
@@ -77,7 +78,7 @@ public class SignService {
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
         // user pk로 유저 검색 / repo 에 저장된 Refresh Token 이 없음
-        User user = userJpaRepo.findById(Long.parseLong(authentication.getName()))
+        User user = userRepository.findById(Long.parseLong(authentication.getName()))
                 .orElseThrow(() ->new RuntimeException("RefreshTokenException"));
 
         RefreshToken refreshToken = tokenJpaRepo.findByUserId(user.getUserId())
@@ -97,12 +98,23 @@ public class SignService {
     }
 
     @Transactional
-    public User signUp(GoogleUserInfoDTO googleUserInfoDTO) {
-        User user = googleUserInfoDTO.toEntity("randomNickName");
-        User savedUser = userJpaRepo.save(user);
+    public UserLoginResponseDTO signIn(GoogleUserInfoDTO userInfo) {
+        String nameAttributeKey = userInfo.id();
 
-        // TODO : 닉네임 랜덤 생성
-        log.info("modified date : {}", savedUser.getModifiedDate());
+        Optional<User> optionalUser = userRepository.findByNameAttributeKey(nameAttributeKey);
+
+        User user = optionalUser.orElseGet(() -> signUp(userInfo));
+        TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
+
+        UserLoginResponseDTO response = UserLoginResponseDTO.from(user, tokenResponseDTO);
+
+        return response;
+    }
+
+    @Transactional
+    public User signUp(GoogleUserInfoDTO userInfo) {
+        User user = userInfo.toEntity("randomNickName");
+        User savedUser = userRepository.save(user);
 
         return savedUser;
     }
