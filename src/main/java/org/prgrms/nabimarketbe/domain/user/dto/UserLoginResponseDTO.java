@@ -4,7 +4,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 
 public record UserLoginResponseDTO(
-	UserResponseDto user,
+	UserResponseDto userInfo,
 	TokenResponseDTO token
 ) {
 

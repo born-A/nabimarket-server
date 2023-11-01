@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
+import org.prgrms.nabimarketbe.global.util.model.MyCommonResult;
 import org.prgrms.nabimarketbe.oauth2.google.service.GoogleOAuth2Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,11 +35,16 @@ public class GoogleOAuth2Controller {
 	}
 
 	@GetMapping("/redirect")
-	public ResponseEntity<UserLoginResponseDTO> callback(
+	public ResponseEntity<MyCommonResult<UserLoginResponseDTO>> callback(
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
 		UserLoginResponseDTO loginResponseDTO = oauthService.OAuth2Login(code);
+		MyCommonResult<UserLoginResponseDTO> response = new MyCommonResult<>(
+			"C001",
+			"성공했습니다.",
+			loginResponseDTO
+		);
 
-		return ResponseEntity.ok(loginResponseDTO);
+		return ResponseEntity.ok(response);
 	}
 }

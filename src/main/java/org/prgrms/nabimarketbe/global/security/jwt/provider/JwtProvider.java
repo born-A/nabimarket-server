@@ -79,10 +79,8 @@ public class JwtProvider {
         refreshTokenJpaRepo.save(refreshTokenEntity);
 
         return TokenResponseDTO.builder()
-            .grantType("Bearer")
             .accessToken(accessToken)
             .refreshToken(refreshToken)
-            .accessTokenExpireDate(accessTokenValidMillisecond)
             .build();
     }
 
