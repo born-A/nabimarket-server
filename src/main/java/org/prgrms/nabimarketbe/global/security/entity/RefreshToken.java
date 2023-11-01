@@ -9,20 +9,21 @@ import javax.persistence.Table;
 
 import org.prgrms.nabimarketbe.global.BaseEntity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "refresh_token")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
-    private Long key;
+    private Long userId;
 
     @Column(nullable = false)
     private String token;
@@ -34,10 +35,10 @@ public class RefreshToken extends BaseEntity {
     }
 
     public RefreshToken(
-        Long key,
+        Long userId,
         String token
     ) {
-        this.key = key;
+        this.userId = userId;
         this.token = token;
     }
 }
