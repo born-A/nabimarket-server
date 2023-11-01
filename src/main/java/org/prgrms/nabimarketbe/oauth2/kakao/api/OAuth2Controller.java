@@ -56,9 +56,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping(value = "/redirect")
-    public CommonResult redirectKakao(
-            ModelAndView mav,
-            @RequestParam String code) {
+    public CommonResult redirectKakao(@RequestParam String code) {
         //받은 token info 에서 acccess token 추출
         String accessToken = OAuth2Service.getKakaoTokenInfo(code).getAccess_token();
 

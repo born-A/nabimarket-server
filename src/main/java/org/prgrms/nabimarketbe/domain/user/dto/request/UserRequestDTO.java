@@ -6,7 +6,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 @Getter
 @Builder
-public class UserRequestDto {
+public class UserRequestDTO {
     private String email;
 
     private String nickName;

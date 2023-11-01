@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.domain.user.api;
 
 import lombok.RequiredArgsConstructor;
 
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDto;
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDto;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
@@ -21,17 +21,17 @@ public class UserController {
     private final ResponseFactory responseFactory;
 
     @GetMapping("/{userId}")
-    public SingleResult<UserResponseDto> findUserById(@PathVariable Long userId) {
+    public SingleResult<UserResponseDTO> findUserById(@PathVariable Long userId) {
         return responseFactory.getSingleResult(userService.findById(userId));
     }
 
     @GetMapping("/{nickname}")
-    public SingleResult<UserResponseDto> findUserByNickName(@PathVariable String nickname) {
-        return responseFactory.getSingleResult(userService.findByNickName(nickname));
+    public SingleResult<UserResponseDTO> findUserByNickName(@PathVariable String nickname) {
+        return responseFactory.getSingleResult(userService.findByNickname(nickname));
     }
 
     @GetMapping
-    public ListResult<UserResponseDto> findAllUser() {
+    public ListResult<UserResponseDTO> findAllUser() {
         return responseFactory.getListResult(userService.findAllUser());
     }
 
@@ -40,11 +40,11 @@ public class UserController {
             @RequestParam Long userId,
             @RequestParam String nickname
     ) {
-        UserRequestDto userRequestDto = UserRequestDto.builder()
+        UserRequestDTO userRequestDTO = UserRequestDTO.builder()
                 .nickName(nickname)
                 .build();
 
-        return responseFactory.getSingleResult(userService.update(userId, userRequestDto));
+        return responseFactory.getSingleResult(userService.update(userId, userRequestDTO));
     }
 
     @DeleteMapping("/{userId}")

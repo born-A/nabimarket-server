@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDto;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -28,8 +28,8 @@ public class SignService {
 
     @Transactional
     public CommonResult signInBySocial(KakaoProfile kakaoProfile) {
-        CommonResult result = signIn(UserSignInRequestDto.builder()
-                .accountId(kakaoProfile.getKakaoAccount().getAccountId())
+        CommonResult result = signIn(UserSignInRequestDTO.builder()
+                .accountId(kakaoProfile.getId())
                 .nickname(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
                 .build());
@@ -37,19 +37,19 @@ public class SignService {
         return responseFactory.getSingleResult(result);
     }
     @Transactional
-    public CommonResult signIn(UserSignInRequestDto userSignInRequestDto) {
+    public CommonResult signIn(UserSignInRequestDTO userSignInRequestDTO) {
         Optional<User> user = userRepository.findByAccountIdAndProvider(
-                userSignInRequestDto.accountId(),
-                userSignInRequestDto.provider()
+                userSignInRequestDTO.accountId(),
+                userSignInRequestDTO.provider()
         );
 
         if (user.isPresent()) {
-            return responseFactory.getSingleResult(jwtProvider.createTokenDto(
+            return responseFactory.getSingleResult(jwtProvider.createTokenDTO(
                     user.get().getUserId(), user.get().getRole())
             );
         }
 
-        User savedUser = userRepository.save(userSignInRequestDto.toEntity());
-        return responseFactory.getSingleResult(jwtProvider.createTokenDto(savedUser.getUserId(), savedUser.getRole()));
+        User savedUser = userRepository.save(userSignInRequestDTO.toEntity());
+        return responseFactory.getSingleResult(jwtProvider.createTokenDTO(savedUser.getUserId(), savedUser.getRole()));
     }
 }

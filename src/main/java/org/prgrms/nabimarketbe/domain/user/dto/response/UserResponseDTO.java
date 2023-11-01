@@ -7,8 +7,10 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import java.time.LocalDateTime;
 
 @Getter
-public class UserResponseDto {
+public class UserResponseDTO {
     private final Long userId;
+
+    private final String accountId;
 
     private final String nickName;
 
@@ -16,8 +18,9 @@ public class UserResponseDto {
 
     private final LocalDateTime modifiedDate;
 
-    public UserResponseDto(User user) {
+    public UserResponseDTO(User user) {
         this.userId = user.getUserId();
+        this.accountId = user.getAccountId();
         this.nickName = user.getNickname();
         this.role = user.getRole();
         this.modifiedDate = user.getModifiedDate();
