@@ -2,13 +2,13 @@ package org.prgrms.nabimarketbe.oauth2.kakao.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDto;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenRequestDto;
+
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
-import org.prgrms.nabimarketbe.global.util.model.SingleResult;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/oauth/kakao")
+@RequestMapping("/api/v1/users/oauth2/authorize/kakao")
 public class OAuth2Controller {
     private final RestTemplate restTemplate;
 
@@ -64,7 +64,10 @@ public class OAuth2Controller {
 
         log.info(accessToken);
 
-        return signService.signupBySocial(accessToken);
+        KakaoProfile kakaoProfile = OAuth2Service.getKakaoProfile(accessToken);
+        if (kakaoProfile == null) throw new RuntimeException("카카오에 해당 회원이 없습니다.");
+
+        return signService.signInBySocial(kakaoProfile);
     }
 
     @GetMapping(value = "/unlink")
@@ -87,12 +90,5 @@ public class OAuth2Controller {
         }
 
         throw new RuntimeException("CommunicationException");
-    }
-
-    //엑세스 토큰 만료시 회원 검증 후 리프레쉬 토큰을 검증해서 액세스 토큰과 리프레시 토큰을 재발급
-    @PostMapping("/reissue")
-    public SingleResult<TokenDto> reissue(
-            @RequestBody TokenRequestDto tokenRequestDto) {
-        return responseFactory.getSingleResult(signService.reissue(tokenRequestDto));
     }
 }

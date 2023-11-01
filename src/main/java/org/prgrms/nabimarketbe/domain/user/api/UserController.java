@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.domain.user.api;
 
 import lombok.RequiredArgsConstructor;
 
-import org.prgrms.nabimarketbe.domain.user.dto.UserRequestDto;
-import org.prgrms.nabimarketbe.domain.user.dto.UserResponseDto;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDto;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDto;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
@@ -14,28 +14,28 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
     private final ResponseFactory responseFactory;
 
-    @GetMapping("/user/id/{userId}")
+    @GetMapping("/{userId}")
     public SingleResult<UserResponseDto> findUserById(@PathVariable Long userId) {
         return responseFactory.getSingleResult(userService.findById(userId));
     }
 
-    @GetMapping("/user/nickname/{nickname}")
+    @GetMapping("/{nickname}")
     public SingleResult<UserResponseDto> findUserByNickName(@PathVariable String nickname) {
         return responseFactory.getSingleResult(userService.findByNickName(nickname));
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ListResult<UserResponseDto> findAllUser() {
         return responseFactory.getListResult(userService.findAllUser());
     }
 
-    @PutMapping("/user")
+    @PutMapping
     public SingleResult<Long> update (
             @RequestParam Long userId,
             @RequestParam String nickname
@@ -47,7 +47,7 @@ public class UserController {
         return responseFactory.getSingleResult(userService.update(userId, userRequestDto));
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/{userId}")
     public CommonResult delete(@PathVariable Long userId) {
         userService.delete(userId);
 

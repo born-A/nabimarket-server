@@ -4,7 +4,10 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDto;
+import org.prgrms.nabimarketbe.domain.user.Role;
+import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,11 +26,13 @@ import java.util.List;
 public class JwtProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
-    private String ROLES = "roles";
+    private String ROLE = "role";
     private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; // 1 hour
     private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 60 * 1000L; // 14 day
 
     private final UserDetailsService userDetailsService;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @PostConstruct
     protected void init() {
@@ -37,10 +41,10 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenDto createTokenDto(Long userPk, List<String> roles) {
+    public TokenDto createTokenDto(Long userPk, Role role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
-        claims.put(ROLES, roles);
+        claims.put(ROLE, role);
 
         // 생성날짜, 만료날짜를 위한 Date
         Date now = new Date();
@@ -59,6 +63,9 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
+        RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
+        refreshTokenRepository.save(refreshTokenEntity);
+
         return TokenDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
@@ -73,7 +80,7 @@ public class JwtProvider {
         Claims claims = parseClaims(token);
 
         // 권한 정보가 없음
-        if (claims.get(ROLES) == null) {
+        if (claims.get(ROLE) == null) {
             throw new RuntimeException("AuthenticationEntryPointException");
         }
 

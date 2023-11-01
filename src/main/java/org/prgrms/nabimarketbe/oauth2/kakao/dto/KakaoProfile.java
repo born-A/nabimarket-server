@@ -9,6 +9,14 @@ public class KakaoProfile {
 
     private Properties properties;
 
+    private KakaoAccount kakaoAccount;
+
+    @Getter
+    @ToString
+    public static class KakaoAccount {
+        private String accountId;
+    }
+
     @Getter
     @ToString
     public static class Properties {

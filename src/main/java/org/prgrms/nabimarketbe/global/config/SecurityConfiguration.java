@@ -1,10 +1,12 @@
 package org.prgrms.nabimarketbe.global.config;
 
 import lombok.RequiredArgsConstructor;
+
 import org.prgrms.nabimarketbe.global.security.handler.CustomAccessDeniedHandler;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAuthenticationEntryPoint;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.global.security.jwt.filter.JwtAuthenticationFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,7 +36,7 @@ public class SecurityConfiguration {
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
                                 "/v1/reissue", "/v1/social/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                         .anyRequest ().hasRole("USER"))
                 .exceptionHandling(exceptionHandling -> exceptionHandling

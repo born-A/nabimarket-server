@@ -1,12 +1,10 @@
-package org.prgrms.nabimarketbe.domain.user.dto;
+package org.prgrms.nabimarketbe.domain.user.dto.response;
 
 import lombok.Getter;
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 
 @Getter
 public class UserResponseDto {
@@ -14,17 +12,14 @@ public class UserResponseDto {
 
     private final String nickName;
 
-    private List<String> roles;
-
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Role role;
 
     private final LocalDateTime modifiedDate;
 
     public UserResponseDto(User user) {
         this.userId = user.getUserId();
         this.nickName = user.getNickname();
-        this.roles = user.getRoles();
-        this.authorities = user.getAuthorities();
+        this.role = user.getRole();
         this.modifiedDate = user.getModifiedDate();
     }
 }
