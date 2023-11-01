@@ -46,8 +46,12 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_role")
     private Role role;
 
-    public User(String accountId, String nickname, String profileImageUrl, Role role) {
-        super();
+    private User(
+            String accountId,
+            String nickname,
+            String profileImageUrl,
+            Role role
+    ) {
     }
 
     public void updateNickname(String nickname) {

@@ -16,6 +16,8 @@ public class UserResponseDTO {
 
     private final Role role;
 
+    private final LocalDateTime createdDate;
+
     private final LocalDateTime modifiedDate;
 
     public UserResponseDTO(User user) {
@@ -23,6 +25,7 @@ public class UserResponseDTO {
         this.accountId = user.getAccountId();
         this.nickName = user.getNickname();
         this.role = user.getRole();
+        this.createdDate = user.getCreatedDate();
         this.modifiedDate = user.getModifiedDate();
     }
 }
