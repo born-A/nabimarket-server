@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +37,8 @@ public class SignService {
     private final JwtProvider jwtProvider;
 
     private final RefreshTokenJpaRepo tokenJpaRepo;
+
+    private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
     public CommonResult signupBySocial(String accessToken) {
@@ -97,12 +101,10 @@ public class SignService {
     }
 
     @Transactional
-    public User signUp(GoogleUserInfoDTO googleUserInfoDTO) {
-        User user = googleUserInfoDTO.toEntity("randomNickName");
+    public User signUp(GoogleUserInfoDTO googleUserInfoDTO) throws JsonProcessingException {
+        String randomNickname = randomNicknameGenerator.generateRandomNickname();
+        User user = googleUserInfoDTO.toEntity(randomNickname);
         User savedUser = userJpaRepo.save(user);
-
-        // TODO : 닉네임 랜덤 생성
-        log.info("modified date : {}", savedUser.getModifiedDate());
 
         return savedUser;
     }

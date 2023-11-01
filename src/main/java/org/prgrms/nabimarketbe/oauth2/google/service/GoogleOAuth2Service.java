@@ -43,7 +43,14 @@ public class GoogleOAuth2Service {
 
 		Optional<User> optionalUser = userRepository.findByNameAttributeKey(nameAttributeKey);
 
-		User user = optionalUser.orElseGet(() -> signService.signUp(googleUserInfoDTO));
+		User user = optionalUser.orElseGet(() -> {
+			try {
+				return signService.signUp(googleUserInfoDTO);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("json parse failed");
+			}
+		});
+
 		TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
 
 		UserLoginResponseDTO response = UserLoginResponseDTO.from(user, tokenResponseDTO);
