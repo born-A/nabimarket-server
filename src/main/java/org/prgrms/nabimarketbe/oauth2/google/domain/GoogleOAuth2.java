@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2Token;
-import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUser;
+import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2TokenDTO;
+import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,13 +19,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class GoogleOAuth2 implements OAuth2 {
-
 	@Value("${spring.security.oauth2.client.registration.google.url}")
 	private String GOOGLE_SNS_LOGIN_URL;
 
@@ -65,7 +62,6 @@ public class GoogleOAuth2 implements OAuth2 {
 			.collect(Collectors.joining("&"));
 
 		String redirectURL = GOOGLE_SNS_LOGIN_URL + "?" + parameterString;
-		log.info("redirect-URL={}", redirectURL);
 		return redirectURL;
 	}
 
@@ -89,18 +85,16 @@ public class GoogleOAuth2 implements OAuth2 {
 	}
 
 	@Override
-	public GoogleOAuth2Token getAccessToken(ResponseEntity<String> accessToken) throws JsonProcessingException {
-		log.info("accessTokenBody: {}",accessToken.getBody());
-
-		return objectMapper.readValue(accessToken.getBody(), GoogleOAuth2Token.class);
+	public GoogleOAuth2TokenDTO getAccessToken(ResponseEntity<String> accessToken) throws JsonProcessingException {
+		return objectMapper.readValue(accessToken.getBody(), GoogleOAuth2TokenDTO.class);
 	}
 
 	@Override
-	public ResponseEntity<String> requestUserInfo(GoogleOAuth2Token googleOAuthToken) {
+	public ResponseEntity<String> requestUserInfo(GoogleOAuth2TokenDTO googleOAuthToken) {
 		HttpHeaders headers = new HttpHeaders();
 
 		HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(headers);
-		headers.add("Authorization","Bearer " + googleOAuthToken.accessToken());
+		headers.add("Authorization", "Bearer " + googleOAuthToken.accessToken());
 		ResponseEntity<String> exchange = restTemplate.exchange(
 			GOOGLE_USER_INFO_REQUEST_URL,
 			HttpMethod.GET,
@@ -108,15 +102,16 @@ public class GoogleOAuth2 implements OAuth2 {
 			String.class
 		);
 
-		log.info(exchange.getBody());
-
 		return exchange;
 	}
 
 	@Override
-	public GoogleUser parseUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
-		GoogleUser googleUser = objectMapper.readValue(userInfoResponse.getBody(), GoogleUser.class);
+	public GoogleUserInfoDTO parseUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
+		GoogleUserInfoDTO googleUserInfoDTO = objectMapper.readValue(
+			userInfoResponse.getBody(),
+			GoogleUserInfoDTO.class
+		);
 
-		return googleUser;
+		return googleUserInfoDTO;
 	}
 }

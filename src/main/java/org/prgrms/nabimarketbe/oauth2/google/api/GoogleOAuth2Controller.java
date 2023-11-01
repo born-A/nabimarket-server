@@ -22,14 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("api/v1/users/oauth2/authorize/google")
 public class GoogleOAuth2Controller {
-
 	private final GoogleOAuth2Service oauthService;
 
 	@GetMapping("/login")
 	public void socialLogin(
 		HttpServletResponse response
 	) throws IOException {
-			String requestURL = oauthService.requestRedirectUrl();
+		String requestURL = oauthService.requestRedirectUrl();
+
 		response.sendRedirect(requestURL);
 	}
 
@@ -38,8 +38,7 @@ public class GoogleOAuth2Controller {
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
 		UserLoginResponseDTO loginResponseDTO = oauthService.OAuth2Login(code);
-		log.info("loginResponseDTO : {}", loginResponseDTO);
+
 		return ResponseEntity.ok(loginResponseDTO);
 	}
-
 }

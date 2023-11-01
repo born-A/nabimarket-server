@@ -7,7 +7,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.oauth2.kakao.repository.RefreshTokenJpaRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,11 +34,16 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
+
     private String ROLES = "roles";
+
     private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; // 1 hour
+
     private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 60 * 1000L; // 14 day
 
     private final UserDetailsService userDetailsService;
+
+    private final RefreshTokenJpaRepo refreshTokenJpaRepo;
 
     @PostConstruct
     protected void init() {
@@ -66,6 +73,10 @@ public class JwtProvider {
             .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
+
+        RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
+
+        refreshTokenJpaRepo.save(refreshTokenEntity);
 
         return TokenResponseDTO.builder()
             .grantType("Bearer")
