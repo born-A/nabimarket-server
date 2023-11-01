@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.security.jwt.dto;
+package org.prgrms.nabimarketbe.global.security.jwt.dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponseDto {
+public class TokenDTO {
     private String grantType;
 
     private String accessToken;
