@@ -1,45 +1,40 @@
+
 package org.prgrms.nabimarketbe.global;
 
-import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDateTime;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Getter;
 
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public abstract class BaseEntity {
     @CreatedDate
-    private LocalDateTime createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime modifiedDate;
 
     @PrePersist
-    public void onPrePersist() {
-        String customLocalDateTimeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime parsedCreateDate = LocalDateTime.parse(
-                customLocalDateTimeFormat,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        );
-        this.createdAt = parsedCreateDate;
-        this.modifiedAt = parsedCreateDate;
+    public void onPrePersist(){
+        this.createdDate = LocalDateTime.now().withNano(0);
+        this.modifiedDate = this.createdDate;
     }
 
     @PreUpdate
-    public void onPreUpdate() {
-        String customLocalDateTimeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime parsedUpdateDate = LocalDateTime.parse(
-                customLocalDateTimeFormat,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        );
-        this.modifiedAt = parsedUpdateDate;
+    public void onPreUpdate(){
+        this.modifiedDate = LocalDateTime.now().withNano(0);
     }
 }
