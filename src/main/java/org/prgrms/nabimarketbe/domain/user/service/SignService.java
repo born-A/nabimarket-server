@@ -1,5 +1,15 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
+import java.util.Optional;
+
+import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.sign.UserSignupRequestDto;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenRequestDto;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,5 +61,27 @@ public class SignService {
 
         User savedUser = userRepository.save(userSignInRequestDTO.toEntity());
         return responseFactory.getSingleResult(jwtProvider.createTokenDTO(savedUser.getUserId(), savedUser.getRole()));
+    }
+
+    @Transactional
+    public UserLoginResponseDTO signIn(GoogleUserInfoDTO userInfo) {
+        String nameAttributeKey = userInfo.id();
+
+        Optional<User> optionalUser = userRepository.findByNameAttributeKey(nameAttributeKey);
+
+        User user = optionalUser.orElseGet(() -> signUp(userInfo));
+        TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
+
+        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
+
+        return response;
+    }
+
+    @Transactional
+    public User signUp(GoogleUserInfoDTO userInfo) {
+        User user = userInfo.toEntity("randomNickName");
+        User savedUser = userRepository.save(user);
+
+        return savedUser;
     }
 }

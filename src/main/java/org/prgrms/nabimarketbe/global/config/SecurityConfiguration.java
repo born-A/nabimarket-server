@@ -26,7 +26,6 @@ public class SecurityConfiguration {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -35,11 +34,12 @@ public class SecurityConfiguration {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
-                                "/v1/reissue", "/v1/social/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                        .anyRequest ().hasRole("USER"))
+                    .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
+                            "/v1/reissue", "/v1/social/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
+                    .anyRequest().hasRole("USER"))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)

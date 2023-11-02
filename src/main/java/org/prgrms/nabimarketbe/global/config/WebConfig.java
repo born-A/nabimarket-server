@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.config;
+package org.prgrms.nabimarketbe.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

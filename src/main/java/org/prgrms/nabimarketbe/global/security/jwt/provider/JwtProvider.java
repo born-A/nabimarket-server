@@ -1,13 +1,15 @@
 package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.Base64UrlCodec;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
-import org.prgrms.nabimarketbe.domain.user.Role;
-import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,10 +17,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.impl.Base64UrlCodec;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,8 +34,11 @@ import java.util.Date;
 public class JwtProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
+
     private String ROLE = "role";
+
     private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; // 1 hour
+
     private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 60 * 1000L; // 14 day
 
     private final UserDetailsService userDetailsService;
@@ -41,7 +52,7 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenDTO createTokenDTO(Long userPk, Role role) {
+    public TokenResponseDTO createTokenDto(Long userPk, Role role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLE, role);
@@ -67,11 +78,11 @@ public class JwtProvider {
         refreshTokenRepository.save(refreshTokenEntity);
 
         return TokenDTO.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpireDate(accessTokenValidMillisecond)
-                .build();
+            .grantType("Bearer")
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .accessTokenExpireDate(accessTokenValidMillisecond)
+            .build();
     }
 
     // Jwt 로 인증정보를 조회

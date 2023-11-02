@@ -15,8 +15,8 @@ public class RefreshToken extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "key_id", nullable = false)
-    private Long key;
+    @Column(nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private String token;
@@ -28,10 +28,10 @@ public class RefreshToken extends BaseEntity {
     }
 
     public RefreshToken(
-            Long key,
-            String token
+        Long userId,
+        String token
     ) {
-        this.key = key;
+        this.userId = userId;
         this.token = token;
     }
 }

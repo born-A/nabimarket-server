@@ -1,9 +1,8 @@
-package org.prgrms.nabimarketbe.oauth2.google.member.domain;
+package org.prgrms.nabimarketbe.oauth2.google.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GoogleOAuth2Token(	// 이건 뭘까
-
+public record GoogleOAuth2TokenDTO(
 	@JsonProperty("access_token")
 	String accessToken,
 

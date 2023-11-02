@@ -11,13 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userPk) throws UsernameNotFoundException {
         return userRepository.findById(Long.parseLong(userPk))
-                .orElseThrow(() -> new RuntimeException("user not found exception"));
+            .orElseThrow(() -> new RuntimeException("user not found exception"));
     }
 }
