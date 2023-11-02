@@ -1,11 +1,11 @@
 package org.prgrms.nabimarketbe.global.util;
 
+import java.util.List;
+
 import org.prgrms.nabimarketbe.global.util.model.CommonResponse;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-
-import java.util.List;
 
 public class ResponseFactory {
     // 단일건 결과 처리 메소드
@@ -35,9 +35,13 @@ public class ResponseFactory {
     }
 
     // 실패 결과만 처리
-    public static CommonResult getFailResult(int code, String msg) {
+    public static CommonResult getFailResult(String code, String msg) {
         CommonResult result = new CommonResult();
-        setFailResult(result, code, msg);
+        setFailResult(
+            result,
+            code,
+            msg
+        );
 
         return result;
     }
@@ -49,7 +53,7 @@ public class ResponseFactory {
     }
 
     // API 요청 실패 시 응답 모델을 실패 데이터로 세팅
-    private static void setFailResult(CommonResult result, int code, String msg) {
+    private static void setFailResult(CommonResult result, String code, String msg) {
         result.setCode(code);
         result.setMessage(msg);
     }

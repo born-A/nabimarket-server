@@ -1,8 +1,5 @@
 package org.prgrms.nabimarketbe.oauth2.google.service;
 
-import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
-import org.prgrms.nabimarketbe.domain.user.service.SignService;
-import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.oauth2.google.domain.OAuth2;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2TokenDTO;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -20,19 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 public class GoogleOAuth2Service {
 	private final OAuth2 oAuth2;
 
-	private final JwtProvider jwtProvider;
-
-	private final UserRepository userRepository;
-
-	private final SignService signService;
-
 	public String requestRedirectUrl() {
 		String redirectUrl = oAuth2.getOAuth2RedirectUrl();
 
 		return redirectUrl;
 	}
 
-	public GoogleUserInfoDTO OAuth2Login(String code) throws JsonProcessingException {
+	public GoogleUserInfoDTO oAuth2Login(String code) throws JsonProcessingException {
 		GoogleUserInfoDTO googleUserInfoDTO = getUserInfoFromPlatform(code);
 
 		return googleUserInfoDTO;

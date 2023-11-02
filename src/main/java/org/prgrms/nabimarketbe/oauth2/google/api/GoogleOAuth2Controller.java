@@ -4,10 +4,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
-import org.prgrms.nabimarketbe.global.util.model.MyCommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.prgrms.nabimarketbe.oauth2.google.service.GoogleOAuth2Service;
@@ -44,7 +43,7 @@ public class GoogleOAuth2Controller {
 	public ResponseEntity<SingleResult<UserLoginResponseDTO>> callback(
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
-		GoogleUserInfoDTO googleUserInfoDTO = oauthService.OAuth2Login(code);
+		GoogleUserInfoDTO googleUserInfoDTO = oauthService.oAuth2Login(code);
 
 		UserLoginResponseDTO loginResponseDTO = signService.signIn(googleUserInfoDTO);
 

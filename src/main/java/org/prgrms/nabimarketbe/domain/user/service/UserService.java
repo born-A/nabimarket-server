@@ -1,18 +1,17 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -25,7 +24,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        return new UserResponseDTO(user);
+        return UserResponseDTO.from(user);
     }
 
     @Transactional(readOnly = true)
@@ -33,7 +32,7 @@ public class UserService {
         User user = userRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        return new UserResponseDTO(user);
+        return UserResponseDTO.from(user);
     }
 
     @Transactional(readOnly = true)
@@ -41,14 +40,14 @@ public class UserService {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        return new UserResponseDTO(user);
+        return UserResponseDTO.from(user);
     }
 
     @Transactional(readOnly = true)
     public List<UserResponseDTO> findAllUser() {
         return userRepository.findAll()
                 .stream()
-                .map(UserResponseDTO::new)
+                .map(UserResponseDTO::from)
                 .collect(Collectors.toList());
     }
 

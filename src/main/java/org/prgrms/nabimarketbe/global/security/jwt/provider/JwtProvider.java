@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,7 +52,7 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenResponseDTO createTokenDto(Long userPk, Role role) {
+    public TokenDTO createTokenDTO(Long userPk, Role role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLE, role);

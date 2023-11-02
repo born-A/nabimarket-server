@@ -1,22 +1,29 @@
 package org.prgrms.nabimarketbe.oauth2.kakao.api;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.prgrms.nabimarketbe.domain.user.service.SignService;
-import org.prgrms.nabimarketbe.global.util.model.CommonResult;
-import org.prgrms.nabimarketbe.global.util.ResponseFactory;
-import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
-
-import org.springframework.core.env.Environment;
-import org.springframework.http.*;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.prgrms.nabimarketbe.domain.user.service.SignService;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.CommonResult;
+import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
+import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -30,8 +37,6 @@ public class OAuth2Controller {
     private final OAuth2Service OAuth2Service;
 
     private final SignService signService;
-
-    private final ResponseFactory responseFactory;
 
     @GetMapping("/login")
     public void socialLogin(HttpServletResponse response) throws IOException {
@@ -64,7 +69,7 @@ public class OAuth2Controller {
         if (response.getStatusCode() == HttpStatus.OK) {
             log.info("unlink " + response.getBody());
 
-            return responseFactory.getSuccessResult();
+            return ResponseFactory.getSuccessResult();
         }
 
         throw new RuntimeException("CommunicationException");
