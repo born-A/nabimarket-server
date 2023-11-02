@@ -1,7 +1,6 @@
 package org.prgrms.nabimarketbe.oauth2.google.dto;
 
-import java.util.List;
-
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 public record GoogleUserInfoDTO(
@@ -17,8 +16,8 @@ public record GoogleUserInfoDTO(
 			.email(email)
 			.imageUrl(picture)
 			.provider(PROVIDER)
-			.nameAttributeKey(id)
-			.roles(List.of("ROLE_USER"))
+			.accountId(id)
+			.role(Role.USER)
 			.build();
 	}
 }

@@ -1,22 +1,15 @@
 package org.prgrms.nabimarketbe.global.security.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.prgrms.nabimarketbe.global.BaseEntity;
-
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.prgrms.nabimarketbe.global.BaseEntity;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "refresh_token")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,19 +1,14 @@
-package org.prgrms.nabimarketbe.domain.user.dto;
+package org.prgrms.nabimarketbe.domain.user.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserRequestDto {
-
+public class UserRequestDTO {
     private String email;
-    private String name;
+
     private String nickName;
 
     public User toEntity() {

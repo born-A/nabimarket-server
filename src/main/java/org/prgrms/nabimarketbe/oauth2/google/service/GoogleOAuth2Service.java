@@ -1,13 +1,5 @@
 package org.prgrms.nabimarketbe.oauth2.google.service;
 
-import java.util.Optional;
-
-import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
-import org.prgrms.nabimarketbe.domain.user.service.SignService;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
-import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.oauth2.google.domain.OAuth2;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2TokenDTO;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -25,23 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 public class GoogleOAuth2Service {
 	private final OAuth2 oAuth2;
 
-	private final JwtProvider jwtProvider;
-
-	private final UserRepository userRepository;
-
-	private final SignService signService;
-
 	public String requestRedirectUrl() {
 		String redirectUrl = oAuth2.getOAuth2RedirectUrl();
 
 		return redirectUrl;
 	}
 
-	public UserLoginResponseDTO OAuth2Login(String code) throws JsonProcessingException {
+	public GoogleUserInfoDTO oAuth2Login(String code) throws JsonProcessingException {
 		GoogleUserInfoDTO googleUserInfoDTO = getUserInfoFromPlatform(code);
-		String nameAttributeKey = googleUserInfoDTO.id();
+		String accountId = googleUserInfoDTO.id();
 
-		Optional<User> optionalUser = userRepository.findByNameAttributeKey(nameAttributeKey);
+		Optional<User> optionalUser = userRepository.findByAccountId(accountId);
 
 		User user = optionalUser.orElseGet(() -> {
 			try {
@@ -53,9 +39,9 @@ public class GoogleOAuth2Service {
 
 		TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
 
-		UserLoginResponseDTO response = UserLoginResponseDTO.from(user, tokenResponseDTO);
+		UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
-		return response;
+		return googleUserInfoDTO;
 	}
 
 	private GoogleUserInfoDTO getUserInfoFromPlatform(String code) throws JsonProcessingException {

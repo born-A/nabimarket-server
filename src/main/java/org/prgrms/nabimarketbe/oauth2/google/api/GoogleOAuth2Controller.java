@@ -4,7 +4,11 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.service.SignService;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.SingleResult;
+import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.prgrms.nabimarketbe.oauth2.google.service.GoogleOAuth2Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class GoogleOAuth2Controller {
 	private final GoogleOAuth2Service oauthService;
 
+	private final SignService signService;
+
 	@GetMapping("/login")
 	public void socialLogin(
 		HttpServletResponse response
@@ -34,11 +40,15 @@ public class GoogleOAuth2Controller {
 	}
 
 	@GetMapping("/redirect")
-	public ResponseEntity<UserLoginResponseDTO> callback(
+	public ResponseEntity<SingleResult<UserLoginResponseDTO>> callback(
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
-		UserLoginResponseDTO loginResponseDTO = oauthService.OAuth2Login(code);
+		GoogleUserInfoDTO googleUserInfoDTO = oauthService.oAuth2Login(code);
 
-		return ResponseEntity.ok(loginResponseDTO);
+		UserLoginResponseDTO loginResponseDTO = signService.signIn(googleUserInfoDTO);
+
+		SingleResult<UserLoginResponseDTO> response = ResponseFactory.getSingleResult(loginResponseDTO);
+
+		return ResponseEntity.ok(response);
 	}
 }

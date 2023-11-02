@@ -2,14 +2,14 @@ package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
-import org.prgrms.nabimarketbe.oauth2.kakao.repository.RefreshTokenJpaRepo;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,7 +35,7 @@ public class JwtProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
 
-    private String ROLES = "roles";
+    private String ROLE = "role";
 
     private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; // 1 hour
 
@@ -43,7 +43,7 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
 
-    private final RefreshTokenJpaRepo refreshTokenJpaRepo;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @PostConstruct
     protected void init() {
@@ -52,33 +52,32 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public TokenResponseDTO createTokenDto(Long userPk, List<String> roles) {
+    public TokenDTO createTokenDTO(Long userPk, Role role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
-        claims.put(ROLES, roles);
+        claims.put(ROLE, role);
 
         // 생성날짜, 만료날짜를 위한 Date
         Date now = new Date();
 
         String accessToken = Jwts.builder()
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
 
         String refreshToken = Jwts.builder()
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-            .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
 
         RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
+        refreshTokenRepository.save(refreshTokenEntity);
 
-        refreshTokenJpaRepo.save(refreshTokenEntity);
-
-        return TokenResponseDTO.builder()
+        return TokenDTO.builder()
             .grantType("Bearer")
             .accessToken(accessToken)
             .refreshToken(refreshToken)
@@ -92,7 +91,7 @@ public class JwtProvider {
         Claims claims = parseClaims(token);
 
         // 권한 정보가 없음
-        if (claims.get(ROLES) == null) {
+        if (claims.get(ROLE) == null) {
             throw new RuntimeException("AuthenticationEntryPointException");
         }
 

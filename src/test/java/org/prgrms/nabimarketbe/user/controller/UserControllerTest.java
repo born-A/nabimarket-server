@@ -2,21 +2,19 @@ package org.prgrms.nabimarketbe.user.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.domain.user.repository.UserJpaRepo;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,18 +34,15 @@ public class UserControllerTest {
     UserService userService;
 
     @Autowired
-    UserJpaRepo userJpaRepo;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
 
     private static int id;
 
     @BeforeEach
     public void setUp() {
-        User save = userJpaRepo.save(User.builder()
+        User save = userRepository.save(User.builder()
                 .nickname("xinxinzara")
-                .roles(Collections.singletonList("ROLE_USER"))
+                .role(Role.USER)
                 .build());
         id = Math.toIntExact(save.getUserId());
     }

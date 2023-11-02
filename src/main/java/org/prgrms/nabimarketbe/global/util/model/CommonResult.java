@@ -6,10 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommonResult {
+    private String code;
 
-    private boolean success;
-
-    private int code;
-
-    private String msg;
+    private String message;
 }
