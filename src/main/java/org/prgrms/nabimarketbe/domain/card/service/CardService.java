@@ -27,29 +27,20 @@ import java.util.List;
 @Transactional
 public class CardService {
     private final CardRepository cardRepository;
+
     private final ItemRepository itemRepository;
+
     private final CategoryRepository categoryRepository;
+
     private final CardImageRepository cardImageRepository;
 
     public CardCreateResponseDTO save(CardCreateRequestDTO cardCreateRequestDTO) {  // TODO: 받은 image 버킷에 업로드
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
                 .orElseThrow();
 
-        Item item = Item.builder()
-                .itemName(cardCreateRequestDTO.name())
-                .priceRange(cardCreateRequestDTO.priceRange())
-                .category(category)
-                .build();
+        Item item = cardCreateRequestDTO.toItemEntity(category);
 
-        Card card = Card.builder()
-                .cardTitle(cardCreateRequestDTO.title())
-                .thumbNailImage(cardCreateRequestDTO.thumbNailImage())
-                .content(cardCreateRequestDTO.content())
-                .tradeArea(cardCreateRequestDTO.tradeArea())
-                .poke(cardCreateRequestDTO.pokeAvailable())
-                .tradeType(cardCreateRequestDTO.tradeType())
-                .item(item)
-                .build();
+        Card card = cardCreateRequestDTO.toCardEntity(item);
 
         List<CardImage> cardImages = new ArrayList<>(cardCreateRequestDTO.images().stream()
                 .sorted(Comparator.comparingInt(CardImageCreateRequestDTO::_id))
