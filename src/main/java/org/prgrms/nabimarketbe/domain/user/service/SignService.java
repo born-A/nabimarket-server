@@ -106,7 +106,7 @@ public class SignService {
         User user = optionalUser.orElseGet(() -> signUp(userInfo));
         TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
 
-        UserLoginResponseDTO response = UserLoginResponseDTO.from(user, tokenResponseDTO);
+        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
         return response;
     }

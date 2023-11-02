@@ -7,8 +7,7 @@ public record UserLoginResponseDTO(
 	UserResponseDto userInfo,
 	TokenResponseDTO token
 ) {
-
-	public static UserLoginResponseDTO from(User user, TokenResponseDTO tokenResponseDTO) {
+	public static UserLoginResponseDTO of(User user, TokenResponseDTO tokenResponseDTO) {
 		UserResponseDto userResponseDto = UserResponseDto.from(user);
 
 		UserLoginResponseDTO response = new UserLoginResponseDTO(userResponseDto, tokenResponseDTO);
