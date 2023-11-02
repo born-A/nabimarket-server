@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.prgrms.nabimarketbe.domain.user.dto.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.MyCommonResult;
+import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.prgrms.nabimarketbe.oauth2.google.service.GoogleOAuth2Service;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +41,14 @@ public class GoogleOAuth2Controller {
 	}
 
 	@GetMapping("/redirect")
-	public ResponseEntity<MyCommonResult<UserLoginResponseDTO>> callback(
+	public ResponseEntity<SingleResult<UserLoginResponseDTO>> callback(
 		@RequestParam(name = "code") String code
 	) throws JsonProcessingException {
 		GoogleUserInfoDTO googleUserInfoDTO = oauthService.OAuth2Login(code);
 
 		UserLoginResponseDTO loginResponseDTO = signService.signIn(googleUserInfoDTO);
 
-		MyCommonResult<UserLoginResponseDTO> response = new MyCommonResult<>(
-			"C001",
-			"성공했습니다.",
-			loginResponseDTO
-		);
+		SingleResult<UserLoginResponseDTO> response = ResponseFactory.getSingleResult(loginResponseDTO);
 
 		return ResponseEntity.ok(response);
 	}
