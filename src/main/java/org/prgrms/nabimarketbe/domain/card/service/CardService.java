@@ -78,8 +78,8 @@ public class CardService {
                 savedCard.getContent(),
                 savedCard.getViewCount(),
                 savedCard.getDibCount(),
-                savedCard.getCreatedAt(),
-                savedCard.getModifiedAt(),
+                savedCard.getCreatedDate(),
+                savedCard.getModifiedDate(),
                 cardImageCreateResponseDTOS
         );
     }

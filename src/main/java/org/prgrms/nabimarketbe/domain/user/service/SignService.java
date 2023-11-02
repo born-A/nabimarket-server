@@ -8,6 +8,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
+import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -28,7 +29,7 @@ public class SignService {
 
     private final JwtProvider jwtProvider;
 
-    private final RefreshTokenJpaRepo tokenJpaRepo;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private final RandomNicknameGenerator randomNicknameGenerator;
 
@@ -65,7 +66,13 @@ public class SignService {
 
         Optional<User> optionalUser = userRepository.findByAccountId(accountId);
 
-        User user = optionalUser.orElseGet(() -> signUp(userInfo));
+        User user = optionalUser.orElseGet(() -> {
+            try {
+                return signUp(userInfo);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
         TokenDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
 
         UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenDTO);
@@ -77,7 +84,7 @@ public class SignService {
     public User signUp(GoogleUserInfoDTO googleUserInfoDTO) throws JsonProcessingException {
         String randomNickname = randomNicknameGenerator.generateRandomNickname();
         User user = googleUserInfoDTO.toEntity(randomNickname);
-        User savedUser = userJpaRepo.save(user);
+        User savedUser = userRepository.save(user);
 
         return savedUser;
     }

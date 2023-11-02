@@ -1,7 +1,7 @@
 package org.prgrms.nabimarketbe.global.error;
 
-import org.prgrms.nabimarketbe.global.ResponseFactory;
-import org.prgrms.nabimarketbe.global.model.CommonResult;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

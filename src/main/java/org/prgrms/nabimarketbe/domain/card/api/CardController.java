@@ -5,8 +5,8 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
-import org.prgrms.nabimarketbe.global.ResponseFactory;
-import org.prgrms.nabimarketbe.global.model.SingleResult;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
