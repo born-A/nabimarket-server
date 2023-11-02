@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
                         errorCode.getCode(),
                         errorCode.getMessage()
                 ),
-                HttpStatus.INTERNAL_SERVER_ERROR
+                errorCode.getStatus()
         );
     }
 
