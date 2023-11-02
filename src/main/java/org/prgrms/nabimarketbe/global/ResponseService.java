@@ -51,13 +51,13 @@ public class ResponseService {
     private void setSuccessResult(CommonResult result) {
         result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
-        result.setMsg(CommonResponse.SUCCESS.getMsg());
+        result.setMessage(CommonResponse.SUCCESS.getMessage());
     }
 
     // API 요청 실패 시 응답 모델을 실패 데이터로 세팅
     private void setFailResult(CommonResult result, int code, String msg) {
         result.setSuccess(false);
         result.setCode(code);
-        result.setMsg(msg);
+        result.setMessage(msg);
     }
 }

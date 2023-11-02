@@ -35,7 +35,7 @@ public class ResponseFactory {
     }
 
     // 실패 결과만 처리
-    public static CommonResult getFailResult(int code, String msg) {
+    public static CommonResult getFailResult(String code, String msg) {
         CommonResult result = new CommonResult();
         result.setSuccess(false);
         setFailResult(result, code, msg);
@@ -47,13 +47,13 @@ public class ResponseFactory {
     private static void setSuccessResult(CommonResult result) {
         result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
-        result.setMsg(CommonResponse.SUCCESS.getMsg());
+        result.setMessage(CommonResponse.SUCCESS.getMessage());
     }
 
     // API 요청 실패 시 응답 모델을 실패 데이터로 세팅
-    private static void setFailResult(CommonResult result, int code, String msg) {
+    private static void setFailResult(CommonResult result, String code, String msg) {
         result.setSuccess(false);
         result.setCode(code);
-        result.setMsg(msg);
+        result.setMessage(msg);
     }
 }
