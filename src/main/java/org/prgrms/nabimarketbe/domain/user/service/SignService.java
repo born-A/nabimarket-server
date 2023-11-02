@@ -2,13 +2,12 @@ package org.prgrms.nabimarketbe.domain.user.service;
 
 import java.util.Optional;
 
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
-import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -28,9 +27,7 @@ public class SignService {
     private final UserRepository userRepository;
 
     private final JwtProvider jwtProvider;
-
-    private final RefreshTokenRepository refreshTokenRepository;
-
+    
     private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
