@@ -1,16 +1,21 @@
 package org.prgrms.nabimarketbe.domain.user.api;
 
-import lombok.RequiredArgsConstructor;
-
 import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
+import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,21 +23,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    private final ResponseFactory responseFactory;
-
     @GetMapping("/{userId}")
     public SingleResult<UserResponseDTO> findUserById(@PathVariable Long userId) {
-        return responseFactory.getSingleResult(userService.findById(userId));
+        return ResponseFactory.getSingleResult(userService.findById(userId));
     }
 
     @GetMapping("/{nickname}")
     public SingleResult<UserResponseDTO> findUserByNickName(@PathVariable String nickname) {
-        return responseFactory.getSingleResult(userService.findByNickname(nickname));
+        return ResponseFactory.getSingleResult(userService.findByNickname(nickname));
     }
 
     @GetMapping
     public ListResult<UserResponseDTO> findAllUser() {
-        return responseFactory.getListResult(userService.findAllUser());
+        return ResponseFactory.getListResult(userService.findAllUser());
     }
 
     @PutMapping
@@ -44,13 +47,13 @@ public class UserController {
                 .nickName(nickname)
                 .build();
 
-        return responseFactory.getSingleResult(userService.update(userId, userRequestDTO));
+        return ResponseFactory.getSingleResult(userService.update(userId, userRequestDTO));
     }
 
     @DeleteMapping("/{userId}")
     public CommonResult delete(@PathVariable Long userId) {
         userService.delete(userId);
 
-        return responseFactory.getSuccessResult();
+        return ResponseFactory.getSuccessResult();
     }
 }
