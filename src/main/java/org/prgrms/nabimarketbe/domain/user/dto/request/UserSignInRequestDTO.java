@@ -5,7 +5,11 @@ import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 @Builder
-public record UserSignInRequestDTO(String accountId, String nickname, String provider) {
+public record UserSignInRequestDTO(
+        String accountId,
+        String nickname,
+        String provider
+) {
     public User toEntity() {
         return User.builder()
                 .accountId(accountId)
