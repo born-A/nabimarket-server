@@ -1,17 +1,12 @@
 package org.prgrms.nabimarketbe.global.util;
 
-import java.util.List;
-
 import org.prgrms.nabimarketbe.global.util.model.CommonResponse;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
-@Service
-@Slf4j
 public class ResponseFactory {
     // 단일건 결과 처리 메소드
     public static <T> SingleResult<T> getSingleResult(T data) {

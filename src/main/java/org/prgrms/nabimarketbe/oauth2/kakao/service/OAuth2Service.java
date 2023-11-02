@@ -32,6 +32,16 @@ public class OAuth2Service {
     @Value("${social.kakao.redirect}")
     private String kakaoRedirectUri;
 
+    public StringBuilder createUri() {
+        StringBuilder loginUri = new StringBuilder()
+                .append(env.getProperty("social.kakao.url.login"))
+                .append("?response_type=code")
+                .append("&client_id=").append(kakaoClientId)
+                .append("&redirect_uri=").append(baseUrl).append(kakaoRedirectUri);
+
+        return loginUri;
+    }
+
     public KakaoProfile getKakaoProfile(String kakaoAccessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -76,5 +86,9 @@ public class OAuth2Service {
             return gson.fromJson(response.getBody(), RetKakaoOAuth.class);
 
         throw new RuntimeException("CommunicationException");
+    }
+
+    public KakaoProfile getResultProfile(String code) {
+        return getKakaoProfile(getKakaoTokenInfo(code).getAccess_token());
     }
 }

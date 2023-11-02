@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.domain.user.api;
 
 import lombok.RequiredArgsConstructor;
 
-import org.prgrms.nabimarketbe.domain.user.dto.UserRequestDto;
-import org.prgrms.nabimarketbe.domain.user.dto.UserResponseDto;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
@@ -14,40 +14,40 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
     private final ResponseFactory responseFactory;
 
-    @GetMapping("/user/id/{userId}")
-    public SingleResult<UserResponseDto> findUserById(@PathVariable Long userId) {
+    @GetMapping("/{userId}")
+    public SingleResult<UserResponseDTO> findUserById(@PathVariable Long userId) {
         return responseFactory.getSingleResult(userService.findById(userId));
     }
 
-    @GetMapping("/user/nickname/{nickname}")
-    public SingleResult<UserResponseDto> findUserByNickName(@PathVariable String nickname) {
-        return responseFactory.getSingleResult(userService.findByNickName(nickname));
+    @GetMapping("/{nickname}")
+    public SingleResult<UserResponseDTO> findUserByNickName(@PathVariable String nickname) {
+        return responseFactory.getSingleResult(userService.findByNickname(nickname));
     }
 
-    @GetMapping("/users")
-    public ListResult<UserResponseDto> findAllUser() {
+    @GetMapping
+    public ListResult<UserResponseDTO> findAllUser() {
         return responseFactory.getListResult(userService.findAllUser());
     }
 
-    @PutMapping("/user")
+    @PutMapping
     public SingleResult<Long> update (
             @RequestParam Long userId,
             @RequestParam String nickname
     ) {
-        UserRequestDto userRequestDto = UserRequestDto.builder()
+        UserRequestDTO userRequestDTO = UserRequestDTO.builder()
                 .nickName(nickname)
                 .build();
 
-        return responseFactory.getSingleResult(userService.update(userId, userRequestDto));
+        return responseFactory.getSingleResult(userService.update(userId, userRequestDTO));
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/{userId}")
     public CommonResult delete(@PathVariable Long userId) {
         userService.delete(userId);
 
