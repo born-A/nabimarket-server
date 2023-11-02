@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'org.prgrms'
@@ -35,6 +36,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // querydsl 추가
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
+
     // Json을 결과로 매핑하기 위한 의존성
     implementation 'com.google.code.gson:gson:2.8.8'
 
@@ -42,6 +48,25 @@ dependencies {
 
     // 다국어 제공을 위한 i18n을 yml 파일로 적용하기 위한 의존성
     implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
+}
+
+// Qtype 생성 경로
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
 
 tasks.named('test') {
