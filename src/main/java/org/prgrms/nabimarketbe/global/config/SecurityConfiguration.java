@@ -35,9 +35,9 @@ public class SecurityConfiguration {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                     .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
-                            "/v1/reissue", "/v1/social/**").permitAll()
+                            "/v1/reissue", "/v1/social/**","/upload/**","/api/vi/users/**","/api/v1/users/image-url/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**", "/upload/**","/api/vi/users/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                     .anyRequest().hasRole("USER"))
                 .exceptionHandling(exceptionHandling -> exceptionHandling

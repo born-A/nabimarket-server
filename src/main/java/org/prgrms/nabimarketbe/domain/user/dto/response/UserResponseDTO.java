@@ -12,6 +12,7 @@ public record UserResponseDTO(
     Long userId,
     String accountId,
     String nickName,
+    String imageUrl,
     Role role,
     LocalDateTime createdDate,
     LocalDateTime modifiedDate
@@ -21,6 +22,7 @@ public record UserResponseDTO(
             .userId(user.getUserId())
             .accountId(user.getAccountId())
             .nickName(user.getNickname())
+                .imageUrl(user.getImageUrl())
             .role(user.getRole())
             .createdDate(user.getCreatedDate())
             .modifiedDate(user.getModifiedDate())
