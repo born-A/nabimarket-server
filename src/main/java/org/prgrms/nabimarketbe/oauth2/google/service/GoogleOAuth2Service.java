@@ -1,5 +1,7 @@
 package org.prgrms.nabimarketbe.oauth2.google.service;
 
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.oauth2.google.domain.OAuth2;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2TokenDTO;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -10,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,21 +29,6 @@ public class GoogleOAuth2Service {
 
 	public GoogleUserInfoDTO oAuth2Login(String code) throws JsonProcessingException {
 		GoogleUserInfoDTO googleUserInfoDTO = getUserInfoFromPlatform(code);
-		String accountId = googleUserInfoDTO.id();
-
-		Optional<User> optionalUser = userRepository.findByAccountId(accountId);
-
-		User user = optionalUser.orElseGet(() -> {
-			try {
-				return signService.signUp(googleUserInfoDTO);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("json parse failed");
-			}
-		});
-
-		TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
-
-		UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
 		return googleUserInfoDTO;
 	}
