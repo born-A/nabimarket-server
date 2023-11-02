@@ -15,6 +15,8 @@ import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +27,10 @@ public class SignService {
     private final UserRepository userRepository;
 
     private final JwtProvider jwtProvider;
+
+    private final RefreshTokenJpaRepo tokenJpaRepo;
+
+    private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
     public CommonResult signInBySocial(KakaoProfile kakaoProfile) {
@@ -68,9 +74,10 @@ public class SignService {
     }
 
     @Transactional
-    public User signUp(GoogleUserInfoDTO userInfo) {
-        User user = userInfo.toEntity("randomNickName");
-        User savedUser = userRepository.save(user);
+    public User signUp(GoogleUserInfoDTO googleUserInfoDTO) throws JsonProcessingException {
+        String randomNickname = randomNicknameGenerator.generateRandomNickname();
+        User user = googleUserInfoDTO.toEntity(randomNickname);
+        User savedUser = userJpaRepo.save(user);
 
         return savedUser;
     }

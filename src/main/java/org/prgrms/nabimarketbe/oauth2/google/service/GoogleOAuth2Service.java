@@ -25,6 +25,21 @@ public class GoogleOAuth2Service {
 
 	public GoogleUserInfoDTO oAuth2Login(String code) throws JsonProcessingException {
 		GoogleUserInfoDTO googleUserInfoDTO = getUserInfoFromPlatform(code);
+		String accountId = googleUserInfoDTO.id();
+
+		Optional<User> optionalUser = userRepository.findByAccountId(accountId);
+
+		User user = optionalUser.orElseGet(() -> {
+			try {
+				return signService.signUp(googleUserInfoDTO);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("json parse failed");
+			}
+		});
+
+		TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
+
+		UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
 		return googleUserInfoDTO;
 	}
