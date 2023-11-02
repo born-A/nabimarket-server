@@ -13,9 +13,9 @@ import javax.persistence.*;
 public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "key_id", nullable = false)
     private Long key;
 
     @Column(nullable = false)

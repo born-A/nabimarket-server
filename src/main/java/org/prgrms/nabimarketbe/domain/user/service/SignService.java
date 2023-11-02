@@ -2,19 +2,15 @@ package org.prgrms.nabimarketbe.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenRequestDto;
+
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
-import org.prgrms.nabimarketbe.domain.user.dto.sign.UserSignupRequestDto;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
-import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
-import org.prgrms.nabimarketbe.oauth2.kakao.repository.RefreshTokenJpaRepo;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDto;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.domain.user.repository.UserJpaRepo;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,23 +20,16 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SignService {
-    private final UserJpaRepo userJpaRepo;
-
-    private final OAuth2Service OAuth2Service;
+    private final UserRepository userRepository;
 
     private final ResponseFactory responseFactory;
 
     private final JwtProvider jwtProvider;
 
-    private final RefreshTokenJpaRepo tokenJpaRepo;
-
     @Transactional
-    public CommonResult signupBySocial(String accessToken) {
-        KakaoProfile kakaoProfile = OAuth2Service.getKakaoProfile(accessToken);
-
-        if (kakaoProfile == null) throw new RuntimeException("카카오에 해당 회원이 없습니다.");
-
-        CommonResult result = socialSignup(UserSignupRequestDto.builder()
+    public CommonResult signInBySocial(KakaoProfile kakaoProfile) {
+        CommonResult result = signIn(UserSignInRequestDTO.builder()
+                .accountId(kakaoProfile.getId())
                 .nickname(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
                 .build());
@@ -48,48 +37,19 @@ public class SignService {
         return responseFactory.getSingleResult(result);
     }
     @Transactional
-    public CommonResult socialSignup(UserSignupRequestDto userSignupRequestDto) {
-        Optional<User> user = userJpaRepo.findByNicknameAndProvider(
-                userSignupRequestDto.nickname(),
-                userSignupRequestDto.provider()
+    public CommonResult signIn(UserSignInRequestDTO userSignInRequestDTO) {
+        Optional<User> user = userRepository.findByAccountIdAndProvider(
+                userSignInRequestDTO.accountId(),
+                userSignInRequestDTO.provider()
         );
 
         if (user.isPresent()) {
-            return responseFactory.getSingleResult(jwtProvider.createTokenDto(user.get().getUserId(), user.get().getRoles()));
+            return responseFactory.getSingleResult(jwtProvider.createTokenDTO(
+                    user.get().getUserId(), user.get().getRole())
+            );
         }
 
-        userJpaRepo.save(userSignupRequestDto.toEntity());
-        return responseFactory.getSingleResult(jwtProvider.createTokenDto(user.get().getUserId(), user.get().getRoles()));
-    }
-
-    @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-        // 만료된 refresh token 에러
-        if (!jwtProvider.validationToken(tokenRequestDto.getAccessToken())) {
-            throw new RuntimeException("RefreshTokenException");
-        }
-
-        // AccessToken 에서 Username (pk) 가져오기
-        String accessToken = tokenRequestDto.getAccessToken();
-        Authentication authentication = jwtProvider.getAuthentication(accessToken);
-
-        // user pk로 유저 검색 / repo 에 저장된 Refresh Token 이 없음
-        User user = userJpaRepo.findById(Long.parseLong(authentication.getName()))
-                .orElseThrow(() ->new RuntimeException("RefreshTokenException"));
-
-        RefreshToken refreshToken = tokenJpaRepo.findByKey(user.getUserId())
-                .orElseThrow(() ->new RuntimeException("RefreshTokenException"));
-
-        // 리프레시 토큰 불일치 에러
-        if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
-            throw new RuntimeException("RefreshTokenException");
-
-        // AccessToken, RefreshToken 토큰 재발급, 리프레쉬 토큰 저장
-        TokenDto newCreatedToken = jwtProvider.createTokenDto(user.getUserId(), user.getRoles());
-        RefreshToken updateRefreshToken = refreshToken.updateToken(newCreatedToken.getRefreshToken());
-
-        tokenJpaRepo.save(updateRefreshToken);
-
-        return newCreatedToken;
+        User savedUser = userRepository.save(userSignInRequestDTO.toEntity());
+        return responseFactory.getSingleResult(jwtProvider.createTokenDTO(savedUser.getUserId(), savedUser.getRole()));
     }
 }

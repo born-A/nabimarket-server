@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 public class KakaoProfile {
-    private Long id;
+    private String id;
 
     private Properties properties;
 

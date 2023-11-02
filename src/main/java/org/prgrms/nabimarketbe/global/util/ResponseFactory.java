@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.global.util;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.prgrms.nabimarketbe.global.util.model.CommonResponse;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.ListResult;
