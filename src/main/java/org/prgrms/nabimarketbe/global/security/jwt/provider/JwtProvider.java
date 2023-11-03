@@ -100,7 +100,7 @@ public class JwtProvider {
     }
 
     // Jwt 토큰 복호화해서 가져오기
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
