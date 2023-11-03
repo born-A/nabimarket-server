@@ -1,9 +1,6 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -17,10 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final CheckService checkService;
 
     @Transactional(readOnly = true)
-    public UserResponseDTO findById(Long id) {
+    public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
@@ -28,34 +27,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDTO findByAccountId(String accountId) {
-        User user = userRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+    public UserResponseDTO getUserByToken(String token) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         return UserResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponseDTO findByNickname(String nickname) {
-        User user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-        return UserResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAllUser() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponseDTO::from)
-                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Long update(Long id, UserRequestDTO userRequestDTO) {
+    public Long update(Long id, UserUpdateRequestDTO userUpdateRequestDTO) {
         User modifiedUser = userRepository
                 .findById(id).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-        modifiedUser.updateNickname(userRequestDTO.getNickName());
+        modifiedUser.updateNickname(userUpdateRequestDTO.nickName());
 
         return id;
     }
