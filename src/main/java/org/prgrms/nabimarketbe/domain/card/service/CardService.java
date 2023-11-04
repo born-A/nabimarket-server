@@ -55,14 +55,18 @@ public class CardService {
         Card savedCard =  cardRepository.save(card);
 
         String thumbnailUrl = null;
+
         try {
             thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
         } catch (IOException e) {
             throw new RuntimeException("썸네일 이미지 업로드를 실패하였습니다.");
         }
+
         savedCard.setThumbNailImage(thumbnailUrl);
 
-        List<CardImage> savedCardImages = null;    // TODO: bulk insert 로 전환
+        List<CardImage> savedCardImages = null;
+
+        // TODO: bulk insert 로 전환
         try {
             savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),files);
         } catch (IOException e) {
@@ -78,6 +82,7 @@ public class CardService {
         int idx = 0;
 
         List<CardImageCreateResponseDTO> cardImageCreateResponseDTOS = new ArrayList<>();
+
         for (CardImage cardImage : savedCardImages) {
             cardImageCreateResponseDTOS.add(CardImageCreateResponseDTO.of(idx++, cardImage.getImageUrl()));
         }

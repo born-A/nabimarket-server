@@ -27,6 +27,7 @@ public class CardImageService {
     public String uploadImageUrl(Long cardId, MultipartFile file) throws IOException {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
+
         String url = s3FileUploadService.uploadFile(file);
 
         CardImage cardImage = CardImage.builder()
