@@ -44,7 +44,7 @@ public class CardService {
             CardCreateRequestDTO cardCreateRequestDTO,
             MultipartFile thumbnail,
             List<MultipartFile> files
-    ) throws IOException {
+    ) {
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
                 .orElseThrow();
 
@@ -54,7 +54,12 @@ public class CardService {
         Item savedItem = itemRepository.save(item);
         Card savedCard =  cardRepository.save(card);
 
-        String thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
+        String thumbnailUrl = null;
+        try {
+            thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         savedCard.setThumbNailImage(thumbnailUrl);
 
         List<CardImage> savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),files);    // TODO: bulk insert 로 전환
