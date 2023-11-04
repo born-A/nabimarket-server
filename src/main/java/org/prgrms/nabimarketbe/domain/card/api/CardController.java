@@ -27,6 +27,7 @@ public class CardController {
 
     @GetMapping("/{cardId}")
     public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> singleRead(@PathVariable Long cardId) {
+        cardService.updateViews(cardId);
         CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.singleRead(cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
