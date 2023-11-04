@@ -24,7 +24,7 @@ public class CardImageService {
     private final S3FileUploadService s3FileUploadService;
 
     @Transactional
-    public String uploadImageUrl(Long cardId, MultipartFile file) throws IOException {
+    public String uploadImageUrl(Long cardId, MultipartFile file)  {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
 
@@ -36,17 +36,16 @@ public class CardImageService {
                 .build();
 
         cardImageRepository.save(cardImage);
+
         return url;
     }
 
     @Transactional
-    public List<CardImage> uploadImageUrlList(Long cardId, List<MultipartFile> files) throws IOException {
+    public List<CardImage> uploadImageUrlList(Long cardId, List<MultipartFile> files) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
 
-        List<String> uploadFileList = null;
-
-        uploadFileList = s3FileUploadService.uploadFileList(files);
+        List<String> uploadFileList =  s3FileUploadService.uploadFileList(files);
 
         List<CardImage> cardImageList = new ArrayList<>();
 

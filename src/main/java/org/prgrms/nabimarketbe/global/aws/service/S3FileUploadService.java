@@ -32,17 +32,21 @@ public class S3FileUploadService {
         return amazonS3.getUrl(bucketName, path).toString();
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) {
         String bucketDir = bucketName + dir;
         String dirUrl = defaultUrl + dir + "/";
         String fileName = generateFileName(file);
 
-        amazonS3.putObject(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file));
+        try {
+            amazonS3.putObject(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file));
+        } catch (IOException e) {
+            throw new RuntimeException("단건 이미지 업로드를 실패하였습니다.");
+        }
 
         return dirUrl + fileName;
     }
 
-    public List<String> uploadFileList(List<MultipartFile> multipartFiles) throws IOException {
+    public List<String> uploadFileList(List<MultipartFile> multipartFiles) {
         List<String> imgUrlList = new ArrayList<>();
 
         String bucketDir = bucketName + dir;
@@ -51,7 +55,11 @@ public class S3FileUploadService {
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file);
 
-            amazonS3.putObject(new PutObjectRequest(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file)));
+            try {
+                amazonS3.putObject(new PutObjectRequest(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file)));
+            } catch (IOException e) {
+                throw new RuntimeException("다건 이미지 업로드를 실패하였습니다.");
+            }
             imgUrlList.add(dirUrl + fileName);
         }
 
