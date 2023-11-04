@@ -23,7 +23,8 @@ public class S3FileUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private String dir = "/test1";
+    @Value("${bucket.dirName}")
+    private String dir;
 
     private String defaultUrl = "https://airplanning-bucket.s3.ap-northeast-2.amazonaws.com";
 
