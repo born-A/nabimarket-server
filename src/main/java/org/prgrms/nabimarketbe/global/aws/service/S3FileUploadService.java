@@ -23,8 +23,9 @@ public class S3FileUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${bucket.dirName}")
     private String dir;
+
+    private String subDir;
 
     private String defaultUrl = "https://airplanning-bucket.s3.ap-northeast-2.amazonaws.com";
 
@@ -32,9 +33,13 @@ public class S3FileUploadService {
         return amazonS3.getUrl(bucketName, path).toString();
     }
 
-    public String uploadFile(MultipartFile file) {
-        String bucketDir = bucketName + dir;
-        String dirUrl = defaultUrl + dir + "/";
+    public String uploadFile(String domain, Long id, MultipartFile file) {
+        dir = "/" + domain;
+        subDir = "/" + id;
+
+        String bucketDir = bucketName + dir + subDir;
+        String dirUrl = defaultUrl + dir + subDir + "/";
+
         String fileName = generateFileName(file);
 
         try {
@@ -46,11 +51,14 @@ public class S3FileUploadService {
         return dirUrl + fileName;
     }
 
-    public List<String> uploadFileList(List<MultipartFile> multipartFiles) {
+    public List<String> uploadFileList(String domain, Long id, List<MultipartFile> multipartFiles) {
         List<String> imgUrlList = new ArrayList<>();
 
-        String bucketDir = bucketName + dir;
-        String dirUrl = defaultUrl + dir + "/";
+        dir = "/" + domain;
+        subDir = "/" + id;
+
+        String bucketDir = bucketName + dir + subDir;
+        String dirUrl = defaultUrl + dir + subDir + "/";
 
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file);

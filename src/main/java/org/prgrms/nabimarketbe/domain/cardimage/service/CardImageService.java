@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +22,14 @@ public class CardImageService {
 
     private final S3FileUploadService s3FileUploadService;
 
+    private final String domain = "card";
+
     @Transactional
     public String uploadImageUrl(Long cardId, MultipartFile file)  {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
 
-        String url = s3FileUploadService.uploadFile(file);
+        String url = s3FileUploadService.uploadFile(domain, cardId, file);
 
         CardImage cardImage = CardImage.builder()
                 .imageUrl(url)
@@ -45,7 +46,7 @@ public class CardImageService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
 
-        List<String> uploadFileList =  s3FileUploadService.uploadFileList(files);
+        List<String> uploadFileList =  s3FileUploadService.uploadFileList(domain, cardId, files);
 
         List<CardImage> cardImageList = new ArrayList<>();
 

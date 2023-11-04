@@ -42,8 +42,8 @@ public class UserController {
     public SingleResult<UserResponseDTO>  uploadFile(
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
-    ) throws IOException {
-        String url = s3FileUploadService.uploadFile(file);
+    ) {
+        String url = s3FileUploadService.uploadFile("user", userId, file);
 
         UserRequestDTO userRequestDTO = UserRequestDTO.builder()
                 .imageUrl(url)
