@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.global.aws.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -72,6 +73,14 @@ public class S3FileUploadService {
         }
 
         return imgUrlList;
+    }
+
+    // 이미지 수정으로 인해 기존 이미지 삭제 메소드
+    public void deleteImage(String fileUrl) {
+        String splitStr = ".com/";
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
+
+        amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
     }
 
     private ObjectMetadata getObjectMetadata(MultipartFile file) {
