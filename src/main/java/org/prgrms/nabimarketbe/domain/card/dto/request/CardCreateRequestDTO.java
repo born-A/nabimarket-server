@@ -56,6 +56,4 @@ public record CardCreateRequestDTO(
                         .item(item)
                         .build();
         }
-
-
 }
