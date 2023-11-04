@@ -43,13 +43,7 @@ public class UserController {
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
     ) {
-        String url = s3FileUploadService.uploadFile("user", userId, file);
-
-        UserRequestDTO userRequestDTO = UserRequestDTO.builder()
-                .imageUrl(url)
-                .build();
-
-        userService.updateImageUrl(userId,userRequestDTO);
+        userService.updateImageUrl(userId, file);
 
         return ResponseFactory.getSingleResult(userService.findById(userId));
     }

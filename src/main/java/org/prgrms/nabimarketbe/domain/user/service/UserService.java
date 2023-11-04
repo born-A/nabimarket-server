@@ -7,17 +7,22 @@ import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.global.Domain;
+import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
     private UserRepository userRepository;
+
+    private S3FileUploadService s3FileUploadService;
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(Long id) {
@@ -67,11 +72,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateImageUrl(Long id, UserRequestDTO userRequestDTO) {
+    public UserResponseDTO updateImageUrl(Long userId, MultipartFile file) {
         User modifiedUser = userRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+                .findById(userId).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        modifiedUser.updateImageUrl(userRequestDTO.getImageUrl());
+        if (modifiedUser.getImageUrl() != null) {
+            String imageUrl = modifiedUser.getImageUrl();
+            s3FileUploadService.deleteImage(imageUrl);
+        }
+
+        String url = s3FileUploadService.uploadFile(Domain.USER.name(), userId, file);
+
+        modifiedUser.updateImageUrl(url);
 
         return UserResponseDTO.from(modifiedUser);
     }

@@ -54,17 +54,12 @@ public class CardService {
         Item savedItem = itemRepository.save(item);
         Card savedCard =  cardRepository.save(card);
 
-        String thumbnailUrl = null;
-
-        thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
+        String thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
 
         savedCard.setThumbNailImage(thumbnailUrl);
 
-        List<CardImage> savedCardImages = null;
-
         // TODO: bulk insert 로 전환
-
-        savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),files);
+        List<CardImage> savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),files);
 
         savedCardImages.add(0, CardImage.builder()
                 .imageUrl(thumbnailUrl)
@@ -107,8 +102,10 @@ public class CardService {
 
         // image 순서 맞춰서 응답 내려주는 부분
         int idx = 0;
+
         List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
         List<CardImageSingleReadResponseDTO> cardImageSingleReadResponseDTOS = new ArrayList<>();
+
         for (CardImage cardImage : cardImages) {
             cardImageSingleReadResponseDTOS.add(CardImageSingleReadResponseDTO.of(idx++, cardImage.getImageUrl()));
         }
