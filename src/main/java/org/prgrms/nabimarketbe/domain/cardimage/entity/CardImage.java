@@ -46,8 +46,4 @@ public class CardImage extends BaseEntity {
         this.imageUrl = imageUrl;
         this.card = card;
     }
-
-    public void updateImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 }
