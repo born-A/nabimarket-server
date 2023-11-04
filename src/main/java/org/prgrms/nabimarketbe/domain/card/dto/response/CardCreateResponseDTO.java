@@ -30,8 +30,8 @@ public record CardCreateResponseDTO(
     public static CardCreateResponseDTO of(
             Long cardId,
             String title,
-            String thumbNailImage,
             String name,
+            String thumbNailImage,
             PriceRange priceRange,
             TradeType tradeType,
             CategoryEnum category,
@@ -47,8 +47,8 @@ public record CardCreateResponseDTO(
         return CardCreateResponseDTO.builder()
                 .cardId(cardId)
                 .title(title)
-                .thumbNailImage(thumbNailImage)
                 .name(name)
+                .thumbNailImage(thumbNailImage)
                 .priceRange(priceRange)
                 .tradeType(tradeType)
                 .category(category)

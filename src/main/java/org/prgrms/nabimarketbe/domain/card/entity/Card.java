@@ -29,8 +29,8 @@ public class Card extends BaseEntity {
     @Column(name = "card_title", nullable = false)
     private String cardTitle;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "thumbnail_image", nullable = false)
+//    @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Column(name = "thumbnail_image")
     private String thumbNailImage;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
@@ -46,12 +46,12 @@ public class Card extends BaseEntity {
     @Column(name = "poke", nullable = false)
     private Boolean poke;
 
-    @ValidEnum(enumClass = TradeType.class, message = "유효하지 않은 거래 방식입니다.")
+//    @ValidEnum(enumClass = TradeType.class, message = "유효하지 않은 거래 방식입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "trade_type", nullable = false)
     private TradeType tradeType;
 
-    @ValidEnum(enumClass = CardStatus.class, message = "유효하지 않은 카드 상태입니다.")
+//    @ValidEnum(enumClass = CardStatus.class, message = "유효하지 않은 카드 상태입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CardStatus status;
@@ -78,16 +78,16 @@ public class Card extends BaseEntity {
             TradeType tradeType,
             Item item
     ) {
-        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
-            throw new BaseException(ErrorCode.UNKNOWN);
-        }
+//        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
+//            throw new BaseException(ErrorCode.UNKNOWN);
+//        }
 
         if (poke == null || tradeType == null || item == null) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
         this.cardTitle = cardTitle;
-        this.thumbNailImage = thumbNailImage;
+//        this.thumbNailImage = thumbNailImage;
         this.content = content;
         this.tradeArea = tradeArea;
         this.poke = poke;
@@ -96,5 +96,9 @@ public class Card extends BaseEntity {
         this.viewCount = 0;
         this.dibCount = 0;
         this.item = item;
+    }
+
+    public void setThumbNailImage(String url) {
+        thumbNailImage = url;
     }
 }
