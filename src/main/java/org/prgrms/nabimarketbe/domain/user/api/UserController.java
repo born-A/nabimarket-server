@@ -55,7 +55,7 @@ public class UserController {
                 .nickName(nickname)
                 .build();
 
-        return ResponseFactory.getSingleResult(userService.update(userId, userRequestDTO));
+        return ResponseFactory.getSingleResult(userService.updateUserNickname(userId, userRequestDTO));
     }
 
     @DeleteMapping("/{userId}")
