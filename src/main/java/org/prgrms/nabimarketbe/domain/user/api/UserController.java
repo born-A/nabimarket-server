@@ -21,25 +21,23 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
-    private final S3FileUploadService s3FileUploadService;
-
     @GetMapping("/{userId}")
-    public SingleResult<UserResponseDTO> findUserById(@PathVariable Long userId) {
+    public SingleResult<UserResponseDTO> getUserById(@PathVariable Long userId) {
         return ResponseFactory.getSingleResult(userService.findById(userId));
     }
 
     @GetMapping("/{nickname}")
-    public SingleResult<UserResponseDTO> findUserByNickName(@PathVariable String nickname) {
+    public SingleResult<UserResponseDTO> getUserByNickName(@PathVariable String nickname) {
         return ResponseFactory.getSingleResult(userService.findByNickname(nickname));
     }
 
     @GetMapping
-    public ListResult<UserResponseDTO> findAllUser() {
+    public ListResult<UserResponseDTO> getUsers() {
         return ResponseFactory.getListResult(userService.findAllUser());
     }
 
     @PostMapping("/image-url")
-    public SingleResult<UserResponseDTO>  uploadFile(
+    public SingleResult<UserResponseDTO>  updateUserImageUrl(
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
     ) {
@@ -49,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping
-    public SingleResult<Long> update (
+    public SingleResult<Long> updateUserNickname (
             @RequestParam Long userId,
             @RequestParam String nickname
     ) {
