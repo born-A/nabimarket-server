@@ -48,7 +48,12 @@ public class S3FileUploadService {
         String fileName = generateFileName(file);
 
         try {
-            amazonS3.putObject(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file));
+            amazonS3.putObject(
+                    bucketDir,
+                    fileName,
+                    file.getInputStream(),
+                    getObjectMetadata(file)
+            );
         } catch (IOException e) {
             throw new RuntimeException("단건 이미지 업로드를 실패하였습니다.");
         }
@@ -73,7 +78,12 @@ public class S3FileUploadService {
             String fileName = generateFileName(file);
 
             try {
-                amazonS3.putObject(new PutObjectRequest(bucketDir, fileName, file.getInputStream(), getObjectMetadata(file)));
+                amazonS3.putObject(new PutObjectRequest(
+                        bucketDir,
+                        fileName,
+                        file.getInputStream(),
+                        getObjectMetadata(file)
+                ));
             } catch (IOException e) {
                 throw new RuntimeException("다건 이미지 업로드를 실패하였습니다.");
             }
