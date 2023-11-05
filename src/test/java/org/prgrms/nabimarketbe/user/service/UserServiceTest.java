@@ -32,8 +32,6 @@ public class UserServiceTest {
     UserRepository userRepository;
     @Autowired
     SignService signService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     private UserSignInRequestDTO getUserSignupRequestDto(int number) {
         return UserSignInRequestDTO.builder()
@@ -54,9 +52,9 @@ public class UserServiceTest {
                 .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
         // then
-        assertThat(userA.nickname()).isEqualTo(userB.getNickName());
+        assertThat(userA.nickname()).isEqualTo(userB.nickName());
         assertThat(
-                userService.findById(savedUser.getUserId()).getNickName())
+                userService.findById(savedUser.getUserId()).nickName())
                 .isEqualTo(byId.getNickname());
     }
 
@@ -71,7 +69,7 @@ public class UserServiceTest {
         UserResponseDTO dtoA = userService.findById(user.getUserId());
 
         // then
-        assertThat(userA.nickname()).isEqualTo(dtoA.getNickName());
+        assertThat(userA.nickname()).isEqualTo(dtoA.nickName());
     }
 
     @Test
@@ -102,10 +100,11 @@ public class UserServiceTest {
         UserRequestDTO updateUser = UserRequestDTO.builder()
                 .nickName("bbb")
                 .build();
-        userService.update(user.getUserId(), updateUser);
+
+        userService.updateUserNickname(user.getUserId(), updateUser);
 
         // then
-        assertThat(userService.findById(user.getUserId()).getNickName()).isEqualTo("bbb");
+        assertThat(userService.findById(user.getUserId()).nickName()).isEqualTo("bbb");
     }
 
     @Test
@@ -116,7 +115,7 @@ public class UserServiceTest {
         User user = userRepository.save(userA.toEntity());
 
         // when
-        userService.delete(user.getUserId());
+        userService.deleteUser(user.getUserId());
 
         // then
         assertThrows(RuntimeException.class, () -> userService.findById(user.getUserId()));
