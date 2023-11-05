@@ -96,7 +96,7 @@ public class Card extends BaseEntity {
         this.item = item;
     }
 
-    public void setThumbNailImage(String url) {
+    public void updateThumbNailImage(String url) {
         thumbNailImage = url;
     }
 }
