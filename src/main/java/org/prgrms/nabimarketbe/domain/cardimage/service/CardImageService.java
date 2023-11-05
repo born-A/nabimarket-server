@@ -34,6 +34,7 @@ public class CardImageService {
         }
 
         String url = s3FileUploadService.uploadFile(Domain.CARD.name(), cardId, file);
+        card.updateThumbNailImage(url);
 
         CardImage cardImage = CardImage.builder()
                 .imageUrl(url)
