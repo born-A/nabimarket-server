@@ -67,6 +67,10 @@ public class User extends BaseEntity implements UserDetails {
         this.nickname = nickname;
     }
 
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(this.role.toString()));

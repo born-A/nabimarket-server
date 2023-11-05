@@ -29,8 +29,8 @@ public class Card extends BaseEntity {
     @Column(name = "card_title", nullable = false)
     private String cardTitle;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "thumbnail_image", nullable = false)
+//    @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Column(name = "thumbnail_image")
     private String thumbNailImage;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
@@ -69,16 +69,15 @@ public class Card extends BaseEntity {
     private Item item;
 
     @Builder
-    public Card(
+    private Card(
             String cardTitle,
-            String thumbNailImage,
             String content,
             String tradeArea,
             Boolean poke,
             TradeType tradeType,
             Item item
     ) {
-        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
+        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
@@ -87,7 +86,6 @@ public class Card extends BaseEntity {
         }
 
         this.cardTitle = cardTitle;
-        this.thumbNailImage = thumbNailImage;
         this.content = content;
         this.tradeArea = tradeArea;
         this.poke = poke;
@@ -97,7 +95,7 @@ public class Card extends BaseEntity {
         this.dibCount = 0;
         this.item = item;
     }
-
+  
     public void updateViewCount() {
         this.viewCount += 1;
     }

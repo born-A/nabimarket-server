@@ -34,10 +34,9 @@ public class SecurityConfiguration {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                    .antMatchers(HttpMethod.POST, "/v1/signup", "/v1/login",
-                            "/v1/reissue", "/v1/social/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                     .anyRequest().hasRole("USER"))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -51,6 +50,7 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/v2/api-docs", "/webjars/**", "/swagger/**", "/h2-console/**");
+       return (web) -> web.ignoring().
+        antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/favicon.ico", "/error","/h2-console/**");
     }
 }
