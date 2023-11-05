@@ -36,12 +36,12 @@ public class UserController {
         return ResponseFactory.getListResult(userService.findAllUser());
     }
 
-    @PostMapping("/image-url")
+    @PutMapping("/profile-image")
     public SingleResult<UserResponseDTO>  updateUserImageUrl(
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
     ) {
-        userService.updateImageUrl(userId, file);
+        userService.updateUserImageUrl(userId, file);
 
         return ResponseFactory.getSingleResult(userService.findById(userId));
     }
@@ -60,7 +60,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public CommonResult delete(@PathVariable Long userId) {
-        userService.delete(userId);
+        userService.deleteUser(userId);
 
         return ResponseFactory.getSuccessResult();
     }
