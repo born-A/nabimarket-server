@@ -34,7 +34,11 @@ public class S3FileUploadService {
         return amazonS3.getUrl(bucketName, path).toString();
     }
 
-    public String uploadFile(String domain, Long id, MultipartFile file) {
+    public String uploadFile(
+            String domain,
+            Long id,
+            MultipartFile file
+    ) {
         dir = "/" + domain;
         subDir = "/" + id;
 
@@ -52,11 +56,15 @@ public class S3FileUploadService {
         return dirUrl + fileName;
     }
 
-    public List<String> uploadFileList(String domain, Long id, List<MultipartFile> multipartFiles) {
+    public List<String> uploadFileList(
+            String domain,
+            Long entityId,
+            List<MultipartFile> multipartFiles
+    ) {
         List<String> imgUrlList = new ArrayList<>();
 
         dir = "/" + domain;
-        subDir = "/" + id;
+        subDir = "/" + entityId;
 
         String bucketDir = bucketName + dir + subDir;
         String dirUrl = defaultUrl + dir + subDir + "/";
@@ -69,6 +77,7 @@ public class S3FileUploadService {
             } catch (IOException e) {
                 throw new RuntimeException("다건 이미지 업로드를 실패하였습니다.");
             }
+
             imgUrlList.add(dirUrl + fileName);
         }
 
