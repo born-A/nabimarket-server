@@ -43,7 +43,7 @@ public class CardService {
     public CardCreateResponseDTO save(
             CardCreateRequestDTO cardCreateRequestDTO,
             MultipartFile thumbnail,
-            List<MultipartFile> files
+            List<MultipartFile> imageFiles
     ) {
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
                 .orElseThrow();
@@ -59,7 +59,7 @@ public class CardService {
         savedCard.setThumbNailImage(thumbnailUrl);
 
         // TODO: bulk insert 로 전환
-        List<CardImage> savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),files);
+        List<CardImage> savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),imageFiles);
 
         savedCardImages.add(0, CardImage.builder()
                 .imageUrl(thumbnailUrl)
