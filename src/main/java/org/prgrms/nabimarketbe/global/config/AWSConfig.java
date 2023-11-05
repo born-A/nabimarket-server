@@ -17,6 +17,7 @@ public class AWSConfig {
     @Value("${cloud.aws.credentials.secretKey}")
     private String iamSecretKey; // IAM Secret Key
 
+    @Value("${cloud.aws.region.static}")
     private String region = "ap-northeast-2"; // Bucket Region (서울)
 
     @Bean
