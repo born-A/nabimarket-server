@@ -46,12 +46,12 @@ public class Card extends BaseEntity {
     @Column(name = "poke", nullable = false)
     private Boolean poke;
 
-//    @ValidEnum(enumClass = TradeType.class, message = "유효하지 않은 거래 방식입니다.")
+    @ValidEnum(enumClass = TradeType.class, message = "유효하지 않은 거래 방식입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "trade_type", nullable = false)
     private TradeType tradeType;
 
-//    @ValidEnum(enumClass = CardStatus.class, message = "유효하지 않은 카드 상태입니다.")
+    @ValidEnum(enumClass = CardStatus.class, message = "유효하지 않은 카드 상태입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CardStatus status;
