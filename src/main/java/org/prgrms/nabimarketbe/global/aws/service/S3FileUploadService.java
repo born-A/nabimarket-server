@@ -24,11 +24,7 @@ public class S3FileUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private String dir;
-
-    private String subDir;
-
-    private String defaultUrl = "https://airplanning-bucket.s3.ap-northeast-2.amazonaws.com";
+    private final String defaultUrl = "https://airplanning-bucket.s3.ap-northeast-2.amazonaws.com";
 
     public String getThumbnailPath(String path) {
         return amazonS3.getUrl(bucketName, path).toString();
@@ -36,11 +32,11 @@ public class S3FileUploadService {
 
     public String uploadFile(
             String domain,
-            Long id,
+            Long entityId,
             MultipartFile file
     ) {
-        dir = "/" + domain;
-        subDir = "/" + id;
+        String dir = "/" + domain;
+        String subDir = "/" + entityId;
 
         String bucketDir = bucketName + dir + subDir;
         String dirUrl = defaultUrl + dir + subDir + "/";
@@ -68,8 +64,8 @@ public class S3FileUploadService {
     ) {
         List<String> imgUrlList = new ArrayList<>();
 
-        dir = "/" + domain;
-        subDir = "/" + entityId;
+        String dir = "/" + domain;
+        String subDir = "/" + entityId;
 
         String bucketDir = bucketName + dir + subDir;
         String dirUrl = defaultUrl + dir + subDir + "/";
