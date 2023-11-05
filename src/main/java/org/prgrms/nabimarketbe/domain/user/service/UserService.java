@@ -57,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long update(Long id, UserRequestDTO userRequestDTO) {
+    public Long updateUserNickname(Long id, UserRequestDTO userRequestDTO) {
         User modifiedUser = userRepository
                 .findById(id).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
@@ -67,12 +67,12 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
     @Transactional
-    public UserResponseDTO updateImageUrl(Long userId, MultipartFile file) {
+    public UserResponseDTO updateUserImageUrl(Long userId, MultipartFile file) {
         User modifiedUser = userRepository
                 .findById(userId).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
