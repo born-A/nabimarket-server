@@ -34,7 +34,8 @@ public class CardService {
 
     private final CardImageRepository cardImageRepository;
 
-    public CardCreateResponseDTO save(CardCreateRequestDTO cardCreateRequestDTO) {  // TODO: 받은 image 버킷에 업로드
+    @Transactional
+    public CardCreateResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) {  // TODO: 받은 image 버킷에 업로드
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
                 .orElseThrow();
 
@@ -84,7 +85,8 @@ public class CardService {
         );
     }
 
-    public CardSingleReadResponseDTO singleRead(Long cardId) {  // TODO: User 완성되면 User에 대한 정보도 추가해서 내려주기
+    @Transactional(readOnly = true)
+    public CardSingleReadResponseDTO getCardById(Long cardId) {  // TODO: User 완성되면 User에 대한 정보도 추가해서 내려주기
         Card card = cardRepository.findById(cardId)
                 .orElseThrow();
 
@@ -113,5 +115,13 @@ public class CardService {
                 item.getPriceRange(),
                 cardImageSingleReadResponseDTOS
         );
+    }
+
+    @Transactional
+    public void updateViews(Long cardId) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
+
+        card.updateViewCount();
     }
 }

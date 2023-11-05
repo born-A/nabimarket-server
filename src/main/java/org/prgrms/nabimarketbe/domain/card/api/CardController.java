@@ -17,17 +17,18 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping
-    public ResponseEntity<SingleResult<CardCreateResponseDTO>> save(
+    public ResponseEntity<SingleResult<CardCreateResponseDTO>> createCard(
             @RequestBody CardCreateRequestDTO cardCreateRequestDTO
     ) {
-        CardCreateResponseDTO cardCreateResponseDTO = cardService.save(cardCreateRequestDTO);
+        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(cardCreateRequestDTO);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardCreateResponseDTO));
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> singleRead(@PathVariable Long cardId) {
-        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.singleRead(cardId);
+    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
+        cardService.updateViews(cardId);
+        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
     }
