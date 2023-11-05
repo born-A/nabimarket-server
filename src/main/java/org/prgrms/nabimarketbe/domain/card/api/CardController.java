@@ -27,19 +27,20 @@ public class CardController {
                     MediaType.MULTIPART_FORM_DATA_VALUE,
                     MediaType.APPLICATION_JSON_VALUE
             }, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SingleResult<CardCreateResponseDTO>> save(
+    public ResponseEntity<SingleResult<CardCreateResponseDTO>> createCard(
             @RequestPart("thumbnail") MultipartFile thumbnail,
             @RequestPart("dto") CardCreateRequestDTO cardCreateRequestDTO,
             @RequestPart("files") List<MultipartFile> files
     ) {
-        CardCreateResponseDTO cardCreateResponseDTO = cardService.save(cardCreateRequestDTO,thumbnail,files);
+        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(cardCreateRequestDTO,thumbnail,files);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardCreateResponseDTO));
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> singleRead(@PathVariable Long cardId) {
-        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.singleRead(cardId);
+    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
+        cardService.updateViews(cardId);
+        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
     }
