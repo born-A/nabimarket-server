@@ -10,7 +10,7 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import java.util.List;
 
 @Builder
-public record CardSingleReadResponseDTO(
+public record CardSingleReadResponseDTO( // TODO: createdAt, modifiedAt, isMyDib, userId, userName, userProfile,
         Long cardId,
         String cardTitle,
         String content,

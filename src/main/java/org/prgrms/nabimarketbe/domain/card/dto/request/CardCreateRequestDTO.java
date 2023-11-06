@@ -13,15 +13,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public record CardCreateRequestDTO(
+public record CardCreateRequestDTO(     // TODO: images form-data로 받기
         @NotBlank(message = "공백을 허용하지 않습니다.")
-        String title,
+        String cardTitle,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
         String thumbNailImage,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
-        String name,
+        String itemName,
 
         @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
         PriceRange priceRange,
@@ -46,7 +46,7 @@ public record CardCreateRequestDTO(
 ) {
         public Item toItemEntity(Category category) {
                 return Item.builder()
-                        .itemName(name)
+                        .itemName(itemName)
                         .priceRange(priceRange)
                         .category(category)
                         .build();
@@ -54,7 +54,7 @@ public record CardCreateRequestDTO(
 
         public Card toCardEntity(Item item) {
                 return Card.builder()
-                        .cardTitle(title)
+                        .cardTitle(cardTitle)
                         .thumbNailImage(thumbNailImage)
                         .content(content)
                         .tradeArea(tradeArea)

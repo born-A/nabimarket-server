@@ -1,7 +1,7 @@
 package org.prgrms.nabimarketbe.domain.cardimage.dto.response;
 
 
-public record CardImageCreateResponseDTO(
+public record CardImageCreateResponseDTO(   // TODO: _id 지우기
     Integer _id,
     String url
 ) {
