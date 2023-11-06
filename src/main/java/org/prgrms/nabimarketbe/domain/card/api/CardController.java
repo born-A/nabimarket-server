@@ -32,7 +32,7 @@ public class CardController {
             @RequestPart("dto") CardCreateRequestDTO cardCreateRequestDTO,
             @RequestPart("files") List<MultipartFile> files
     ) {
-        CardCreateResponseDTO cardCreateResponseDTO = cardService.save(cardCreateRequestDTO,thumbnail,files);
+        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(cardCreateRequestDTO,thumbnail,files);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardCreateResponseDTO));
     }
