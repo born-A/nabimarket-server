@@ -1,10 +1,6 @@
 package org.prgrms.nabimarketbe.global.security.jwt.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,7 +8,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenResponseDTO {
-	private String accessToken;
+    private String grantType;
 
-	private String refreshToken;
+    private String accessToken;
+
+    private String refreshToken;
+
+    private Long accessTokenExpireDate;
 }
