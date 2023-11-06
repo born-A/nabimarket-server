@@ -5,8 +5,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 public record GoogleUserInfoDTO(
 	String id,
-	String email,
-	String picture
+	String email
 ) {
 	private static final String PROVIDER = "GOOGLE";
 
@@ -14,7 +13,6 @@ public record GoogleUserInfoDTO(
 		return User.builder()
 			.nickname(nickName)
 			.email(email)
-			.imageUrl(picture)
 			.provider(PROVIDER)
 			.accountId(id)
 			.role(Role.USER)
