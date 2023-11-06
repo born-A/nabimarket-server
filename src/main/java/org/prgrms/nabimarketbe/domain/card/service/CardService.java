@@ -40,7 +40,7 @@ public class CardService {
     private final CardImageService cardImageService;
 
     @Transactional
-    public CardCreateResponseDTO save(
+    public CardCreateResponseDTO createCard(
             CardCreateRequestDTO cardCreateRequestDTO,
             MultipartFile thumbnail,
             List<MultipartFile> imageFiles
@@ -56,7 +56,7 @@ public class CardService {
 
         String thumbnailUrl = cardImageService.uploadImageUrl(card.getCardId(), thumbnail);
 
-        savedCard.setThumbNailImage(thumbnailUrl);
+        savedCard.updateThumbNailImage(thumbnailUrl);
 
         // TODO: bulk insert 로 전환
         List<CardImage> savedCardImages = cardImageService.uploadImageUrlList(card.getCardId(),imageFiles);
