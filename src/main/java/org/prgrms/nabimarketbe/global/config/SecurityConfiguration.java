@@ -1,12 +1,10 @@
 package org.prgrms.nabimarketbe.global.config;
 
-import lombok.RequiredArgsConstructor;
-
 import org.prgrms.nabimarketbe.global.security.handler.CustomAccessDeniedHandler;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAuthenticationEntryPoint;
 import org.prgrms.nabimarketbe.global.security.jwt.filter.JwtAuthenticationFilter;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
-
+import org.prgrms.nabimarketbe.oauth2.google.domain.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
@@ -38,8 +38,8 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                    .anyRequest().hasRole("USER"))
-                .exceptionHandling(exceptionHandling -> exceptionHandling
+                    .anyRequest().hasRole(Role.USER.toString()))
+            .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
