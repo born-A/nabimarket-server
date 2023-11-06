@@ -95,7 +95,11 @@ public class Card extends BaseEntity {
         this.dibCount = 0;
         this.item = item;
     }
-  
+
+    public void updateThumbNailImage(String url) {
+        this.thumbNailImage = url;
+    }
+
     public void updateViewCount() {
         this.viewCount += 1;
     }
