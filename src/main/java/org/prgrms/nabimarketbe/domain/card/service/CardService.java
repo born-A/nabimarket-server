@@ -3,8 +3,10 @@ package org.prgrms.nabimarketbe.domain.card.service;
 import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.dto.request.CardImageCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageCreateResponseDTO;
@@ -12,8 +14,10 @@ import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageSingleRead
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
+import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
+import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +28,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CardService {
     private final CardRepository cardRepository;
 
@@ -114,6 +117,25 @@ public class CardService {
                 item.getCategory().getCategoryName(),
                 item.getPriceRange(),
                 cardImageSingleReadResponseDTOS
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public CardListReadPagingResponseDTO getCardsByCondition(
+            CategoryEnum category,
+            PriceRange priceRange,
+            List<CardStatus> status,
+            String title,
+            String cursorId,
+            Integer size
+    ) {
+        return cardRepository.getCardsByCondition(
+                category,
+                priceRange,
+                status,
+                title,
+                cursorId,
+                size
         );
     }
 }
