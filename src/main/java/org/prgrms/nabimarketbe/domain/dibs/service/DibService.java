@@ -36,11 +36,31 @@ public class DibService {
 		Card card = cardRepository.findById(cardId)
 			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
 
-		card.increaseDibCount();
-
 		Dib dib = new Dib(user, card);
 		Dib savedDib = dibRepository.save(dib);
 
+		card.increaseDibCount();
+
 		return DibCreateResponseDTO.from(savedDib);
+	}
+
+	@Transactional
+	public void deleteDib(
+		String token,
+		Long cardId
+	) {
+		Long userId = checkService.parseToken(token);
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+
+		Card card = cardRepository.findById(cardId)
+			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
+
+		Dib dib = dibRepository.findDibByUserAndCard(user, card)
+			.orElseThrow(() -> new RuntimeException("해당 찜이 존재하지 않습니다."));
+
+		dibRepository.delete(dib);
+
+		card.decreaseDibCount();
 	}
 }

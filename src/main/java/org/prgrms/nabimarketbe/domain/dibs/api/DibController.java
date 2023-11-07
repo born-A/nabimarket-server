@@ -4,8 +4,10 @@ import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.service.DibService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,5 +31,15 @@ public class DibController {
 		DibResponseDTO dibResponseDTO = new DibResponseDTO(dibCreateResponseDTO);
 
 		return ResponseEntity.ok(ResponseFactory.getSingleResult(dibResponseDTO));
+	}
+
+	@DeleteMapping("/{cardId}")
+	public ResponseEntity<CommonResult> deleteDib(
+		@RequestHeader(name = "authorization") String token,
+		@PathVariable Long cardId
+	) {
+		dibService.deleteDib(token, cardId);
+
+		return ResponseEntity.ok(ResponseFactory.getSuccessResult());
 	}
 }

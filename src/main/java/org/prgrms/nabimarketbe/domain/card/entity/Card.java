@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
@@ -119,7 +121,12 @@ public class Card extends BaseEntity {
         this.viewCount += 1;
     }
 
+    // TODO : dibCount 동시성
     public void increaseDibCount() {
         this.dibCount += 1;
+    }
+
+    public void decreaseDibCount() {
+        this.dibCount -= 1;
     }
 }

@@ -21,6 +21,11 @@ import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.domain.user.service.CheckService;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +63,7 @@ public class CardService {
                 .orElseThrow();
 
         Item item = cardCreateRequestDTO.toItemEntity(category);
-        Card card = cardCreateRequestDTO.toCardEntity(item);
+        Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
         Item savedItem = itemRepository.save(item);
         Card savedCard =  cardRepository.save(card);
