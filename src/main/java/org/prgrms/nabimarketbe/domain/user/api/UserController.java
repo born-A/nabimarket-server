@@ -33,13 +33,14 @@ public class UserController {
     }
 
     @PutMapping("/profile-image")
-    public SingleResult<UserUpdateResponseDTO> updateUserImageUrl(
+    public SingleResult<UserResponseDTO> updateUserImageUrl(
         @RequestHeader(name = "authorization") String token,
         @RequestPart("file") MultipartFile file
     ) {
         UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUserImageUrl(token, file);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(userUpdateResponseDTO);
 
-        return ResponseFactory.getSingleResult(userUpdateResponseDTO);
+        return ResponseFactory.getSingleResult(userResponseDTO);
     }
 
     @PutMapping("/nickname")
