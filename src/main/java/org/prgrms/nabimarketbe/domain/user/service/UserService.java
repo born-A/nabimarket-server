@@ -1,6 +1,10 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
+import javax.validation.Valid;
+
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.Domain;
@@ -10,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -54,5 +59,20 @@ public class UserService {
         modifiedUser.updateImageUrl(url);
 
         return UserGetResponseDTO.from(modifiedUser);
+    }
+
+    @Transactional
+    public UserUpdateResponseDTO updateUserNickname(
+        String token,
+        @Valid UserUpdateRequestDTO userUpdateRequestDTO
+    ) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+
+        String updateNickname = userUpdateRequestDTO.nickname();
+        user.updateNickname(updateNickname);
+
+        return UserUpdateResponseDTO.from(user);
     }
 }

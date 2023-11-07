@@ -1,7 +1,9 @@
 package org.prgrms.nabimarketbe.domain.user.api;
 
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
@@ -30,12 +32,23 @@ public class UserController {
     }
 
     @PutMapping("/profile-image")
-    public SingleResult<UserGetResponseDTO>  updateUserImageUrl(
+    public SingleResult<UserGetResponseDTO> updateUserImageUrl(
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
     ) {
         userService.updateUserImageUrl(userId, file);
 
         return ResponseFactory.getSingleResult(userService.findById(userId));
+    }
+
+    @PutMapping("/nickname")
+    public SingleResult<UserResponseDTO> updateUserNickname(
+        @RequestHeader(name = "authorization") String token,
+        @RequestBody UserUpdateRequestDTO userUpdateRequestDTO
+    ) {
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUserNickname(token, userUpdateRequestDTO);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(userUpdateResponseDTO);
+
+        return ResponseFactory.getSingleResult(userResponseDTO);
     }
 }
