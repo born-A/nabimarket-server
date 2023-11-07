@@ -21,7 +21,7 @@ public record UserGetResponseDTO(
             .userId(user.getUserId())
             .accountId(user.getAccountId())
             .nickname(user.getNickname())
-                .imageUrl(user.getImageUrl())
+            .imageUrl(user.getImageUrl())
             .role(user.getRole())
             .createdDate(user.getCreatedDate())
             .modifiedDate(user.getModifiedDate())

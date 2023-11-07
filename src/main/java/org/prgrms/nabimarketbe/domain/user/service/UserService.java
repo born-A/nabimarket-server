@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,20 +44,21 @@ public class UserService {
     }
 
     @Transactional
-    public UserGetResponseDTO updateUserImageUrl(Long userId, MultipartFile file) {
-        User modifiedUser = userRepository
+    public UserUpdateResponseDTO updateUserImageUrl(String token, MultipartFile file) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository
                 .findById(userId).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        if (modifiedUser.getImageUrl() != null) {
-            String imageUrl = modifiedUser.getImageUrl();
+        if (user.getImageUrl() != null) {
+            String imageUrl = user.getImageUrl();
             s3FileUploadService.deleteImage(imageUrl);
         }
 
         String url = s3FileUploadService.uploadFile(Domain.USER.name(), userId, file);
 
-        modifiedUser.updateImageUrl(url);
+        user.updateImageUrl(url);
 
-        return UserGetResponseDTO.from(modifiedUser);
+        return UserUpdateResponseDTO.from(user);
     }
 
     @Transactional
