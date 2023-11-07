@@ -23,11 +23,9 @@ public class Item extends BaseEntity {
     @Column(name = "item_id", nullable = false)
     private Long itemId;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
-//    @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "price_range", nullable = false)
     private PriceRange priceRange;
