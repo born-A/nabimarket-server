@@ -9,6 +9,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ public class DibService {
 
 	private final CheckService checkService;
 
+	@Transactional
 	public DibCreateResponseDTO createDib(
 		String token,
 		Long cardId
@@ -34,9 +36,11 @@ public class DibService {
 		Card card = cardRepository.findById(cardId)
 			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
 
+		card.increaseDibCount();
+
 		Dib dib = new Dib(user, card);
 		Dib savedDib = dibRepository.save(dib);
 
-		return DibCreateResponseDTO.from(dib);
+		return DibCreateResponseDTO.from(savedDib);
 	}
 }

@@ -112,4 +112,8 @@ public class Card extends BaseEntity {
     public void updateViewCount() {
         this.viewCount += 1;
     }
+
+    public void increaseDibCount() {
+        this.dibCount += 1;
+    }
 }
