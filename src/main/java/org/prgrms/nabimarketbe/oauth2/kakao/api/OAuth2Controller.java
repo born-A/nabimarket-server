@@ -8,6 +8,7 @@ import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
+import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
 import org.springframework.core.env.Environment;
@@ -39,11 +40,13 @@ public class OAuth2Controller {
     }
 
     @GetMapping(value = "/redirect")
-    public UserLoginResponseDTO redirectKakao(@RequestParam String code) {
+    public ResponseEntity<SingleResult<UserLoginResponseDTO>> redirectKakao(@RequestParam String code) {
         KakaoProfile profile = OAuth2Service.getResultProfile(code);
         if (profile == null) throw new RuntimeException("카카오에 해당 회원이 없습니다.");
+        UserLoginResponseDTO userLoginResponseDTO = signService.signInBySocial(profile);
+        SingleResult<UserLoginResponseDTO> response = ResponseFactory.getSingleResult(userLoginResponseDTO);
 
-        return signService.signInBySocial(profile);
+        return ResponseEntity.ok(response);
     }
 
     //TODO : 사용자가 accessToken 넘기는건 아닌거 같음
