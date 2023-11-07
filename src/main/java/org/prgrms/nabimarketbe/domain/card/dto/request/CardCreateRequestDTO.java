@@ -2,16 +2,15 @@ package org.prgrms.nabimarketbe.domain.card.dto.request;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
-import org.prgrms.nabimarketbe.domain.cardimage.dto.request.CardImageCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public record CardCreateRequestDTO(     // TODO: images form-data로 받기
         @NotBlank(message = "공백을 허용하지 않습니다.")
@@ -46,7 +45,7 @@ public record CardCreateRequestDTO(     // TODO: images form-data로 받기
                         .build();
         }
 
-        public Card toCardEntity(Item item) {
+        public Card toCardEntity(Item item, User user) {
                 return Card.builder()
                         .cardTitle(cardTitle)
                         .content(content)
@@ -54,6 +53,7 @@ public record CardCreateRequestDTO(     // TODO: images form-data로 받기
                         .poke(pokeAvailable)
                         .tradeType(tradeType)
                         .item(item)
+                        .user(user)
                         .build();
         }
 }
