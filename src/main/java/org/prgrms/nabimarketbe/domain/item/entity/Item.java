@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
-import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 
@@ -27,12 +26,11 @@ public class Item extends BaseEntity {
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
-//    @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "price_range", nullable = false)
     private PriceRange priceRange;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

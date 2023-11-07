@@ -1,5 +1,6 @@
 package org.prgrms.nabimarketbe.global.error;
 
+import lombok.extern.slf4j.Slf4j;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<CommonResult> defaultException(Exception e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
+      
         return new ResponseEntity<>(
                 ResponseFactory.getFailResult(
                         ErrorCode.UNKNOWN.getCode(),
