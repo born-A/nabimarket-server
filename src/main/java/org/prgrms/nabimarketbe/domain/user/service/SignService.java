@@ -48,7 +48,11 @@ public class SignService {
         Optional<User> optionalUser = userRepository.findByAccountId(accountId);
 
         User user = optionalUser.orElseGet(() -> {
-            return userRepository.save(userSignInRequestDTO.toEntity());
+            try {
+                return signUp(userSignInRequestDTO);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         TokenDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
@@ -82,6 +86,15 @@ public class SignService {
     public User signUp(GoogleUserInfoDTO googleUserInfoDTO) throws JsonProcessingException {
         String randomNickname = randomNicknameGenerator.generateRandomNickname();
         User user = googleUserInfoDTO.toEntity(randomNickname);
+        User savedUser = userRepository.save(user);
+
+        return savedUser;
+    }
+
+    @Transactional
+    public User signUp(UserSignInRequestDTO userSignInRequestDTO) throws JsonProcessingException {
+        String randomNickname = randomNicknameGenerator.generateRandomNickname();
+        User user = userSignInRequestDTO.toEntity(randomNickname);
         User savedUser = userRepository.save(user);
 
         return savedUser;

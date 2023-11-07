@@ -19,5 +19,14 @@ public record UserSignInRequestDTO(
                 .role(Role.USER.getKey())
                 .build();
     }
+
+    public User toEntity(String nickName) {
+        return User.builder()
+                .accountId(accountId)
+                .nickname(nickName)
+                .provider(provider)
+                .role(Role.USER.getKey())
+                .build();
+    }
 }
 
