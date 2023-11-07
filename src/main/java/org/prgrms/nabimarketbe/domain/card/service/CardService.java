@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
@@ -20,14 +21,11 @@ import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -97,10 +95,12 @@ public class CardService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CardSingleReadResponseDTO getCardById(Long cardId) {  // TODO: User 완성되면 User에 대한 정보도 추가해서 내려주기
         Card card = cardRepository.findById(cardId)
                 .orElseThrow();
+
+        card.updateViewCount();
 
         Item item = card.getItem();
 
@@ -148,13 +148,5 @@ public class CardService {
                 cursorId,
                 size
         );
-    }
-
-    @Transactional
-    public void updateViews(Long cardId) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
-
-        card.updateViewCount();
     }
 }

@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.api;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
@@ -12,15 +12,18 @@ import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/cards")
@@ -45,7 +48,6 @@ public class CardController {
 
     @GetMapping("/{cardId}")
     public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
-        cardService.updateViews(cardId);
         CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
