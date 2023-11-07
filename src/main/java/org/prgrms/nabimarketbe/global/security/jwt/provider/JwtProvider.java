@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,7 +50,8 @@ public class JwtProvider {
         secretKey = Base64UrlCodec.BASE64URL.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public TokenDTO createTokenDTO(Long userPk, String role) {
+    // Jwt 생성
+    public TokenResponseDTO createTokenDTO(Long userPk, String role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put(ROLE, role);
@@ -75,7 +76,7 @@ public class JwtProvider {
         RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
         refreshTokenRepository.save(refreshTokenEntity);
 
-        return TokenDTO.builder()
+        return TokenResponseDTO.builder()
             .grantType("Bearer")
             .accessToken(accessToken)
             .refreshToken(refreshToken)
@@ -98,7 +99,7 @@ public class JwtProvider {
     }
 
     // Jwt 토큰 복호화해서 가져오기
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local, jwt
+    active: local
 
 
 springdoc:
