@@ -4,13 +4,13 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 
 public record UserLoginResponseDTO(
-	UserResponseDTO userInfo,
+	UserGetResponseDTO userInfo,
 	TokenResponseDTO token
 ) {
 	public static UserLoginResponseDTO of(User user, TokenResponseDTO tokenResponseDTO) {
-		UserResponseDTO userResponseDto = UserResponseDTO.from(user);
+		UserGetResponseDTO userGetResponseDto = UserGetResponseDTO.from(user);
 
-		UserLoginResponseDTO response = new UserLoginResponseDTO(userResponseDto, tokenResponseDTO);
+		UserLoginResponseDTO response = new UserLoginResponseDTO(userGetResponseDto, tokenResponseDTO);
 
 		return response;
 	}

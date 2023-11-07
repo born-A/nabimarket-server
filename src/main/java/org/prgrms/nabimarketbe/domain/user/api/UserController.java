@@ -1,7 +1,7 @@
 package org.prgrms.nabimarketbe.domain.user.api;
 
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
@@ -22,15 +22,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public SingleResult<UserGetResponseDTO> getUserByToken(@RequestHeader(name = "authorization") String token) {
-        UserResponseDTO userResponseDTO = userService.getUserByToken(token);
-        UserGetResponseDTO userGetResponseDTO = new UserGetResponseDTO(userResponseDTO);
+    public SingleResult<UserResponseDTO> getUserByToken(@RequestHeader(name = "authorization") String token) {
+        UserGetResponseDTO userGetResponseDTO = userService.getUserByToken(token);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(userGetResponseDTO);
 
-        return ResponseFactory.getSingleResult(userGetResponseDTO);
+        return ResponseFactory.getSingleResult(userResponseDTO);
     }
 
     @PutMapping("/profile-image")
-    public SingleResult<UserResponseDTO>  updateUserImageUrl(
+    public SingleResult<UserGetResponseDTO>  updateUserImageUrl(
             @RequestParam Long userId,
             @RequestPart("file") MultipartFile file
     ) {
