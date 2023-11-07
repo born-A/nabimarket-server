@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +36,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true, length = 30)
     private String accountId;
 
-    @Column(name = "nick_name", nullable = false, length = 20)
+    @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
     @Column(name = "user_email")
@@ -51,14 +50,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "user_role")
     private String role;
-
-    private User(
-            String accountId,
-            String nickname,
-            String profileImageUrl,
-            Role role
-    ) {
-    }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;

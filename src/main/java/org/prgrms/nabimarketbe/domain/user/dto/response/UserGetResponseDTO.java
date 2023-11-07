@@ -10,7 +10,7 @@ import lombok.Builder;
 public record UserGetResponseDTO(
     Long userId,
     String accountId,
-    String nickName,
+    String nickname,
     String imageUrl,
     String role,
     LocalDateTime createdDate,
@@ -20,7 +20,7 @@ public record UserGetResponseDTO(
         return UserGetResponseDTO.builder()
             .userId(user.getUserId())
             .accountId(user.getAccountId())
-            .nickName(user.getNickname())
+            .nickname(user.getNickname())
                 .imageUrl(user.getImageUrl())
             .role(user.getRole())
             .createdDate(user.getCreatedDate())
