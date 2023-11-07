@@ -8,8 +8,6 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
-import org.prgrms.nabimarketbe.global.util.ResponseFactory;
-import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.springframework.stereotype.Service;
@@ -31,30 +29,33 @@ public class SignService {
     private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
-    public CommonResult signInBySocial(KakaoProfile kakaoProfile) {
-        CommonResult result = signIn(UserSignInRequestDTO.builder()
+    public UserLoginResponseDTO signInBySocial(KakaoProfile kakaoProfile) {
+        UserSignInRequestDTO userSignInRequestDTO = UserSignInRequestDTO.builder()
                 .accountId(kakaoProfile.getId())
                 .nickname(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
-                .build());
+                .build();
 
-        return ResponseFactory.getSingleResult(result);
+        UserLoginResponseDTO result = signIn(userSignInRequestDTO);
+
+        return result;
     }
+
     @Transactional
-    public CommonResult signIn(UserSignInRequestDTO userSignInRequestDTO) {
-        Optional<User> user = userRepository.findByAccountIdAndProvider(
-                userSignInRequestDTO.accountId(),
-                userSignInRequestDTO.provider()
-        );
+    public UserLoginResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
+        String accountId = userSignInRequestDTO.accountId();
 
-        if (user.isPresent()) {
-            return ResponseFactory.getSingleResult(jwtProvider.createTokenDTO(
-                    user.get().getUserId(), user.get().getRole())
-            );
-        }
+        Optional<User> optionalUser = userRepository.findByAccountId(accountId);
 
-        User savedUser = userRepository.save(userSignInRequestDTO.toEntity());
-        return ResponseFactory.getSingleResult(jwtProvider.createTokenDTO(savedUser.getUserId(), savedUser.getRole()));
+        User user = optionalUser.orElseGet(() -> {
+            return userRepository.save(userSignInRequestDTO.toEntity());
+        });
+
+        TokenDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
+
+        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenDTO);
+
+        return response;
     }
 
     @Transactional
