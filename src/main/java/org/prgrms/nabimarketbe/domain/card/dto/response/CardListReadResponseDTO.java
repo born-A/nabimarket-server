@@ -11,12 +11,19 @@ import java.time.LocalDateTime;
 @Getter
 public class CardListReadResponseDTO {
     private Long cardId;
+
     private String cardTitle;
+
     private String itemName;
+
     private PriceRange priceRange;
+
     private String thumbNail;
+
     private CardStatus status;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime modifiedAt;
 
     public CardListReadResponseDTO(

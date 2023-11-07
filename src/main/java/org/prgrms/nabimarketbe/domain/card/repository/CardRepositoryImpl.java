@@ -28,7 +28,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             CategoryEnum category,
             PriceRange priceRange,
             List<CardStatus> status,
-            String title,
+            String cardTitle,
             String cursorId,
             Integer size
     ) {
@@ -52,7 +52,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                         category(category),
                         status(status),
                         priceRange(priceRange),
-                        title(title)
+                        title(cardTitle)
                 )
                 .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
                 .limit(size)
