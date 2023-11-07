@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("api/v1/users/oauth2/authorize/google")
+@RequestMapping("/api/v1/users/oauth2/authorize/google")
 public class GoogleOAuth2Controller {
 	private final GoogleOAuth2Service oauthService;
 
