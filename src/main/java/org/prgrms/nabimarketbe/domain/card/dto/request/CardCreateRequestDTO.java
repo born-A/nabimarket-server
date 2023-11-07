@@ -18,9 +18,6 @@ public record CardCreateRequestDTO(
         String title,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
-        String thumbNailImage,
-
-        @NotBlank(message = "공백을 허용하지 않습니다.")
         String name,
 
         @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
@@ -39,10 +36,7 @@ public record CardCreateRequestDTO(
         Boolean pokeAvailable,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
-        String content,
-
-        @NotNull(message = "비울 수 없는 값입니다.")
-        List<CardImageCreateRequestDTO> images
+        String content
 ) {
         public Item toItemEntity(Category category) {
                 return Item.builder()
@@ -55,7 +49,6 @@ public record CardCreateRequestDTO(
         public Card toCardEntity(Item item) {
                 return Card.builder()
                         .cardTitle(title)
-                        .thumbNailImage(thumbNailImage)
                         .content(content)
                         .tradeArea(tradeArea)
                         .poke(pokeAvailable)
@@ -63,6 +56,4 @@ public record CardCreateRequestDTO(
                         .item(item)
                         .build();
         }
-
-
 }

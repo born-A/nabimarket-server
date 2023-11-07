@@ -15,7 +15,7 @@ public record GoogleUserInfoDTO(
 			.email(email)
 			.provider(PROVIDER)
 			.accountId(id)
-			.role(Role.USER)
+			.role(Role.USER.getKey())
 			.build();
 	}
 }

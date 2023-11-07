@@ -5,8 +5,6 @@ import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,9 +49,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(length = 100)
     private String provider;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
-    private Role role;
+    private String role;
 
     private User(
             String accountId,
@@ -65,6 +62,10 @@ public class User extends BaseEntity implements UserDetails {
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

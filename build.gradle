@@ -54,6 +54,9 @@ dependencies {
 
     // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    //Spring-Cloud-AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 // Qtype 생성 경로
