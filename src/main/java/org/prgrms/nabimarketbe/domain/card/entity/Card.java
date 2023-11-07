@@ -77,6 +77,10 @@ public class Card extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     private Card(
             String cardTitle,
@@ -84,13 +88,14 @@ public class Card extends BaseEntity {
             String tradeArea,
             Boolean poke,
             TradeType tradeType,
-            Item item
+            Item item,
+            User user
     ) {
         if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
-        if (poke == null || tradeType == null || item == null) {
+        if (poke == null || tradeType == null || item == null || user == null) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
@@ -103,6 +108,7 @@ public class Card extends BaseEntity {
         this.viewCount = 0;
         this.dibCount = 0;
         this.item = item;
+        this.user = user;
     }
 
     public void updateThumbNailImage(String url) {

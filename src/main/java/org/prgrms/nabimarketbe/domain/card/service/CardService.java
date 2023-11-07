@@ -38,14 +38,22 @@ public class CardService {
 
     private final CardImageRepository cardImageRepository;
 
+    private final UserRepository userRepository;
+
     private final CardImageService cardImageService;
+
+    private final CheckService checkService;
 
     @Transactional
     public CardCreateResponseDTO createCard(
+            String token,
             CardCreateRequestDTO cardCreateRequestDTO,
             MultipartFile thumbnail,
             List<MultipartFile> imageFiles
     ) {
+        User user = userRepository.findById(checkService.parseToken(token))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
                 .orElseThrow();
 
