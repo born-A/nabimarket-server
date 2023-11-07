@@ -9,11 +9,11 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 public class UserRequestDTO {
     private String imageUrl;
 
-    private String nickName;
+    private String nickname;
 
     public User toEntity() {
         return User.builder()
-                .nickname(nickName)
+                .nickname(nickname)
                 .build();
     }
 }
