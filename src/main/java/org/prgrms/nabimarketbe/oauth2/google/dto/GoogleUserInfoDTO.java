@@ -17,7 +17,7 @@ public record GoogleUserInfoDTO(
 			.imageUrl(picture)
 			.provider(PROVIDER)
 			.accountId(id)
-			.role(Role.USER)
+			.role(Role.USER.getKey())
 			.build();
 	}
 }

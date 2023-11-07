@@ -62,7 +62,7 @@ public class Card extends BaseEntity {
     @Column(name = "dib_count", nullable = false)
     private Integer dibCount;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -93,7 +93,11 @@ public class Card extends BaseEntity {
         this.dibCount = 0;
         this.item = item;
     }
-  
+
+    public void updateThumbNailImage(String url) {
+        this.thumbNailImage = url;
+    }
+
     public void updateViewCount() {
         this.viewCount += 1;
     }

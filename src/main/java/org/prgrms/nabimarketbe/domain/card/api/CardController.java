@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
+import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 
@@ -13,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -43,5 +49,26 @@ public class CardController {
         CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getCardsByCondition(
+            @RequestParam(required = false) CategoryEnum category,
+            @RequestParam(required = false) PriceRange priceRange,
+            @RequestParam(required = false) List<CardStatus> status,
+            @RequestParam(required = false) String cardTitle,
+            @RequestParam(required = false) String cursorId,
+            @RequestParam Integer size
+    ) {
+        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getCardsByCondition(
+                category,
+                priceRange,
+                status,
+                cardTitle,
+                cursorId,
+                size
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
     }
 }

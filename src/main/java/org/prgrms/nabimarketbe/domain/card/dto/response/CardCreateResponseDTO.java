@@ -12,9 +12,9 @@ import java.util.List;
 @Builder
 public record CardCreateResponseDTO(
         Long cardId,
-        String title,
+        String cardTitle,
         String thumbNailImage,
-        String name,
+        String itemName,
         PriceRange priceRange,
         TradeType tradeType,
         CategoryEnum category,
@@ -29,8 +29,8 @@ public record CardCreateResponseDTO(
 ) {
     public static CardCreateResponseDTO of(
             Long cardId,
-            String title,
-            String name,
+            String cardTitle,
+            String itemName,
             String thumbNailImage,
             PriceRange priceRange,
             TradeType tradeType,
@@ -46,8 +46,8 @@ public record CardCreateResponseDTO(
     ) {
         return CardCreateResponseDTO.builder()
                 .cardId(cardId)
-                .title(title)
-                .name(name)
+                .cardTitle(cardTitle)
+                .itemName(itemName)
                 .thumbNailImage(thumbNailImage)
                 .priceRange(priceRange)
                 .tradeType(tradeType)

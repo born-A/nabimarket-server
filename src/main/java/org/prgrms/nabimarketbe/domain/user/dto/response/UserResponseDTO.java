@@ -2,7 +2,6 @@ package org.prgrms.nabimarketbe.domain.user.dto.response;
 
 import java.time.LocalDateTime;
 
-import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 import lombok.Builder;
@@ -13,7 +12,7 @@ public record UserResponseDTO(
     String accountId,
     String nickName,
     String imageUrl,
-    Role role,
+    String role,
     LocalDateTime createdDate,
     LocalDateTime modifiedDate
 ) {
