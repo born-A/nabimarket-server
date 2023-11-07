@@ -7,19 +7,25 @@ import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.global.Domain;
+import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private S3FileUploadService s3FileUploadService;
+    private final S3FileUploadService s3FileUploadService;
+
+    private final CheckService checkService;
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(Long id) {
