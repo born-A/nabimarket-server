@@ -4,9 +4,9 @@ name: CICD
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
   push:
-    branches: [ "main" ] # master branch로 push 될 때 실행
+    branches: [ "main", "dev" ] # master branch로 push 될 때 실행
   pull_request:
-    branches: [ "main" ]  # master branch로 pull request될 때 실행
+    branches: [ "main", "dev" ]  # master branch로 pull request될 때 실행
 
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있음
 jobs:
@@ -38,6 +38,15 @@ jobs:
         run:
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
         shell: bash
+
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1.3
+        with:
+          host port: 3306
+          container port: 3306
+          mysql database: 'nabi'
+          mysql user: 'test'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       # gradle 권한 설정
       - name: Grant execute permission for gradlew
