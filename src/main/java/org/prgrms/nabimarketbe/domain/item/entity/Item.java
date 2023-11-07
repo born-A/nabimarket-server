@@ -22,7 +22,6 @@ public class Item extends BaseEntity {
     @Column(name = "item_id", nullable = false)
     private Long itemId;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
