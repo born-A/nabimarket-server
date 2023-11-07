@@ -39,9 +39,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
-    @Column(name = "user_email")
-    private String email;
-
     @Column(name = "user_image_url")
     private String imageUrl;
 
