@@ -6,7 +6,7 @@ import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
@@ -75,9 +75,9 @@ public class SignService {
                 throw new RuntimeException(e);
             }
         });
-        TokenDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
+        TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
 
-        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenDTO);
+        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
         return response;
     }
