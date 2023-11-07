@@ -12,7 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenResponseDTO {
+	private String grantType;
+
 	private String accessToken;
 
 	private String refreshToken;
+
+	private Long accessTokenExpireDate;
 }
