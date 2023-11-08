@@ -73,6 +73,7 @@ public class Card extends BaseEntity {
     @Builder
     private Card(
             String cardTitle,
+            String thumbNailImage,
             String content,
             String tradeArea,
             Boolean poke,
@@ -80,7 +81,7 @@ public class Card extends BaseEntity {
             Item item,
             User user
     ) {
-        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {
+        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
@@ -89,6 +90,7 @@ public class Card extends BaseEntity {
         }
 
         this.cardTitle = cardTitle;
+        this.thumbNailImage = thumbNailImage;
         this.content = content;
         this.tradeArea = tradeArea;
         this.poke = poke;
