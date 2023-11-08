@@ -14,7 +14,7 @@ public class SuggestionAvailableCardResponseDTO {
     private PriceRange priceRange;
     private SuggestionType suggestionType;
 
-    public void setSuggestionType(SuggestionType suggestionType) {
+    public void updateSuggestionType(SuggestionType suggestionType) {
         this.suggestionType = suggestionType;
     }
 }
