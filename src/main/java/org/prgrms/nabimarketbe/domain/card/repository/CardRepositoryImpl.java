@@ -84,24 +84,11 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .where(card.user.userId.eq(userId))
                 .fetch();
 
-        if (pokeAvailable) {
-            cardList.forEach(c -> {
-                if (c.getPriceRange().getValue() < priceRange.getValue()) {
-                    c.setSuggestionType(SuggestionType.POKE);
-                } else {
-                    c.setSuggestionType(SuggestionType.OFFER);
-                }
-            });
-
-            return cardList;
-        }
-
-        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
-                .filter(c -> c.getPriceRange().getValue() >= priceRange.getValue())
-                .toList();
-        offerOnlyCardList.forEach(o -> o.setSuggestionType(SuggestionType.OFFER));
-
-        return offerOnlyCardList;
+        return getSuggestionResultCardList(
+                pokeAvailable,
+                priceRange,
+                cardList
+        );
     }
 
     private BooleanExpression cursorId(String cursorId){
@@ -165,5 +152,30 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .replace("-", "")
                 .replace(":", "")
                 + String.format("%08d", cardListReadResponseDTO.getCardId());
+    }
+
+    private List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
+            Boolean pokeAvailable,
+            PriceRange priceRange,
+            List<SuggestionAvailableCardResponseDTO> cardList
+    ) {
+        if (pokeAvailable) {
+            return cardList.stream()
+                    .peek(c -> {
+                        if (c.getPriceRange().getValue() < priceRange.getValue()) {
+                            c.updateSuggestionType(SuggestionType.POKE);
+                        } else {
+                            c.updateSuggestionType(SuggestionType.OFFER);
+                        }
+                    })
+                    .toList();
+        }
+
+        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
+                .filter(c -> c.getPriceRange().getValue() >= priceRange.getValue())
+                .toList();
+        offerOnlyCardList.forEach(o -> o.updateSuggestionType(SuggestionType.OFFER));
+
+        return offerOnlyCardList;
     }
 }
