@@ -39,8 +39,8 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 			)
 		)
 			.from(dib)
-			.innerJoin(card).on(card.cardId.eq(dib.card.cardId))
-			.leftJoin(item).on(card.item.itemId.eq(item.itemId))
+			.join(card).on(card.cardId.eq(dib.card.cardId))
+			.join(item).on(card.item.itemId.eq(item.itemId))
 			.where(
 				dibUserIdEquals(userId),
 				greaterThan(cursorId)
@@ -55,9 +55,9 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 
 	private Long generateCursor(List<DibListReadResponseDTO> dibList) {
 		if (dibList.size() == PAGE_SIZE) {
-			return dibList.get(dibList.size() - 1).getDibId() + 1;
+			return dibList.get(dibList.size() - 1).getDibId();
 		}
-		
+
 		return null;
 	}
 
