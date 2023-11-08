@@ -20,11 +20,12 @@ public class CheckService {
 		return userId;
 	}
 
-	public void checkToken(String token, Long userId) {
+	public boolean isEqual(
+		String token,
+		Long userId
+	) {
 		Long tokenUserId = parseToken(token);
 
-		if(!Objects.equals(tokenUserId, userId)) {
-			throw new RuntimeException("token과 userId가 일치하지 않습니다.");
-		}
+		return Objects.equals(tokenUserId, userId);
 	}
 }

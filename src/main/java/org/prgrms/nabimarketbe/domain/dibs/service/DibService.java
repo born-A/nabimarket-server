@@ -29,12 +29,16 @@ public class DibService {
 		String token,
 		Long cardId
 	) {
+		Card card = cardRepository.findById(cardId)
+			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
+
+		if(checkService.isEqual(token, card.getUser().getUserId())) {
+			throw new RuntimeException("자신의 카드는 찜할 수 없습니다.");
+		}
+
 		Long userId = checkService.parseToken(token);
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-		Card card = cardRepository.findById(cardId)
-			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
 
 		Dib dib = new Dib(user, card);
 		Dib savedDib = dibRepository.save(dib);

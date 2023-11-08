@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         log.info("[Verifying token]");
         log.info(((HttpServletRequest) request).getRequestURL().toString());
 
+        // 매번 필터탈때마다 select쿼리
         if (token != null && jwtProvider.validationToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
