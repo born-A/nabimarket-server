@@ -57,6 +57,7 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 		if (dibList.size() == PAGE_SIZE) {
 			return dibList.get(dibList.size() - 1).getDibId() + 1;
 		}
+		
 		return null;
 	}
 
