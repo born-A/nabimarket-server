@@ -1,8 +1,15 @@
 package org.prgrms.nabimarketbe.domain.dibs.service;
 
+import static org.prgrms.nabimarketbe.domain.dibs.repository.DibRepositoryImpl.*;
+
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibCreateResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.entity.Dib;
 import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
@@ -25,7 +32,7 @@ public class DibService {
 	private final CheckService checkService;
 
 	@Transactional
-	public DibCreateResponseDTO createDib(
+	public DibResponseDTO<DibCreateResponseDTO> createDib(
 		String token,
 		Long cardId
 	) {
@@ -40,12 +47,18 @@ public class DibService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
+		if (dibRepository.existsDibByCardAndUser(card, user)) {
+			throw new RuntimeException("이미 찜한 카드는 또 찜할 수 없습니다.");
+		}
+
 		Dib dib = new Dib(user, card);
 		Dib savedDib = dibRepository.save(dib);
 
 		card.increaseDibCount();
 
-		return DibCreateResponseDTO.from(savedDib);
+		DibCreateResponseDTO dibCreateResponseDTO = DibCreateResponseDTO.from(savedDib);
+
+		return new DibResponseDTO<>(dibCreateResponseDTO);
 	}
 
 	@Transactional
@@ -66,5 +79,32 @@ public class DibService {
 		dibRepository.delete(dib);
 
 		card.decreaseDibCount();
+	}
+
+	@Transactional(readOnly = true)
+	public DibListReadPagingResponseDTO getUserDibsByUserId(
+		String token,
+		Long cursorId
+	) {
+		Long userId = checkService.parseToken(token);
+		if (!userRepository.existsById(userId)) {
+			throw new RuntimeException("해당 회원이 없습니다.");
+		}
+
+		List<DibListReadResponseDTO> dibList = dibRepository.getUserDibsByUserId(userId, cursorId);
+		Long nextCursorId = getNextCursorId(dibList, cursorId);
+
+		return DibListReadPagingResponseDTO.of(dibList, nextCursorId);
+	}
+
+	// TODO : nextCursorId repo단에서 내려주도록 수정 ..?
+	private Long getNextCursorId(
+		List<DibListReadResponseDTO> dibList,
+		Long cursorId
+	) {
+		if(dibList.isEmpty() || dibList.size() < PAGE_SIZE) {
+			return null;
+		}
+		return cursorId + PAGE_SIZE;
 	}
 }

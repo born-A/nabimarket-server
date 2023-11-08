@@ -7,6 +7,8 @@ import org.prgrms.nabimarketbe.domain.dibs.entity.Dib;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DibRepository extends JpaRepository<Dib, Long> {
+public interface DibRepository extends JpaRepository<Dib, Long>, DibRepositoryCustom{
 	Optional<Dib> findDibByUserAndCard(User user, Card card);
+
+	boolean existsDibByCardAndUser(Card card, User user);
 }
