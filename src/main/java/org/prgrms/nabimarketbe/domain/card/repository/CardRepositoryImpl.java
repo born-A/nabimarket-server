@@ -10,9 +10,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
 import java.util.List;
 
@@ -61,6 +63,45 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         String nextCursor = cardList.size() < size ? null : generateCursor(cardList.get(cardList.size() - 1));
 
         return new CardListReadPagingResponseDTO(cardList, nextCursor);
+    }
+
+    @Override
+    public List<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
+            Long userId,
+            PriceRange priceRange,
+            Boolean pokeAvailable
+    ) {
+        List<SuggestionAvailableCardResponseDTO> cardList = jpaQueryFactory.select(
+                Projections.fields(
+                        SuggestionAvailableCardResponseDTO.class,
+                        card.cardId,
+                        card.thumbNailImage.as("thumbNail"),
+                        item.itemName,
+                        item.priceRange
+                ))
+                .from(card)
+                .leftJoin(item).on(card.item.itemId.eq(item.itemId))
+                .where(card.user.userId.eq(userId))
+                .fetch();
+
+        if (pokeAvailable) {
+            cardList.forEach(c -> {
+                if (c.getPriceRange().getValue() < priceRange.getValue()) {
+                    c.setSuggestionType(SuggestionType.POKE);
+                } else {
+                    c.setSuggestionType(SuggestionType.OFFER);
+                }
+            });
+
+            return cardList;
+        }
+
+        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
+                .filter(c -> c.getPriceRange().getValue() >= priceRange.getValue())
+                .toList();
+        offerOnlyCardList.forEach(o -> o.setSuggestionType(SuggestionType.OFFER));
+
+        return offerOnlyCardList;
     }
 
     private BooleanExpression cursorId(String cursorId){
