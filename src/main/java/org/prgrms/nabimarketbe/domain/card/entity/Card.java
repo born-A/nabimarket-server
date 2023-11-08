@@ -81,7 +81,7 @@ public class Card extends BaseEntity {
             Item item,
             User user
     ) {
-        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
+        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {  // TODO: 구조 변경 후 thumbNailImage null 처리 추가
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
