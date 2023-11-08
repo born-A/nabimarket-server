@@ -6,6 +6,7 @@ import static org.prgrms.nabimarketbe.domain.item.entity.QItem.*;
 
 import java.util.List;
 
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadResponseDTO;
 
 import com.querydsl.core.types.Projections;
@@ -20,13 +21,14 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	public List<DibListReadResponseDTO> getUserDibsByUserId(
+	public DibListReadPagingResponseDTO getUserDibsByUserId(
 		Long userId,
 		Long cursorId
 	) {
 		List<DibListReadResponseDTO> dibList = jpaQueryFactory.select(
 			Projections.fields(
 				DibListReadResponseDTO.class,
+				dib.dibId,
 				card.cardId,
 				card.cardTitle,
 				item.itemName,
@@ -46,7 +48,16 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 			.limit(PAGE_SIZE)
 			.fetch();
 
-		return dibList;
+		Long nextCursorId = generateCursor(dibList);
+
+		return DibListReadPagingResponseDTO.of(dibList, nextCursorId);
+	}
+
+	private Long generateCursor(List<DibListReadResponseDTO> dibList) {
+		if (dibList.size() == PAGE_SIZE) {
+			return dibList.get(dibList.size() - 1).getDibId() + 1;
+		}
+		return null;
 	}
 
 	private BooleanExpression dibUserIdEquals(Long userId) {

@@ -1,14 +1,9 @@
 package org.prgrms.nabimarketbe.domain.dibs.service;
 
-import static org.prgrms.nabimarketbe.domain.dibs.repository.DibRepositoryImpl.*;
-
-import java.util.List;
-
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.entity.Dib;
 import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
@@ -91,20 +86,8 @@ public class DibService {
 			throw new RuntimeException("해당 회원이 없습니다.");
 		}
 
-		List<DibListReadResponseDTO> dibList = dibRepository.getUserDibsByUserId(userId, cursorId);
-		Long nextCursorId = getNextCursorId(dibList, cursorId);
+		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByUserId(userId, cursorId);
 
-		return DibListReadPagingResponseDTO.of(dibList, nextCursorId);
-	}
-
-	// TODO : nextCursorId repo단에서 내려주도록 수정 ..?
-	private Long getNextCursorId(
-		List<DibListReadResponseDTO> dibList,
-		Long cursorId
-	) {
-		if(dibList.isEmpty() || dibList.size() < PAGE_SIZE) {
-			return null;
-		}
-		return cursorId + PAGE_SIZE;
+		return dibListReadPagingResponseDTO;
 	}
 }

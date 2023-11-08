@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class DibListReadResponseDTO {
+	private Long dibId;
+
 	private Long cardId;
 
 	private String cardTitle;

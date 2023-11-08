@@ -1,11 +1,9 @@
 package org.prgrms.nabimarketbe.domain.dibs.repository;
 
-import java.util.List;
-
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
 
 public interface DibRepositoryCustom {
-	List<DibListReadResponseDTO> getUserDibsByUserId(
+	DibListReadPagingResponseDTO getUserDibsByUserId(
 		Long userId,
 		Long cursorId
 	);
