@@ -44,19 +44,19 @@ class CardRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    private static Long userChoiId = 1L;
+    private static Long userId = 1L;
 
     @BeforeAll
     void suggestionUserSetting() {
-        User userChoi = User.builder()
+        User user = User.builder()
                 .accountId("c")
                 .nickname("choi")
                 .imageUrl("xxx")
                 .provider("KAKAO")
                 .role("ROLE_USER")
                 .build();
-        ReflectionTestUtils.setField(userChoi, "userId", userChoiId);
-        userRepository.save(userChoi);
+        ReflectionTestUtils.setField(user, "userId", userId);
+        userRepository.save(user);
 
         Category category = new Category(CategoryEnum.ELECTRONICS);
         categoryRepository.save(category);
@@ -76,7 +76,7 @@ class CardRepositoryTest {
                 .poke(true)
                 .tradeType(TradeType.DIRECT_DEALING)
                 .item(itemFromChoiUnder)
-                .user(userChoi)
+                .user(user)
                 .build();
         ReflectionTestUtils.setField(cardFromChoiUnder, "cardId", 1L);
 
@@ -98,7 +98,7 @@ class CardRepositoryTest {
                 .poke(true)
                 .tradeType(TradeType.DIRECT_DEALING)
                 .item(itemFromChoiOver)
-                .user(userChoi)
+                .user(user)
                 .build();
         ReflectionTestUtils.setField(cardFromChoiOver, "cardId", 2L);
 
@@ -109,7 +109,7 @@ class CardRepositoryTest {
     @Test
     void 제안_가능한_카드_조회_찔러보기_허용인_경우() {
         // given
-        Long suggestionUserId = userChoiId; // 제안하고 있는 유저 id
+        Long suggestionUserId = userId; // 제안하고 있는 유저 id
 
         // 제안 대상이 되는 카드의 정보
         PriceRange targetCardPriceRange = PriceRange.PRICE_RANGE_FOUR;
@@ -154,7 +154,7 @@ class CardRepositoryTest {
     @Test
     void 제안_가능한_카드_조회_찔러보기_불가인_경우() {
         // given
-        Long suggestionUserId = userChoiId; // 제안하고 있는 유저 id
+        Long suggestionUserId = userId; // 제안하고 있는 유저 id
 
         // 제안 대상이 되는 카드의 정보
         PriceRange targetCardPriceRange = PriceRange.PRICE_RANGE_FOUR;
