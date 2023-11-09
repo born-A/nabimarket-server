@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "suggestions")
 public class Suggestion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
