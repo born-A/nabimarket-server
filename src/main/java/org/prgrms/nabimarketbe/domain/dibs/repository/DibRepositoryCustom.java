@@ -5,6 +5,7 @@ import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingRespons
 public interface DibRepositoryCustom {
 	DibListReadPagingResponseDTO getUserDibsByUserId(
 		Long userId,
-		Long cursorId
+		Long cursorId,
+		Integer size
 	);
 }

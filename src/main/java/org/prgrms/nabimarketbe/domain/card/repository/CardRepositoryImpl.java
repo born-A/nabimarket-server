@@ -1,16 +1,5 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.*;
-import static org.prgrms.nabimarketbe.domain.item.entity.QItem.*;
-
-import java.util.List;
-
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
-import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
-
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -18,8 +7,17 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import lombok.RequiredArgsConstructor;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
+import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+
+import java.util.List;
+
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
