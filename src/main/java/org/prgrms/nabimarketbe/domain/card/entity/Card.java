@@ -4,10 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
-import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 
@@ -15,8 +13,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table
@@ -68,9 +64,6 @@ public class Card extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @OneToMany(mappedBy = "fromCard")
-    private List<Suggestion> suggestionList = new ArrayList<Suggestion>();
-
     @Builder
     private Card(
             String cardTitle,
@@ -101,9 +94,5 @@ public class Card extends BaseEntity {
 
     public void updateThumbNailImage(String url) {
         this.thumbNailImage = url;
-    }
-
-    public void updateViewCount() {
-        this.viewCount += 1;
     }
 }
