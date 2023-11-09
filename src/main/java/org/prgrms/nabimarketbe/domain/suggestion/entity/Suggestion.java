@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.domain.suggestion.entity;
 
 import lombok.*;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 
@@ -30,11 +31,7 @@ public class Suggestion extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SuggestionStatus suggestionStatus;
 
-    private boolean isFrom;
-
-    private Long counterSuggestionId;
-
-    public void setCounterSuggestionId(Long id) {
-        this.counterSuggestionId = id;
+    public void updateSuggestionStatus(SuggestionStatus suggestionStatus) {
+        this.suggestionStatus = suggestionStatus;
     }
 }
