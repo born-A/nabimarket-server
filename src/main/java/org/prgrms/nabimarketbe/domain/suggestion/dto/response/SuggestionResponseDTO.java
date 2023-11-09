@@ -18,15 +18,13 @@ public record SuggestionResponseDTO(
     LocalDateTime createdAt
 ) {
     public static SuggestionResponseDTO of(
-        Suggestion suggestion,
-        Card toCard,
-        Card fromCard
+        Suggestion suggestion
     ) {
         return SuggestionResponseDTO.builder()
             .suggestionId(suggestion.getSuggestionId())
             .suggestionType(suggestion.getSuggestionType())
-            .fromCardId(fromCard.getCardId())
-            .toCardId(toCard.getCardId())
+            .fromCardId(suggestion.getFromCard().getCardId())
+            .toCardId(suggestion.getToCard().getCardId())
             .suggestionStatus(suggestion.getSuggestionStatus())
             .createdAt(suggestion.getCreatedDate())
             .build();
