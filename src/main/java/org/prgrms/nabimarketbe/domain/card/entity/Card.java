@@ -42,7 +42,6 @@ public class Card extends BaseEntity {
     @Column(name = "card_title", nullable = false)
     private String cardTitle;
 
-//    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "thumbnail_image")
     private String thumbNailImage;
 
