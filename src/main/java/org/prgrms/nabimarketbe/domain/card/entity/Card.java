@@ -1,22 +1,35 @@
 package org.prgrms.nabimarketbe.domain.card.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.global.BaseEntity;
-import org.prgrms.nabimarketbe.domain.item.entity.Item;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.prgrms.nabimarketbe.domain.item.entity.Item;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
-@Table
+@Table(name = "cards")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Card extends BaseEntity {
@@ -108,5 +121,14 @@ public class Card extends BaseEntity {
 
     public void updateViewCount() {
         this.viewCount += 1;
+    }
+
+    // TODO : dibCount 동시성
+    public void increaseDibCount() {
+        this.dibCount += 1;
+    }
+
+    public void decreaseDibCount() {
+        this.dibCount -= 1;
     }
 }
