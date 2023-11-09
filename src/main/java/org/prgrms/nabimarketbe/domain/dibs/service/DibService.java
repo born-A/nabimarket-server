@@ -31,6 +31,10 @@ public class DibService {
 		String token,
 		Long cardId
 	) {
+		Long userId = checkService.parseToken(token);
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+
 		Card card = cardRepository.findById(cardId)
 			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
 
@@ -38,9 +42,6 @@ public class DibService {
 			throw new RuntimeException("자신의 카드는 찜할 수 없습니다.");
 		}
 
-		Long userId = checkService.parseToken(token);
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
 		if (dibRepository.existsDibByCardAndUser(card, user)) {
 			throw new RuntimeException("이미 찜한 카드는 또 찜할 수 없습니다.");
@@ -79,14 +80,19 @@ public class DibService {
 	@Transactional(readOnly = true)
 	public DibListReadPagingResponseDTO getUserDibsByUserId(
 		String token,
-		Long cursorId
+		Long cursorId,
+		Integer size
 	) {
 		Long userId = checkService.parseToken(token);
 		if (!userRepository.existsById(userId)) {
 			throw new RuntimeException("해당 회원이 없습니다.");
 		}
 
-		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByUserId(userId, cursorId);
+		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByUserId(
+			userId,
+			cursorId,
+			size
+		);
 
 		return dibListReadPagingResponseDTO;
 	}

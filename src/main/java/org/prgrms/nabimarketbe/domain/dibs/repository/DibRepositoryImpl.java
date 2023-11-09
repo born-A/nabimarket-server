@@ -2,7 +2,6 @@ package org.prgrms.nabimarketbe.domain.dibs.repository;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.*;
 import static org.prgrms.nabimarketbe.domain.dibs.entity.QDib.*;
-import static org.prgrms.nabimarketbe.domain.item.entity.QItem.*;
 
 import java.util.List;
 
@@ -17,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class DibRepositoryImpl implements DibRepositoryCustom{
-	public static final int PAGE_SIZE = 10;
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
 	public DibListReadPagingResponseDTO getUserDibsByUserId(
 		Long userId,
-		Long cursorId
+		Long cursorId,
+		Integer size
 	) {
 		List<DibListReadResponseDTO> dibList = jpaQueryFactory.select(
 			Projections.fields(
@@ -31,30 +30,30 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 				dib.dibId,
 				card.cardId,
 				card.cardTitle,
-				item.itemName,
-				item.priceRange,
-				card.thumbNailImage.as("thumbNail"),
-				card.createdDate.as("createdAt"),
-				card.modifiedDate.as("modifiedAt")
+				card.item.itemName,
+				card.item.priceRange,
+				card.thumbNailImage.as("thumbNail")
 			)
 		)
 			.from(dib)
 			.join(card).on(card.cardId.eq(dib.card.cardId))
-			.join(item).on(card.item.itemId.eq(item.itemId))
 			.where(
 				dibUserIdEquals(userId),
 				greaterThan(cursorId)
 			)
-			.limit(PAGE_SIZE)
+			.limit(size)
 			.fetch();
 
-		Long nextCursorId = generateCursor(dibList);
+		Long nextCursorId = generateCursor(dibList, size);
 
 		return DibListReadPagingResponseDTO.of(dibList, nextCursorId);
 	}
 
-	private Long generateCursor(List<DibListReadResponseDTO> dibList) {
-		if (dibList.size() == PAGE_SIZE) {
+	private Long generateCursor(
+		List<DibListReadResponseDTO> dibList,
+		Integer size
+	) {
+		if (dibList.size() == size) {
 			return dibList.get(dibList.size() - 1).getDibId();
 		}
 

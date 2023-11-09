@@ -48,9 +48,14 @@ public class DibController {
 	@GetMapping
 	public ResponseEntity<SingleResult<DibListReadPagingResponseDTO>> getUserDibsByUserId(
 		@RequestHeader(name = "authorization") String token,
-		@RequestParam(required = false) Long cursorId
+		@RequestParam(required = false) Long cursorId,
+		@RequestParam Integer size
 	) {
-		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibService.getUserDibsByUserId(token, cursorId);
+		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibService.getUserDibsByUserId(
+			token,
+			cursorId,
+			size
+		);
 
 		return ResponseEntity.ok(ResponseFactory.getSingleResult(dibListReadPagingResponseDTO));
 	}
