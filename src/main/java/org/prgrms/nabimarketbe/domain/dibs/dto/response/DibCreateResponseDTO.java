@@ -14,7 +14,6 @@ public record DibCreateResponseDTO(
 	LocalDateTime createdAt,
 	LocalDateTime modifiedAt
 ) {
-
 	public static DibCreateResponseDTO from(Dib dib) {
 		return DibCreateResponseDTO.builder()
 			.dibId(dib.getDibId())
