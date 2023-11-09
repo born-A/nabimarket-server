@@ -55,7 +55,7 @@ public class SignService {
             }
         });
 
-        TokenDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
+        TokenResponseDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
 
         UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenDTO);
 
