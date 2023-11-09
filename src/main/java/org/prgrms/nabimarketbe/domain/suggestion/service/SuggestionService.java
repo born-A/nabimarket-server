@@ -102,9 +102,9 @@ public class SuggestionService {
                 .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
         if (isAccepted) {
-            suggestion.updateSuggestionStatus(SuggestionStatus.ACCEPTED);
+            suggestion.acceptSuggestion();
         } else {
-            suggestion.updateSuggestionStatus(SuggestionStatus.REFUSED);
+            suggestion.refuseSuggestion();
         }
 
         //TODO : 채팅방 생성

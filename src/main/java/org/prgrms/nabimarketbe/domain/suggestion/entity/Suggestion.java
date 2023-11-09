@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @Table(name = "suggestions")
 public class Suggestion extends BaseEntity {
@@ -43,7 +42,11 @@ public class Suggestion extends BaseEntity {
         this.suggestionStatus = SuggestionStatus.WAITING;
     }
 
-    public void updateSuggestionStatus(SuggestionStatus suggestionStatus) {
-        this.suggestionStatus = suggestionStatus;
+    public void acceptSuggestion() {
+        this.suggestionStatus = SuggestionStatus.ACCEPTED;
+    }
+
+    public void refuseSuggestion() {
+        this.suggestionStatus = SuggestionStatus.REFUSED;
     }
 }
