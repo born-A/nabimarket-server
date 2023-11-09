@@ -1,19 +1,22 @@
 package org.prgrms.nabimarketbe.domain.user.api;
 
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
-import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
-import org.prgrms.nabimarketbe.global.util.model.CommonResult;
-import org.prgrms.nabimarketbe.global.util.model.ListResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-import org.springframework.web.bind.annotation.*;
-
-import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,47 +24,32 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public SingleResult<UserResponseDTO> getUserById(@PathVariable Long userId) {
-        return ResponseFactory.getSingleResult(userService.findById(userId));
-    }
-
-    @GetMapping("/{nickname}")
-    public SingleResult<UserResponseDTO> getUserByNickName(@PathVariable String nickname) {
-        return ResponseFactory.getSingleResult(userService.findByNickname(nickname));
-    }
-
     @GetMapping
-    public ListResult<UserResponseDTO> getUsers() {
-        return ResponseFactory.getListResult(userService.findAllUser());
+    public SingleResult<UserResponseDTO> getUserByToken(@RequestHeader(name = "authorization") String token) {
+        UserGetResponseDTO userGetResponseDTO = userService.getUserByToken(token);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(userGetResponseDTO);
+
+        return ResponseFactory.getSingleResult(userResponseDTO);
     }
 
     @PutMapping("/profile-image")
-    public SingleResult<UserResponseDTO>  updateUserImageUrl(
-            @RequestParam Long userId,
-            @RequestPart("file") MultipartFile file
+    public SingleResult<UserUpdateResponseDTO> updateUserImageUrl(
+        @RequestHeader(name = "authorization") String token,
+        @RequestPart("file") MultipartFile file
     ) {
-        userService.updateUserImageUrl(userId, file);
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUserImageUrl(token, file);
 
-        return ResponseFactory.getSingleResult(userService.findById(userId));
+        return ResponseFactory.getSingleResult(userUpdateResponseDTO);
     }
 
-    @PutMapping
-    public SingleResult<Long> updateUserNickname (
-            @RequestParam Long userId,
-            @RequestParam String nickname
+    @PutMapping("/nickname")
+    public SingleResult<UserResponseDTO> updateUserNickname(
+        @RequestHeader(name = "authorization") String token,
+        @RequestBody UserUpdateRequestDTO userUpdateRequestDTO
     ) {
-        UserRequestDTO userRequestDTO = UserRequestDTO.builder()
-                .nickName(nickname)
-                .build();
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUserNickname(token, userUpdateRequestDTO);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(userUpdateResponseDTO);
 
-        return ResponseFactory.getSingleResult(userService.updateUserNickname(userId, userRequestDTO));
-    }
-
-    @DeleteMapping("/{userId}")
-    public CommonResult delete(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-
-        return ResponseFactory.getSuccessResult();
+        return ResponseFactory.getSingleResult(userResponseDTO);
     }
 }

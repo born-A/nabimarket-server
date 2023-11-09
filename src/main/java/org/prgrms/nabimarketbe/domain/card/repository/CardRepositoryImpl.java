@@ -10,9 +10,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
 import java.util.List;
 
@@ -61,6 +63,32 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         String nextCursor = cardList.size() < size ? null : generateCursor(cardList.get(cardList.size() - 1));
 
         return new CardListReadPagingResponseDTO(cardList, nextCursor);
+    }
+
+    @Override
+    public List<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
+            Long userId,
+            PriceRange priceRange,
+            Boolean pokeAvailable
+    ) {
+        List<SuggestionAvailableCardResponseDTO> cardList = jpaQueryFactory.select(
+                Projections.fields(
+                        SuggestionAvailableCardResponseDTO.class,
+                        card.cardId,
+                        card.thumbNailImage.as("thumbNail"),
+                        item.itemName,
+                        item.priceRange
+                ))
+                .from(card)
+                .leftJoin(item).on(card.item.itemId.eq(item.itemId))
+                .where(card.user.userId.eq(userId))
+                .fetch();
+
+        return getSuggestionResultCardList(
+                pokeAvailable,
+                priceRange,
+                cardList
+        );
     }
 
     private BooleanExpression cursorId(String cursorId){
@@ -124,5 +152,30 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .replace("-", "")
                 .replace(":", "")
                 + String.format("%08d", cardListReadResponseDTO.getCardId());
+    }
+
+    private List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
+            Boolean pokeAvailable,
+            PriceRange priceRange,
+            List<SuggestionAvailableCardResponseDTO> cardList
+    ) {
+        if (pokeAvailable) {
+            return cardList.stream()
+                    .peek(c -> {
+                        if (c.getPriceRange().getValue() < priceRange.getValue()) {
+                            c.updateSuggestionType(SuggestionType.POKE);
+                        } else {
+                            c.updateSuggestionType(SuggestionType.OFFER);
+                        }
+                    })
+                    .toList();
+        }
+
+        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
+                .filter(c -> c.getPriceRange().getValue() >= priceRange.getValue())
+                .toList();
+        offerOnlyCardList.forEach(o -> o.updateSuggestionType(SuggestionType.OFFER));
+
+        return offerOnlyCardList;
     }
 }

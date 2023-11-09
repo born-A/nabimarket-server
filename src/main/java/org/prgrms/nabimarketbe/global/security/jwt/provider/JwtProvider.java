@@ -50,6 +50,7 @@ public class JwtProvider {
         secretKey = Base64UrlCodec.BASE64URL.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Jwt 생성
     public TokenResponseDTO createTokenDTO(Long userPk, String role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
@@ -98,7 +99,7 @@ public class JwtProvider {
     }
 
     // Jwt 토큰 복호화해서 가져오기
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {

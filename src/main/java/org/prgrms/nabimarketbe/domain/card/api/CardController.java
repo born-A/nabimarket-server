@@ -3,9 +3,7 @@ package org.prgrms.nabimarketbe.domain.card.api;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.*;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
@@ -17,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -34,11 +30,17 @@ public class CardController {
                     MediaType.APPLICATION_JSON_VALUE
             }, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SingleResult<CardCreateResponseDTO>> createCard(
+            @RequestHeader(name = "authorization") String token,
             @RequestPart("thumbnail") MultipartFile thumbnail,
             @RequestPart("dto") CardCreateRequestDTO cardCreateRequestDTO,
             @RequestPart("files") List<MultipartFile> files
     ) {
-        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(cardCreateRequestDTO,thumbnail,files);
+        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(
+                token,
+                cardCreateRequestDTO,
+                thumbnail,
+                files
+        );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardCreateResponseDTO));
     }
@@ -69,5 +71,16 @@ public class CardController {
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
+    }
+
+    @GetMapping("/{cardId}/available-cards")
+    public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId
+    ) {
+        CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
+                = cardService.getSuggestionAvailableCards(token, cardId);
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }
 }

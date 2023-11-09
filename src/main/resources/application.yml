@@ -1,7 +1,6 @@
 spring:
   profiles:
-    active: local, jwt
-
+    active: local
 
 springdoc:
   version: '@springdoc.version@'

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.global.error.BaseException;
@@ -64,24 +65,31 @@ public class Card extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     private Card(
             String cardTitle,
+            String thumbNailImage,
             String content,
             String tradeArea,
             Boolean poke,
             TradeType tradeType,
-            Item item
+            Item item,
+            User user
     ) {
-        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {
+        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {  // TODO: 구조 변경 후 thumbNailImage null 처리 추가
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
-        if (poke == null || tradeType == null || item == null) {
+        if (poke == null || tradeType == null || item == null || user == null) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
         this.cardTitle = cardTitle;
+        this.thumbNailImage = thumbNailImage;
         this.content = content;
         this.tradeArea = tradeArea;
         this.poke = poke;
@@ -90,6 +98,7 @@ public class Card extends BaseEntity {
         this.viewCount = 0;
         this.dibCount = 0;
         this.item = item;
+        this.user = user;
     }
 
     public void updateThumbNailImage(String url) {

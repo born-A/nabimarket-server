@@ -3,9 +3,7 @@ package org.prgrms.nabimarketbe.domain.card.service;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.*;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
@@ -21,11 +19,15 @@ import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
 
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.domain.user.service.CheckService;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,19 +42,27 @@ public class CardService {
 
     private final CardImageRepository cardImageRepository;
 
+    private final UserRepository userRepository;
+
     private final CardImageService cardImageService;
+
+    private final CheckService checkService;
 
     @Transactional
     public CardCreateResponseDTO createCard(
+            String token,
             CardCreateRequestDTO cardCreateRequestDTO,
             MultipartFile thumbnail,
             List<MultipartFile> imageFiles
     ) {
+        User user = userRepository.findById(checkService.parseToken(token))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Item item = cardCreateRequestDTO.toItemEntity(category);
-        Card card = cardCreateRequestDTO.toCardEntity(item);
+        Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
         Item savedItem = itemRepository.save(item);
         Card savedCard =  cardRepository.save(card);
@@ -148,5 +158,36 @@ public class CardService {
                 cursorId,
                 size
         );
+    }
+
+    @Transactional
+    public void updateViews(Long cardId) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
+
+        card.updateViewCount();
+    }
+
+    @Transactional(readOnly = true)
+    public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
+            String token,
+            Long cardId
+    ) {
+        User requestUser = userRepository.findById(checkService.parseToken(token))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        Card suggestionTargetCard = cardRepository.findById(cardId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (requestUser.getUserId().equals(suggestionTargetCard.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
+        }
+
+        List<SuggestionAvailableCardResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
+                requestUser.getUserId(),
+                suggestionTargetCard.getItem().getPriceRange(),
+                suggestionTargetCard.getPoke()
+        );
+
+        return new CardListResponseDTO<>(cardListResponse);
     }
 }
