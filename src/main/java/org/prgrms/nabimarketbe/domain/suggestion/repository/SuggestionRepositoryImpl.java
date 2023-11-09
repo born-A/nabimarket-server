@@ -40,11 +40,11 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                 Projections.fields(
                     SuggestionListReadResponseDTO.class,
                     suggestion.suggestionId,
-                    getCounter(directionType).cardId,
-                    getCounter(directionType).cardTitle,
-                    getCounter(directionType).item.itemName,
-                    getCounter(directionType).item.priceRange,
-                    getCounter(directionType).thumbNailImage.as("thumbnail"),
+                    getQCardCounter(directionType).cardId,
+                    getQCardCounter(directionType).cardTitle,
+                    getQCardCounter(directionType).item.itemName,
+                    getQCardCounter(directionType).item.priceRange,
+                    getQCardCounter(directionType).thumbNailImage.as("thumbnail"),
                     suggestion.suggestionType,
                     suggestion.suggestionStatus,
                     suggestion.createdDate.as("createdAt"),
@@ -52,8 +52,8 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                 )
             )
             .from(suggestion)
-            .join(getJoin(directionType),card)
-            .on(getOn(directionType,cardId))
+            .join(getQcardByDirectionType(directionType),card)
+            .on(getExpressionByDirectionType(directionType,cardId))
             .where(cursorIdLessThan(cursorId), suggestionTypeEquals(suggestionType))
             .orderBy(suggestion.createdDate.desc())
             .limit(size)
@@ -65,6 +65,9 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         return new SuggestionListReadPagingResponseDTO(suggestionList1, nextCursor);
     }
 
+    /**
+     * 오퍼, 찔러보기 필터링
+     */
     private BooleanExpression suggestionTypeEquals(SuggestionType suggestionType) {
         if (suggestionType == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
@@ -73,6 +76,9 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         return suggestion.suggestionType.eq(suggestionType);
     }
 
+    /**
+     * 커스텀 커서 id가 주어진 cursorId보다 작은지 확인
+     */
     private BooleanExpression cursorIdLessThan(String cursorId) {
         if (cursorId == null) {
             return null;
@@ -91,28 +97,43 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         )).lt(cursorId);
     }
 
+    /**
+     * 커서 id 생성
+     */
     private String createCursorId(SuggestionListReadResponseDTO suggestionListReadResponseDTO) {
-        return suggestionListReadResponseDTO.getCreatedAt().toString()    // 디폴트는 생성일자 최신순 정렬
+        return suggestionListReadResponseDTO.getCreatedAt().toString()
                 .replace("T", "")
                 .replace("-", "")
                 .replace(":", "")
                 + String.format("%08d", suggestionListReadResponseDTO.getSuggestionId());
     }
 
-    private QCard getJoin(DirectionType directionType) {
+    /**
+     * 내 카드의 대상이 받은 / 보낸 제안인지에 따른 join 절 분기문 처리
+     */
+    private QCard getQcardByDirectionType(DirectionType directionType) {
         return switch (directionType) {
             case RECEIVE -> suggestion.toCard;
             case SEND -> suggestion.fromCard;
         };
     }
-    private QCard getCounter(DirectionType directionType) {
+
+    /**
+     * 받은 / 보낸 제안인지에 따른 Projections.fields 분기문 처리
+     * 내가 받은 제안 조회 -> fromCard 필드
+     * 내가 보낸 제안 -> toCard 필드
+     */
+    private QCard getQCardCounter(DirectionType directionType) {
         return switch (directionType) {
             case RECEIVE -> suggestion.fromCard;
             case SEND -> suggestion.toCard;
         };
     }
 
-    private BooleanExpression getOn(
+    /**
+     * 받은 / 보낸 제안인지에 따른 on 절 분기문 처리
+     */
+    private BooleanExpression getExpressionByDirectionType(
         DirectionType directionType,
         Long cardId
     ) {
