@@ -54,7 +54,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .from(suggestion)
             .join(getJoin(directionType),card)
             .on(getOn(directionType,cardId))
-            .where(filterByCursorId(cursorId), filterBysuggestionType(suggestionType))
+            .where(cursorIdLessThan(cursorId), suggestionTypeEquals(suggestionType))
             .orderBy(suggestion.createdDate.desc())
             .limit(size)
             .fetch();
@@ -65,7 +65,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         return new SuggestionListReadPagingResponseDTO(suggestionList1, nextCursor);
     }
 
-    private BooleanExpression filterBysuggestionType(SuggestionType suggestionType) {
+    private BooleanExpression suggestionTypeEquals(SuggestionType suggestionType) {
         if (suggestionType == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
@@ -73,22 +73,22 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         return suggestion.suggestionType.eq(suggestionType);
     }
 
-    private BooleanExpression filterByCursorId(String cursorId) {
+    private BooleanExpression cursorIdLessThan(String cursorId) {
         if (cursorId == null) {
             return null;
         }
 
         StringTemplate stringTemplate = Expressions.stringTemplate(
                 "DATE_FORMAT({0}, {1})",
-                card.createdDate,   // 디폴트는 생성일자 최신순 정렬
+                suggestion.createdDate,
                 ConstantImpl.create("%Y%m%d%H%i%s")
         );
 
         return stringTemplate.concat(StringExpressions.lpad(
-                        card.cardId.stringValue(),
-                        8,
-                        '0'
-            )).lt(cursorId);
+            suggestion.suggestionId.stringValue(),
+            8,
+            '0'
+        )).lt(cursorId);
     }
 
     private String createCursorId(SuggestionListReadResponseDTO suggestionListReadResponseDTO) {
