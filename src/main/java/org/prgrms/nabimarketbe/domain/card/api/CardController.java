@@ -76,4 +76,15 @@ public class CardController {
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
     }
+
+    @GetMapping("/{cardId}/available-cards")
+    public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId
+    ) {
+        CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
+                = cardService.getSuggestionAvailableCards(token, cardId);
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
+    }
 }

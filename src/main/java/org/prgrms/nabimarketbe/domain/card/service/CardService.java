@@ -60,7 +60,7 @@ public class CardService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Item item = cardCreateRequestDTO.toItemEntity(category);
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
@@ -161,5 +161,28 @@ public class CardService {
                 cursorId,
                 size
         );
+    }
+
+    @Transactional(readOnly = true)
+    public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
+            String token,
+            Long cardId
+    ) {
+        User requestUser = userRepository.findById(checkService.parseToken(token))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        Card suggestionTargetCard = cardRepository.findById(cardId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (requestUser.getUserId().equals(suggestionTargetCard.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
+        }
+
+        List<SuggestionAvailableCardResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
+                requestUser.getUserId(),
+                suggestionTargetCard.getItem().getPriceRange(),
+                suggestionTargetCard.getPoke()
+        );
+
+        return new CardListResponseDTO<>(cardListResponse);
     }
 }
