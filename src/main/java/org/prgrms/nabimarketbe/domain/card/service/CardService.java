@@ -160,14 +160,6 @@ public class CardService {
         );
     }
 
-    @Transactional
-    public void updateViews(Long cardId) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
-
-        card.updateViewCount();
-    }
-
     @Transactional(readOnly = true)
     public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
             String token,

@@ -38,12 +38,11 @@ public class SuggestionService {
             String type,
             SuggestionRequestDTO requestDto
     ) {
-        boolean existsById = userRepository.existsById(checkService.parseToken(token));
+        User user = userRepository.findById(checkService.parseToken(token))
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        if(!existsById) throw new BaseException(ErrorCode.USER_NOT_FOUND);
-
-        Card fromCard = cardRepository.findById(requestDto.fromCardId())
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Card toCard = cardRepository.findById(requestDto.toCardId())
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
@@ -71,15 +70,13 @@ public class SuggestionService {
         User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card card = cardRepository.findById(cardId)
-            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-
-        // TODO : cardRepository.findByCardAndUser(card, user)
+        Card card = cardRepository.findByCardIdAndUser(cardId, user)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         return suggestionRepository.getSuggestionsByType(
             directionType,
             suggestionType,
-            cardId,
+            card.getCardId(),
             cursorId,
             size
         );
@@ -98,10 +95,8 @@ public class SuggestionService {
         Card fromCard = cardRepository.findById(fromCardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        Card toCard = cardRepository.findById(toCardId)
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-
-        // TODO : cardRepository.findByCardAndUser(toCard, user)
+        Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
                 .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
