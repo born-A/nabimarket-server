@@ -53,15 +53,12 @@ public class SuggestionService {
                 .suggestionStatus(SuggestionStatus.WAITING)
                 .build();
 
-        suggestionRepository.save(suggestion);
+        Suggestion savedSuggestion = suggestionRepository.save(suggestion);
 
         return SuggestionResponseDTO.of(
-                suggestion.getSuggestionId(),
-                SuggestionType.valueOf(type),
-                fromCard.getCardId(),
-                toCard.getCardId(),
-                SuggestionStatus.WAITING,
-                suggestion.getCreatedDate()
+            suggestion,
+            toCard,
+            fromCard
         );
     }
 
@@ -115,12 +112,9 @@ public class SuggestionService {
         //TODO : 채팅방 생성
 
         return SuggestionResponseDTO.of(
-            suggestion.getSuggestionId(),
-            suggestion.getSuggestionType(),
-            suggestion.getFromCard().getCardId(),
-            suggestion.getToCard().getCardId(),
-            suggestion.getSuggestionStatus(),
-            suggestion.getCreatedDate()
+            suggestion,
+            fromCard,
+            toCard
         );
     }
 }

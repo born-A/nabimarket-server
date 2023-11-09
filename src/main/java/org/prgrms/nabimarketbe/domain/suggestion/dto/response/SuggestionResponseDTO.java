@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.suggestion.dto.response;
 
 import lombok.Builder;
+import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionStatus;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
@@ -16,20 +18,17 @@ public record SuggestionResponseDTO(
     LocalDateTime createdAt
 ) {
     public static SuggestionResponseDTO of(
-        Long suggestionId,
-        SuggestionType suggestionType,
-        Long fromCardId,
-        Long toCardId,
-        SuggestionStatus suggestionStatus,
-        LocalDateTime createdAt
+        Suggestion suggestion,
+        Card toCard,
+        Card fromCard
     ) {
         return SuggestionResponseDTO.builder()
-            .suggestionId(suggestionId)
-            .suggestionType(suggestionType)
-            .fromCardId(fromCardId)
-            .toCardId(toCardId)
-            .suggestionStatus(suggestionStatus)
-            .createdAt(createdAt)
+            .suggestionId(suggestion.getSuggestionId())
+            .suggestionType(suggestion.getSuggestionType())
+            .fromCardId(fromCard.getCardId())
+            .toCardId(toCard.getCardId())
+            .suggestionStatus(suggestion.getSuggestionStatus())
+            .createdAt(suggestion.getCreatedDate())
             .build();
     }
 }
