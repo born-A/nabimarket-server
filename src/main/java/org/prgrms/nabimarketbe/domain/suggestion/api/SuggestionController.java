@@ -73,9 +73,3 @@ public class SuggestionController {
         return ResponseEntity.ok(ResponseFactory.getSingleResult(suggestionResponseDTO));
     }
 }
-
-
-
-
-
-
