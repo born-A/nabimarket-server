@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 
+import org.prgrms.nabimarketbe.domain.card.entity.QCard;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
@@ -34,68 +35,34 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             String cursorId,
             Integer size
     ) {
-        switch (directionType) {
-            case RECEIVE:
-                List<SuggestionListReadResponseDTO> suggestionList1 = jpaQueryFactory
-                        .select(
-                                Projections.fields(
-                                        SuggestionListReadResponseDTO.class,
-                                        suggestion.suggestionId,
-                                        card.cardId,
-                                        card.cardTitle,
-                                        card.item.itemName,
-                                        card.item.priceRange,
-                                        card.thumbNailImage.as("thumbnail"),
-                                        suggestion.suggestionType,
-                                        suggestion.suggestionStatus,
-                                        suggestion.createdDate.as("createdAt"),
-                                        Expressions.as(Expressions.constant(directionType),"directionType")
-                                )
-                        )
-                        .from(suggestion)
-                        .join(suggestion.toCard,card).on(suggestion.toCard.cardId.eq(cardId))
-                        .where(filterByCursorId(cursorId), filterBysuggestionType(suggestionType))
-                        .orderBy(suggestion.createdDate.desc())
-                        .limit(size)
-                        .fetch();
+        List<SuggestionListReadResponseDTO> suggestionList1 = jpaQueryFactory
+            .select(
+                Projections.fields(
+                    SuggestionListReadResponseDTO.class,
+                    suggestion.suggestionId,
+                    getCounter(directionType).cardId,
+                    getCounter(directionType).cardTitle,
+                    getCounter(directionType).item.itemName,
+                    getCounter(directionType).item.priceRange,
+                    getCounter(directionType).thumbNailImage.as("thumbnail"),
+                    suggestion.suggestionType,
+                    suggestion.suggestionStatus,
+                    suggestion.createdDate.as("createdAt"),
+                    Expressions.as(Expressions.constant(directionType),"directionType")
+                )
+            )
+            .from(suggestion)
+            .join(getJoin(directionType),card)
+            .on(getOn(directionType,cardId))
+            .where(filterByCursorId(cursorId), filterBysuggestionType(suggestionType))
+            .orderBy(suggestion.createdDate.desc())
+            .limit(size)
+            .fetch();
 
-                String nextCursor = suggestionList1.size() < size
-                    ? null : createCursorId(suggestionList1.get(suggestionList1.size() - 1));
+        String nextCursor = suggestionList1.size() < size
+            ? null : createCursorId(suggestionList1.get(suggestionList1.size() - 1));
 
-                return new SuggestionListReadPagingResponseDTO(suggestionList1, nextCursor);
-
-            case SEND:
-                List<SuggestionListReadResponseDTO> suggestionList2 = jpaQueryFactory
-                    .select(
-                        Projections.fields(
-                            SuggestionListReadResponseDTO.class,
-                            suggestion.suggestionId,
-                            card.cardId,
-                            card.cardTitle,
-                            card.item.itemName,
-                            card.item.priceRange,
-                            card.thumbNailImage.as("thumbnail"),
-                            suggestion.suggestionType,
-                            suggestion.suggestionStatus,
-                            suggestion.createdDate.as("createdAt"),
-                            Expressions.as(Expressions.constant(directionType),"directionType")
-                        )
-                    )
-                    .from(suggestion)
-                    .join(suggestion.fromCard,card)
-                    .on(suggestion.fromCard.cardId.eq(cardId))
-                    .where(filterByCursorId(cursorId), filterBysuggestionType(suggestionType))
-                    .orderBy(suggestion.createdDate.desc())
-                    .limit(size)
-                    .fetch();
-
-                String nextCursor2 = suggestionList2.size() < size
-                    ? null : createCursorId(suggestionList2.get(suggestionList2.size() - 1));
-
-                return new SuggestionListReadPagingResponseDTO(suggestionList2, nextCursor2);
-            default:
-                throw new BaseException(ErrorCode.INVALID_REQUEST);
-        }
+        return new SuggestionListReadPagingResponseDTO(suggestionList1, nextCursor);
     }
 
     private BooleanExpression filterBysuggestionType(SuggestionType suggestionType) {
@@ -121,8 +88,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                         card.cardId.stringValue(),
                         8,
                         '0'
-                ))
-                .lt(cursorId);
+            )).lt(cursorId);
     }
 
     private String createCursorId(SuggestionListReadResponseDTO suggestionListReadResponseDTO) {
@@ -131,5 +97,28 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                 .replace("-", "")
                 .replace(":", "")
                 + String.format("%08d", suggestionListReadResponseDTO.getSuggestionId());
+    }
+
+    private QCard getJoin(DirectionType directionType) {
+        return switch (directionType) {
+            case RECEIVE -> suggestion.toCard;
+            case SEND -> suggestion.fromCard;
+        };
+    }
+    private QCard getCounter(DirectionType directionType) {
+        return switch (directionType) {
+            case RECEIVE -> suggestion.fromCard;
+            case SEND -> suggestion.toCard;
+        };
+    }
+
+    private BooleanExpression getOn(
+        DirectionType directionType,
+        Long cardId
+    ) {
+        return switch (directionType) {
+            case RECEIVE -> suggestion.toCard.cardId.eq(cardId);
+            case SEND -> suggestion.fromCard.cardId.eq(cardId);
+        };
     }
 }
