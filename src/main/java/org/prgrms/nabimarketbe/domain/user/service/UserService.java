@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -35,16 +36,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserGetResponseDTO getUserByToken(String token) {
+    public UserResponseDTO<UserGetResponseDTO> getUserByToken(String token) {
         Long userId = checkService.parseToken(token);
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
 
-        return UserGetResponseDTO.from(user);
+        UserGetResponseDTO userGetResponseDTO = UserGetResponseDTO.from(user);
+        UserResponseDTO<UserGetResponseDTO> userResponseDTO = new UserResponseDTO<>(userGetResponseDTO);
+
+        return userResponseDTO;
     }
 
     @Transactional
-    public UserUpdateResponseDTO updateUserImageUrl(String token, MultipartFile file) {
+    public UserResponseDTO<UserUpdateResponseDTO> updateUserImageUrl(String token, MultipartFile file) {
         Long userId = checkService.parseToken(token);
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
@@ -57,12 +61,14 @@ public class UserService {
         String url = s3FileUploadService.uploadFile(Domain.USER.name(), userId, file);
 
         user.updateImageUrl(url);
+        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.from(user);
+        UserResponseDTO<UserUpdateResponseDTO> userResponseDTO = new UserResponseDTO<>(userUpdateResponseDTO);
 
-        return UserUpdateResponseDTO.from(user);
+        return userResponseDTO;
     }
 
     @Transactional
-    public UserUpdateResponseDTO updateUserNickname(
+    public UserResponseDTO<UserUpdateResponseDTO> updateUserNickname(
         String token,
         @Valid UserUpdateRequestDTO userUpdateRequestDTO
     ) {
@@ -72,7 +78,9 @@ public class UserService {
 
         String updateNickname = userUpdateRequestDTO.nickname();
         user.updateNickname(updateNickname);
+        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.from(user);
+        UserResponseDTO<UserUpdateResponseDTO> userResponseDTO = new UserResponseDTO<>(userUpdateResponseDTO);
 
-        return UserUpdateResponseDTO.from(user);
+        return userResponseDTO;
     }
 }

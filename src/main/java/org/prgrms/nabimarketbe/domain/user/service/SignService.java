@@ -55,9 +55,9 @@ public class SignService {
             }
         });
 
-        TokenResponseDTO tokenDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
+        TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
 
-        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenDTO);
+        UserLoginResponseDTO response = UserLoginResponseDTO.of(user, tokenResponseDTO);
 
         return response;
     }
