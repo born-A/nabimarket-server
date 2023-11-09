@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
@@ -15,5 +16,11 @@ public interface CardRepositoryCustom {
             String title,
             String cursorId,
             Integer size
+    );
+
+    List<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
+            Long userId,
+            PriceRange priceRange,
+            Boolean pokeAvailable
     );
 }
