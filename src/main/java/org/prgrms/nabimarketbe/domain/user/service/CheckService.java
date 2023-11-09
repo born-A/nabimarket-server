@@ -30,12 +30,4 @@ public class CheckService {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
     }
-
-    public void checkToken(String token, Card card) {
-        Long tokenUserId = parseToken(token);
-
-        if(!Objects.equals(tokenUserId, card.getUser().getUserId())) {
-            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
-        }
-    }
 }

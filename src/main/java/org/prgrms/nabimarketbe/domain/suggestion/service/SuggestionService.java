@@ -12,6 +12,7 @@ import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionStatus;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.suggestion.repository.SuggestionRepository;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
@@ -37,8 +38,9 @@ public class SuggestionService {
             String type,
             SuggestionRequestDTO requestDto
     ) {
-        userRepository.findById(checkService.parseToken(token))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        boolean existsById = userRepository.existsById(checkService.parseToken(token));
+
+        if(!existsById) throw new BaseException(ErrorCode.USER_NOT_FOUND);
 
         Card fromCard = cardRepository.findById(requestDto.fromCardId())
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
@@ -55,11 +57,7 @@ public class SuggestionService {
 
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
 
-        return SuggestionResponseDTO.of(
-            suggestion,
-            toCard,
-            fromCard
-        );
+        return SuggestionResponseDTO.of(savedSuggestion);
     }
 
     @Transactional(readOnly = true)
@@ -71,15 +69,21 @@ public class SuggestionService {
             String cursorId,
             Integer size
     ){
-        userRepository.findById(checkService.parseToken(token))
+        User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        checkService.checkToken(token, card);
+        // TODO : cardRepository.findByCardAndUser(card, user)
 
-        return suggestionRepository.getSuggestionsByType(directionType,suggestionType, cardId, cursorId, size);
+        return suggestionRepository.getSuggestionsByType(
+            directionType,
+            suggestionType,
+            cardId,
+            cursorId,
+            size
+        );
     }
 
     @Transactional
@@ -89,8 +93,8 @@ public class SuggestionService {
         Long toCardId,
         Boolean isAccepted
     ) {
-        userRepository.findById(checkService.parseToken(token))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(checkService.parseToken(token))
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
@@ -98,7 +102,7 @@ public class SuggestionService {
         Card toCard = cardRepository.findById(toCardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        checkService.checkToken(token, toCard);
+        // TODO : cardRepository.findByCardAndUser(toCard, user)
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
                 .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
@@ -111,10 +115,6 @@ public class SuggestionService {
 
         //TODO : 채팅방 생성
 
-        return SuggestionResponseDTO.of(
-            suggestion,
-            fromCard,
-            toCard
-        );
+        return SuggestionResponseDTO.of(suggestion);
     }
 }
