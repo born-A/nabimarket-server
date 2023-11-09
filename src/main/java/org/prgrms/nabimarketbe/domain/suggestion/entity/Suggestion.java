@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "suggestions")
 public class Suggestion extends BaseEntity {
     @Id
@@ -31,6 +30,18 @@ public class Suggestion extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SuggestionStatus suggestionStatus;
+
+    @Builder
+    public Suggestion(
+        SuggestionType suggestionType,
+        Card fromCard,
+        Card toCard
+    ) {
+        this.suggestionType = suggestionType;
+        this.fromCard = fromCard;
+        this.toCard = toCard;
+        this.suggestionStatus = SuggestionStatus.WAITING;
+    }
 
     public void updateSuggestionStatus(SuggestionStatus suggestionStatus) {
         this.suggestionStatus = suggestionStatus;

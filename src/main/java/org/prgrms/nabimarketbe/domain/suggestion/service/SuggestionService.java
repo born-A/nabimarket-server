@@ -52,7 +52,6 @@ public class SuggestionService {
                 .suggestionType(SuggestionType.valueOf(type))
                 .fromCard(fromCard)
                 .toCard(toCard)
-                .suggestionStatus(SuggestionStatus.WAITING)
                 .build();
 
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
