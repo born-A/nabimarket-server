@@ -1,7 +1,5 @@
 package org.prgrms.nabimarketbe.domain.dibs.dto.response;
 
-import java.time.LocalDateTime;
-
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
 import lombok.Getter;
@@ -21,8 +19,4 @@ public class DibListReadResponseDTO {
 	private PriceRange priceRange;
 
 	private String thumbNail;
-
-	private LocalDateTime createdAt;
-
-	private LocalDateTime modifiedAt;
 }
