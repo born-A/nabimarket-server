@@ -32,13 +32,12 @@ public class SignService {
 
     @Transactional
     public CommonResult signInBySocial(KakaoProfile kakaoProfile) {
-        CommonResult result = signIn(UserSignInRequestDTO.builder()
+
+        return signIn(UserSignInRequestDTO.builder()
                 .accountId(kakaoProfile.getId())
                 .nickname(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
                 .build());
-
-        return ResponseFactory.getSingleResult(result);
     }
     @Transactional
     public CommonResult signIn(UserSignInRequestDTO userSignInRequestDTO) {
@@ -48,12 +47,14 @@ public class SignService {
         );
 
         if (user.isPresent()) {
+
             return ResponseFactory.getSingleResult(jwtProvider.createTokenDTO(
                     user.get().getUserId(), user.get().getRole())
             );
         }
 
         User savedUser = userRepository.save(userSignInRequestDTO.toEntity());
+
         return ResponseFactory.getSingleResult(jwtProvider.createTokenDTO(savedUser.getUserId(), savedUser.getRole()));
     }
 
