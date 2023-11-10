@@ -55,7 +55,7 @@ public class SuggestionService {
 
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
 
-        return SuggestionResponseDTO.of(savedSuggestion);
+        return SuggestionResponseDTO.from(savedSuggestion);
     }
 
     @Transactional(readOnly = true)
@@ -109,6 +109,6 @@ public class SuggestionService {
 
         //TODO : 채팅방 생성
 
-        return SuggestionResponseDTO.of(suggestion);
+        return SuggestionResponseDTO.from(suggestion);
     }
 }

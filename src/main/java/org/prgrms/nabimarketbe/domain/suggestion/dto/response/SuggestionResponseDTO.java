@@ -17,9 +17,7 @@ public record SuggestionResponseDTO(
     SuggestionStatus suggestionStatus,
     LocalDateTime createdAt
 ) {
-    public static SuggestionResponseDTO of(
-        Suggestion suggestion
-    ) {
+    public static SuggestionResponseDTO from(Suggestion suggestion) {
         return SuggestionResponseDTO.builder()
             .suggestionId(suggestion.getSuggestionId())
             .suggestionType(suggestion.getSuggestionType())
