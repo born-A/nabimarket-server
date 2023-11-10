@@ -14,7 +14,7 @@ public record CompleteRequestResponseDTO(
     CompleteRequestStatus completeRequestStatus,
     LocalDateTime createdAt
 ) {
-    public static CompleteRequestResponseDTO of(CompleteRequest completeRequest) {
+    public static CompleteRequestResponseDTO from(CompleteRequest completeRequest) {
         return CompleteRequestResponseDTO.builder()
             .completeRequestId(completeRequest.getCompleteRequestId())
             .fromCardId(completeRequest.getFromCard().getCardId())
