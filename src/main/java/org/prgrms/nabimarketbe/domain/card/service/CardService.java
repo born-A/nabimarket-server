@@ -196,7 +196,9 @@ public class CardService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        checkService.isEqual(token, card.getUser().getUserId());
+        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+        }
 
         cardRepository.delete(card);
     }
