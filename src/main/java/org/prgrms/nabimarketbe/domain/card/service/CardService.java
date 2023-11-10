@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
@@ -186,6 +187,26 @@ public class CardService {
         );
 
         return new CardListResponseDTO<>(cardListResponse);
+    }
+
+    @Transactional
+    public void updateCardStatusById(
+            String token,
+            Long cardId,
+            CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
+    ) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+        }
+
+        switch (cardStatusUpdateRequestDTO.cardStatus()) {
+            case TRADE_AVAILABLE -> card.updateCardStatusToTradeAvailable();
+            case RESERVED -> card.updateCardStatusToReserved();
+            case TRADE_COMPLETE -> card.updateCardStatusToTradeComplete();
+        }
     }
 
     @Transactional
