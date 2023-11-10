@@ -48,10 +48,7 @@ public class CompleteRequestService {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_MYSELF_ERROR);
         }
 
-        CompleteRequest completeRequest = CompleteRequest.builder()
-            .fromCard(fromCard)
-            .toCard(toCard)
-            .build();
+        CompleteRequest completeRequest = new CompleteRequest(fromCard, toCard);
 
         CompleteRequest savedCompleteRequest = completeRequestRepository.save(completeRequest);
 

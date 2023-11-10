@@ -1,9 +1,9 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.entity;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 
@@ -29,8 +29,7 @@ public class CompleteRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CompleteRequestStatus completeRequestStatus;
 
-    @Builder
-    private CompleteRequest(
+    public CompleteRequest(
         Card fromCard,
         Card toCard
     ) {
