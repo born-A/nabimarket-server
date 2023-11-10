@@ -91,6 +91,23 @@ public class CardController {
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }
 
+    @GetMapping("/{status}/my-cards")
+    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable CardStatus status,
+            @RequestParam(required = false) String cursorId,
+            @RequestParam Integer size
+    ) {
+        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getMyCardsByStatus(
+                token,
+                status,
+                cursorId,
+                size
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
+    }
+
     @DeleteMapping("/{cardId}")
     public ResponseEntity<CommonResult> deleteCardById(
             @RequestHeader(name = "authorization") String token,
