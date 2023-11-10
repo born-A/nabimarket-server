@@ -33,15 +33,15 @@ public class CompleteRequestService {
     @Transactional
     public CompleteRequestResponseDTO createCompleteRequest(
         String token,
-        CompleteRequestDTO requestDto
+        CompleteRequestDTO requestDTO
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
+        Card fromCard = cardRepository.findByCardIdAndUser(requestDTO.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
-        Card toCard = cardRepository.findById(requestDto.toCardId())
+        Card toCard = cardRepository.findById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         CompleteRequest completeRequest = CompleteRequest.builder()
