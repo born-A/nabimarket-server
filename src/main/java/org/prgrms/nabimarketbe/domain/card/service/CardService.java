@@ -6,7 +6,9 @@ import java.util.List;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
@@ -184,5 +186,20 @@ public class CardService {
         );
 
         return new CardListResponseDTO<>(cardListResponse);
+    }
+
+    @Transactional
+    public void deleteCardById(
+            String token,
+            Long cardId
+    ) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+        }
+
+        cardRepository.delete(card);
     }
 }
