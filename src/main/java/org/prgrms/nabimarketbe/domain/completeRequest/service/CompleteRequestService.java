@@ -44,6 +44,10 @@ public class CompleteRequestService {
         Card toCard = cardRepository.findById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
+        if (user.getUserId().equals(toCard.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_MYSELF_ERROR);
+        }
+
         CompleteRequest completeRequest = CompleteRequest.builder()
             .fromCard(fromCard)
             .toCard(toCard)
