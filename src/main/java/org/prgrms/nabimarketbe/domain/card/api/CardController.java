@@ -97,12 +97,13 @@ public class CardController {
             @RequestBody CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
     ) {
         cardService.updateCardStatusById(
-                token,
-                cardId,
-                cardStatusUpdateRequestDTO
+            token,
+            cardId,
+            cardStatusUpdateRequestDTO
         );
 
         return ResponseEntity.ok(ResponseFactory.getSuccessResult());
+    }
 
     @GetMapping("/{status}/my-cards")
     public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
