@@ -15,6 +15,7 @@ import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 import java.util.List;
 
@@ -55,6 +56,41 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                         status(status),
                         priceRange(priceRange),
                         title(cardTitle)
+                )
+                .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
+                .limit(size)
+                .fetch();
+
+        String nextCursor = cardList.size() < size ? null : generateCursor(cardList.get(cardList.size() - 1));
+
+        return new CardListReadPagingResponseDTO(cardList, nextCursor);
+    }
+
+    @Override
+    public CardListReadPagingResponseDTO getMyCardsByStatus(
+            User user,
+            CardStatus status,
+            String cursorId,
+            Integer size
+    ) {
+        List<CardListReadResponseDTO> cardList = jpaQueryFactory.select(
+                        Projections.fields(
+                                CardListReadResponseDTO.class,
+                                card.cardId,
+                                card.cardTitle,
+                                item.itemName,
+                                item.priceRange,
+                                card.thumbNailImage.as("thumbNail"),
+                                card.status,
+                                card.createdDate.as("createdAt"),
+                                card.modifiedDate.as("modifiedAt")
+                        )
+                )
+                .from(card)
+                .leftJoin(item).on(card.item.itemId.eq(item.itemId))
+                .where(
+                        cursorId(cursorId),
+                        card.status.eq(status)
                 )
                 .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
                 .limit(size)

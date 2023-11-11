@@ -189,6 +189,24 @@ public class CardService {
         return new CardListResponseDTO<>(cardListResponse);
     }
 
+    @Transactional(readOnly = true)
+    public CardListReadPagingResponseDTO getMyCardsByStatus(
+            String token,
+            CardStatus status,
+            String cursorId,
+            Integer size
+    ) {
+        User user = userRepository.findById(checkService.parseToken(token))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+        return cardRepository.getMyCardsByStatus(
+                user,
+                status,
+                cursorId,
+                size
+        );
+    }
+
     @Transactional
     public void updateCardStatusById(
             String token,
