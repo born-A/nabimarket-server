@@ -1,30 +1,24 @@
 package org.prgrms.nabimarketbe.domain.card.api;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +34,7 @@ public class CardController {
                     MediaType.APPLICATION_JSON_VALUE
             }, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SingleResult<CardCreateResponseDTO>> createCard(
-            @RequestHeader(name = "authorization") String token,
+            @RequestHeader(name = "Authorization") String token,
             @RequestPart("thumbnail") MultipartFile thumbnail,
             @RequestPart("dto") CardCreateRequestDTO cardCreateRequestDTO,
             @RequestPart("files") List<MultipartFile> files
@@ -85,12 +79,54 @@ public class CardController {
 
     @GetMapping("/{cardId}/available-cards")
     public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
-            @RequestHeader(name = "authorization") String token,
+            @RequestHeader(name = "Authorization") String token,
             @PathVariable Long cardId
     ) {
         CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
                 = cardService.getSuggestionAvailableCards(token, cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
+    }
+
+    @PutMapping("/status/{cardId}")
+    public ResponseEntity<CommonResult> updateCardStatusById(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId,
+            @RequestBody CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
+    ) {
+        cardService.updateCardStatusById(
+            token,
+            cardId,
+            cardStatusUpdateRequestDTO
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSuccessResult());
+    }
+
+    @GetMapping("/{status}/my-cards")
+    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable CardStatus status,
+            @RequestParam(required = false) String cursorId,
+            @RequestParam Integer size
+    ) {
+        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getMyCardsByStatus(
+                token,
+                status,
+                cursorId,
+                size
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
+    }
+
+    @DeleteMapping("/{cardId}")
+    public ResponseEntity<CommonResult> deleteCardById(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId
+    ) {
+        cardService.deleteCardById(token, cardId);
+
+        return ResponseEntity.ok(ResponseFactory.getSuccessResult());
     }
 }

@@ -42,7 +42,6 @@ public class Card extends BaseEntity {
     @Column(name = "card_title", nullable = false)
     private String cardTitle;
 
-//    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "thumbnail_image")
     private String thumbNailImage;
 
@@ -130,5 +129,17 @@ public class Card extends BaseEntity {
 
     public void decreaseDibCount() {
         this.dibCount -= 1;
+    }
+
+    public void updateCardStatusToTradeAvailable() {
+        this.status = CardStatus.TRADE_AVAILABLE;
+    }
+
+    public void updateCardStatusToReserved() {
+        this.status = CardStatus.RESERVED;
+    }
+
+    public void updateCardStatusToTradeComplete() {
+        this.status = CardStatus.TRADE_COMPLETE;
     }
 }
