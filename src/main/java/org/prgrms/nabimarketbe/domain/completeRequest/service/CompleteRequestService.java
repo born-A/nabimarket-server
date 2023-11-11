@@ -52,7 +52,7 @@ public class CompleteRequestService {
 
         CompleteRequest savedCompleteRequest = completeRequestRepository.save(completeRequest);
 
-        return CompleteRequestResponseDTO.of(savedCompleteRequest);
+        return CompleteRequestResponseDTO.from(savedCompleteRequest);
     }
 
     @Transactional
@@ -75,6 +75,12 @@ public class CompleteRequestService {
             .findCompleteRequestByFromCardAndToCard(fromCard, toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.COMPLETE_REQUEST_NOT_FOUND));
 
+        updateStatus(isAccepted, completeRequest, fromCard, toCard);
+
+        return CompleteRequestResponseDTO.from(completeRequest);
+    }
+
+    private void updateStatus(Boolean isAccepted, CompleteRequest completeRequest, Card fromCard, Card toCard) {
         if (isAccepted) {
             completeRequest.acceptCompleteRequest();
             fromCard.tradeCompleted();
@@ -82,8 +88,6 @@ public class CompleteRequestService {
         } else {
             completeRequest.refuseCompleteRequest();
         }
-
-        return CompleteRequestResponseDTO.of(completeRequest);
     }
 
     @Transactional(readOnly = true)
