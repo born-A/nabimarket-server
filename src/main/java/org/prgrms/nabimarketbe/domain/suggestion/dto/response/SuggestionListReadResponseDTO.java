@@ -1,7 +1,6 @@
 package org.prgrms.nabimarketbe.domain.suggestion.dto.response;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
@@ -10,7 +9,6 @@ import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @Getter
 public class SuggestionListReadResponseDTO{
         private Long suggestionId;
