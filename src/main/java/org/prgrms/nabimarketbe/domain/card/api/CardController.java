@@ -3,6 +3,7 @@ package org.prgrms.nabimarketbe.domain.card.api;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
@@ -13,6 +14,7 @@ import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
+import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 
 import org.springframework.http.MediaType;
@@ -86,5 +88,46 @@ public class CardController {
                 = cardService.getSuggestionAvailableCards(token, cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
+    }
+
+    @PutMapping("/status/{cardId}")
+    public ResponseEntity<CommonResult> updateCardStatusById(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId,
+            @RequestBody CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
+    ) {
+        cardService.updateCardStatusById(
+                token,
+                cardId,
+                cardStatusUpdateRequestDTO
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSuccessResult());
+
+    @GetMapping("/{status}/my-cards")
+    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable CardStatus status,
+            @RequestParam(required = false) String cursorId,
+            @RequestParam Integer size
+    ) {
+        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getMyCardsByStatus(
+                token,
+                status,
+                cursorId,
+                size
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
+    }
+
+    @DeleteMapping("/{cardId}")
+    public ResponseEntity<CommonResult> deleteCardById(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId
+    ) {
+        cardService.deleteCardById(token, cardId);
+
+        return ResponseEntity.ok(ResponseFactory.getSuccessResult());
     }
 }
