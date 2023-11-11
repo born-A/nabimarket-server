@@ -130,4 +130,16 @@ public class Card extends BaseEntity {
     public void decreaseDibCount() {
         this.dibCount -= 1;
     }
+
+    public void updateCardStatusToTradeAvailable() {
+        this.status = CardStatus.TRADE_AVAILABLE;
+    }
+
+    public void updateCardStatusToReserved() {
+        this.status = CardStatus.RESERVED;
+    }
+
+    public void updateCardStatusToTradeComplete() {
+        this.status = CardStatus.TRADE_COMPLETE;
+    }
 }

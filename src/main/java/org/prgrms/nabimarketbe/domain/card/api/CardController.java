@@ -3,6 +3,7 @@ package org.prgrms.nabimarketbe.domain.card.api;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
@@ -90,6 +91,20 @@ public class CardController {
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }
+
+    @PutMapping("/status/{cardId}")
+    public ResponseEntity<CommonResult> updateCardStatusById(
+            @RequestHeader(name = "authorization") String token,
+            @PathVariable Long cardId,
+            @RequestBody CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
+    ) {
+        cardService.updateCardStatusById(
+                token,
+                cardId,
+                cardStatusUpdateRequestDTO
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSuccessResult());
 
     @GetMapping("/{status}/my-cards")
     public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
