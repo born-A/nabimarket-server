@@ -78,7 +78,7 @@ public class DibService {
 	}
 
 	@Transactional(readOnly = true)
-	public DibListReadPagingResponseDTO getUserDibsByUserId(
+	public DibListReadPagingResponseDTO getUserDibsByDibId(
 		String token,
 		Long cursorId,
 		Integer size
@@ -88,7 +88,7 @@ public class DibService {
 			throw new RuntimeException("해당 회원이 없습니다.");
 		}
 
-		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByUserId(
+		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByDibId(
 			userId,
 			cursorId,
 			size
