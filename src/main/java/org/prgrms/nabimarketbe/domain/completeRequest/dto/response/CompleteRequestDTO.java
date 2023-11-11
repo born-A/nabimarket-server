@@ -7,15 +7,15 @@ import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequestStat
 import java.time.LocalDateTime;
 
 @Builder
-public record CompleteRequestResponseDTO(
+public record CompleteRequestDTO(
     Long completeRequestId,
     Long fromCardId,
     Long toCardId,
     CompleteRequestStatus completeRequestStatus,
     LocalDateTime createdAt
 ) {
-    public static CompleteRequestResponseDTO from(CompleteRequest completeRequest) {
-        return CompleteRequestResponseDTO.builder()
+    public static CompleteRequestDTO from(CompleteRequest completeRequest) {
+        return CompleteRequestDTO.builder()
             .completeRequestId(completeRequest.getCompleteRequestId())
             .fromCardId(completeRequest.getFromCard().getCardId())
             .toCardId(completeRequest.getToCard().getCardId())

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
@@ -31,9 +30,9 @@ public class CompleteRequestService {
     private final CheckService checkService;
 
     @Transactional
-    public CompleteRequestResponseDTO createCompleteRequest(
+    public CompleteRequestDTO createCompleteRequest(
         String token,
-        CompleteRequestDTO requestDTO
+        org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO requestDTO
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
@@ -52,11 +51,11 @@ public class CompleteRequestService {
 
         CompleteRequest savedCompleteRequest = completeRequestRepository.save(completeRequest);
 
-        return CompleteRequestResponseDTO.from(savedCompleteRequest);
+        return CompleteRequestDTO.from(savedCompleteRequest);
     }
 
     @Transactional
-    public CompleteRequestResponseDTO updateCompleteRequestStatus(
+    public CompleteRequestDTO updateCompleteRequestStatus(
         String token,
         Long fromCardId,
         Long toCardId,
@@ -77,7 +76,7 @@ public class CompleteRequestService {
 
         updateStatus(isAccepted, completeRequest, fromCard, toCard);
 
-        return CompleteRequestResponseDTO.from(completeRequest);
+        return CompleteRequestDTO.from(completeRequest);
     }
 
     private void updateStatus(Boolean isAccepted, CompleteRequest completeRequest, Card fromCard, Card toCard) {

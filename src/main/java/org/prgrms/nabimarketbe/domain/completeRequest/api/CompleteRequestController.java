@@ -2,8 +2,7 @@ package org.prgrms.nabimarketbe.domain.completeRequest.api;
 
 import lombok.RequiredArgsConstructor;
 
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.service.CompleteRequestService;
@@ -20,11 +19,11 @@ public class CompleteRequestController {
     private final CompleteRequestService completeRequestService;
 
     @PostMapping
-    public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> createCompleteRequest(
+    public ResponseEntity<SingleResult<CompleteRequestDTO>> createCompleteRequest(
         @RequestHeader(name = "Authorization") String token,
-        @RequestBody CompleteRequestDTO completeRequestDTO
+        @RequestBody org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO completeRequestDTO
     ) {
-        CompleteRequestResponseDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
+        CompleteRequestDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
             token,
             completeRequestDTO
         );
@@ -55,19 +54,19 @@ public class CompleteRequestController {
     }
 
     @PutMapping("/confirm")
-    public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> updateCompleteRequestStatus(
+    public ResponseEntity<SingleResult<CompleteRequestDTO>> updateCompleteRequestStatus(
         @RequestHeader(name = "Authorization") String token,
         @RequestParam Long fromCardId,
         @RequestParam Long toCardId,
         @RequestParam Boolean isAccepted
     ) {
-        CompleteRequestResponseDTO completeRequestResponseDTO = completeRequestService.updateCompleteRequestStatus(
+        CompleteRequestDTO completeRequestDTO = completeRequestService.updateCompleteRequestStatus(
             token,
             fromCardId,
             toCardId,
             isAccepted
         );
 
-        return ResponseEntity.ok(ResponseFactory.getSingleResult(completeRequestResponseDTO));
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(completeRequestDTO));
     }
 }
