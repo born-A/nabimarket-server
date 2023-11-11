@@ -46,12 +46,12 @@ public class DibController {
 	}
 
 	@GetMapping
-	public ResponseEntity<SingleResult<DibListReadPagingResponseDTO>> getUserDibsByUserId(
+	public ResponseEntity<SingleResult<DibListReadPagingResponseDTO>> getUserDibsByDibId(
 		@RequestHeader(name = "authorization") String token,
 		@RequestParam(required = false) Long cursorId,
 		@RequestParam Integer size
 	) {
-		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibService.getUserDibsByUserId(
+		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibService.getUserDibsByDibId(
 			token,
 			cursorId,
 			size
