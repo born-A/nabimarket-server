@@ -1,8 +1,9 @@
 package org.prgrms.nabimarketbe.global.error;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -12,6 +13,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "U0001", "존재하지 않는 사용자입니다."),
     CARD_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "C0001", "존재하지 않는 카드입니다."),
     SUGGESTION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "S0001", "존재하지 않는 제안입니다."),
+    SUGGESTION_CANNOT_AFFORD(HttpStatus.INTERNAL_SERVER_ERROR, "S0002", "제안을 할 수 없는 대상입니다."),
     USER_NOT_MATCHED(HttpStatus.INTERNAL_SERVER_ERROR,"UOO02", "적합한 사용자가 아닙니다."),
     CARD_SUGGESTION_MYSELF_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C0002", "자신의 카드에는 제안을 할 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CA0001", "존재하지 않는 카테고리입니다."),
