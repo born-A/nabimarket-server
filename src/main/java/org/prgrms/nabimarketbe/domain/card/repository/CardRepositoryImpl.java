@@ -1,13 +1,10 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.core.types.dsl.StringTemplate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
+
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
@@ -17,10 +14,15 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
-import java.util.List;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
@@ -89,8 +91,9 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .from(card)
                 .leftJoin(item).on(card.item.itemId.eq(item.itemId))
                 .where(
-                        cursorId(cursorId),
-                        card.status.eq(status)
+                    cursorId(cursorId),
+                    card.status.eq(status),
+                    card.user.eq(user)
                 )
                 .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
                 .limit(size)
