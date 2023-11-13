@@ -1,11 +1,9 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.service;
 
-import lombok.RequiredArgsConstructor;
-
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
@@ -14,9 +12,10 @@ import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -82,8 +81,8 @@ public class CompleteRequestService {
     private void updateStatus(Boolean isAccepted, CompleteRequest completeRequest, Card fromCard, Card toCard) {
         if (isAccepted) {
             completeRequest.acceptCompleteRequest();
-            fromCard.tradeCompleted();
-            toCard.tradeCompleted();
+            fromCard.updateCardStatusToTradeComplete();
+            toCard.updateCardStatusToTradeComplete();
         } else {
             completeRequest.refuseCompleteRequest();
         }
