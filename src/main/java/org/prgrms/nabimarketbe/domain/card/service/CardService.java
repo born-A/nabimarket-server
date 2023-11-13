@@ -16,7 +16,6 @@ import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
-import org.prgrms.nabimarketbe.domain.cardimage.service.CardImageService;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
@@ -46,12 +45,10 @@ public class CardService {
 
     private final UserRepository userRepository;
 
-    private final CardImageService cardImageService;
-
     private final CheckService checkService;
 
     @Transactional
-    public CardCreateResponseDTO createCard(
+    public CardResponseDTO<CardCreateResponseDTO> createCard(
             String token,
             CardCreateRequestDTO cardCreateRequestDTO
     ) {
@@ -62,10 +59,8 @@ public class CardService {
                 .orElseThrow(() -> new BaseException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Item item = cardCreateRequestDTO.toItemEntity(category);
-        Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        Item savedItem = itemRepository.save(item);
-        Card savedCard =  cardRepository.save(card);
+        Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
         List<CardImage> images = cardCreateRequestDTO.images().stream()
             .map(i -> i.toCardImageEntity(card))

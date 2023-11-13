@@ -35,6 +35,10 @@ public record CardCreateResponseDTO(
             Item item,
             List<CardImage> cardImages
     ) {
+        List<CardImageCreateResponseDTO> cardImagesResponses = cardImages.stream()
+            .map(cardImage -> CardImageCreateResponseDTO.from(cardImage.getImageUrl()))
+            .toList();
+
         return CardCreateResponseDTO.builder()
                 .cardId(card.getCardId())
                 .cardTitle(card.getCardTitle())
