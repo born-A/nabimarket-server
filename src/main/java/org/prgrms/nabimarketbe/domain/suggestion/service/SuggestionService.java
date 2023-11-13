@@ -52,8 +52,11 @@ public class SuggestionService {
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
         if (suggestionTypeEnum.equals(SuggestionType.POKE)) {
+            if(!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
+                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
+            }
             if(!toCard.isPokeAvailable()) {
-                throw new BaseException(ErrorCode.SUGGESTION_CANNOT_AFFORD);
+                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
             }
         }
 
