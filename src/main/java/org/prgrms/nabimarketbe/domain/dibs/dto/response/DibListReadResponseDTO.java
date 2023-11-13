@@ -1,5 +1,6 @@
 package org.prgrms.nabimarketbe.domain.dibs.dto.response;
 
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
 import lombok.Getter;
@@ -19,4 +20,6 @@ public class DibListReadResponseDTO {
 	private PriceRange priceRange;
 
 	private String thumbNail;
+
+	private CardStatus status;
 }

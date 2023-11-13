@@ -19,7 +19,7 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	public DibListReadPagingResponseDTO getUserDibsByUserId(
+	public DibListReadPagingResponseDTO getUserDibsByDibId(
 		Long userId,
 		Long cursorId,
 		Integer size
@@ -32,7 +32,8 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 				card.cardTitle,
 				card.item.itemName,
 				card.item.priceRange,
-				card.thumbNailImage.as("thumbNail")
+				card.thumbNailImage.as("thumbNail"),
+				card.status
 			)
 		)
 			.from(dib)
