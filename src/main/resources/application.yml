@@ -2,11 +2,6 @@ spring:
   profiles:
     active: local
 
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: false
-
 springdoc:
   version: '@springdoc.version@'
   swagger-ui:
