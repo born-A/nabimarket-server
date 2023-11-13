@@ -48,7 +48,7 @@ public record CardUpdateResponseDTO(
             .tradeType(card.getTradeType())
             .category(item.getCategory().getCategoryName())
             .tradeArea(card.getTradeArea())
-            .pokeAvailable(card.getPoke())
+            .pokeAvailable(card.getPokeAvailable())
             .content(card.getContent())
             .viewCount(card.getViewCount())
             .dibCount(card.getDibCount())

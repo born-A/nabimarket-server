@@ -187,7 +187,7 @@ public class CardService {
         List<SuggestionAvailableCardResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
                 requestUser.getUserId(),
                 suggestionTargetCard.getItem().getPriceRange(),
-                suggestionTargetCard.getPoke()
+                suggestionTargetCard.getPokeAvailable()
         );
 
         return new CardListResponseDTO<>(cardListResponse);

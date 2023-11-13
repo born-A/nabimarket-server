@@ -55,8 +55,8 @@ public class Card extends BaseEntity {
     private String tradeArea;
 
     @NotNull(message = "비울 수 없는 값입니다.")
-    @Column(name = "poke", nullable = false)
-    private Boolean poke;
+    @Column(name = "poke_available", nullable = false)
+    private Boolean pokeAvailable;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "trade_type", nullable = false)
@@ -105,7 +105,7 @@ public class Card extends BaseEntity {
         this.thumbNailImage = thumbNailImage;
         this.content = content;
         this.tradeArea = tradeArea;
-        this.poke = poke;
+        this.pokeAvailable = poke;
         this.tradeType = tradeType;
         this.status = CardStatus.TRADE_AVAILABLE;
         this.viewCount = 0;
@@ -143,6 +143,10 @@ public class Card extends BaseEntity {
         this.status = CardStatus.TRADE_COMPLETE;
     }
 
+    public Boolean isPokeAvailable() {
+        return pokeAvailable;
+    }
+
     public void updateCard(
         String cardTitle,
         String thumbNailImageUrl,
@@ -153,7 +157,7 @@ public class Card extends BaseEntity {
     ) {
         this.cardTitle = cardTitle;
         this.thumbNailImage = thumbNailImageUrl;
-        this.poke = pokeAvalilable;
+        this.pokeAvailable = pokeAvalilable;
         this.content = content;
         this.tradeType = tradeType;
         this.tradeArea = tradeArea;

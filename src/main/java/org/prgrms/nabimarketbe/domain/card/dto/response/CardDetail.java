@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.card.dto.response;
 
-import lombok.Builder;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
@@ -10,8 +12,7 @@ import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record CardDetail(
@@ -42,7 +43,7 @@ public record CardDetail(
             .cardTitle(card.getCardTitle())
             .category(item.getCategory().getCategoryName())
             .itemName(item.getItemName())
-            .pokeAvailable(card.getPoke())
+            .pokeAvailable(card.getPokeAvailable())
             .createdAt(card.getCreatedDate())
             .modifiedAt(card.getModifiedDate())
             .viewCount(card.getViewCount())
@@ -52,8 +53,9 @@ public record CardDetail(
             .tradeType(card.getTradeType())
             .tradeArea(card.getTradeArea())
             .dibsCount(card.getDibCount())
-            .isMyDib() //TODO
-            .images(cardImages)
+            .isMyDib(true) //TODO
+            .images(cardImages.stream().map(
+                cardImage -> CardImageSingleReadResponseDTO.from(cardImage.getImageUrl())).toList())
             .build();
     }
 }
