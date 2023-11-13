@@ -43,13 +43,13 @@ public class SuggestionService {
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Card toCard = cardRepository.findById(requestDto.toCardId())
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Suggestion suggestion = Suggestion.builder()
-                .suggestionType(SuggestionType.valueOf(type))
-                .fromCard(fromCard)
-                .toCard(toCard)
-                .build();
+            .suggestionType(SuggestionType.valueOf(type))
+            .fromCard(fromCard)
+            .toCard(toCard)
+            .build();
 
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
 
