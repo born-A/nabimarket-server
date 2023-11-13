@@ -37,6 +37,23 @@ public record CardDetail(
         Item item,
         List<CardImage> cardImages
     ) {
-        return CardDetail.builder().build();
+        return CardDetail.builder()
+            .cardId(card.getCardId())
+            .cardTitle(card.getCardTitle())
+            .category(item.getCategory().getCategoryName())
+            .itemName(item.getItemName())
+            .pokeAvailable(card.getPoke())
+            .createdAt(card.getCreatedDate())
+            .modifiedAt(card.getModifiedDate())
+            .viewCount(card.getViewCount())
+            .priceRange(item.getPriceRange())
+            .content(card.getContent())
+            .cardStatus(card.getStatus())
+            .tradeType(card.getTradeType())
+            .tradeArea(card.getTradeArea())
+            .dibsCount(card.getDibCount())
+            .isMyDib() //TODO
+            .images(cardImages)
+            .build();
     }
 }
