@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
@@ -17,10 +19,8 @@ import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,33 +30,28 @@ import java.util.List;
 public class CardController {
     private final CardService cardService;
 
-    @PostMapping(
-            consumes = {
-                    MediaType.MULTIPART_FORM_DATA_VALUE,
-                    MediaType.APPLICATION_JSON_VALUE
-            }, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SingleResult<CardCreateResponseDTO>> createCard(
-            @RequestHeader(name = "Authorization") String token,
-            @RequestPart("thumbnail") MultipartFile thumbnail,
-            @RequestPart("dto") CardCreateRequestDTO cardCreateRequestDTO,
-            @RequestPart("files") List<MultipartFile> files
+    @Parameter(
+        name = "Authorization",
+        description = "로그인 성공 후 AccessToken",
+        required = true,
+        schema = @Schema(type = "string"),
+        in = ParameterIn.HEADER)
+    @PostMapping
+    public ResponseEntity<SingleResult<CardResponseDTO<CardCreateResponseDTO>>> createCard(
+            @RequestHeader("Authorization") String token,
+            @RequestBody CardCreateRequestDTO cardCreateRequestDTO
     ) {
-        CardCreateResponseDTO cardCreateResponseDTO = cardService.createCard(
-                token,
-                cardCreateRequestDTO,
-                thumbnail,
-                files
-        );
+        CardResponseDTO<CardCreateResponseDTO> card = cardService.createCard(token, cardCreateRequestDTO);
 
-        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardCreateResponseDTO));
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(card));
     }
 
-    @GetMapping("/{cardId}")
-    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
-        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
-
-        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
-    }
+//    @GetMapping("/{cardId}")
+//    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
+//        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
+//
+//        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
+//    }
 
     @GetMapping
     public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getCardsByCondition(
@@ -88,6 +83,21 @@ public class CardController {
                 = cardService.getSuggestionAvailableCards(token, cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
+    }
+
+    @PutMapping("/{cardId}")
+    public ResponseEntity<SingleResult<CardResponseDTO<CardUpdateResponseDTO>>> updateCardById(
+        @RequestHeader("Authorization") String token,
+        @PathVariable Long cardId,
+        @RequestBody CardUpdateRequestDTO cardUpdateRequestDTO
+    ) {
+        CardResponseDTO<CardUpdateResponseDTO> cardResponseDTO = cardService.updateCardById(
+            token,
+            cardId,
+            cardUpdateRequestDTO
+        );
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardResponseDTO));
     }
 
     @PutMapping("/status/{cardId}")

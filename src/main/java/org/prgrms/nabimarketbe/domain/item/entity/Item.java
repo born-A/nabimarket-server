@@ -51,4 +51,14 @@ public class Item extends BaseEntity {
         this.priceRange = priceRange;
         this.category = category;
     }
+
+    public void updateItem(
+        String itemName,
+        PriceRange priceRange,
+        Category category
+    ) {
+        this.itemName = itemName;
+        this.priceRange = priceRange;
+        this.category = category;
+    }
 }

@@ -6,12 +6,12 @@ import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
-import org.prgrms.nabimarketbe.global.Domain;
 import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
 
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,47 +26,35 @@ public class CardImageService {
     private final S3FileUploadService s3FileUploadService;
 
     @Transactional
-    public String uploadImageUrl(Long cardId, MultipartFile file) {
+    public String uploadImageUrl(Long cardId, String imageUrl) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (card.getThumbNailImage() != null) {
             String thumbNailImage = card.getThumbNailImage();
             s3FileUploadService.deleteImage(thumbNailImage);
         }
 
-        String url = s3FileUploadService.uploadFile(
-                Domain.CARD.name(),
-                cardId,
-                file
-        );
-
-        card.updateThumbNailImage(url);
+        card.updateThumbNailImage(imageUrl);
 
         CardImage cardImage = CardImage.builder()
-                .imageUrl(url)
+                .imageUrl(imageUrl)
                 .card(card)
                 .build();
 
         cardImageRepository.save(cardImage);
 
-        return url;
+        return imageUrl;
     }
 
     @Transactional
-    public List<CardImage> uploadImageUrlList(Long cardId, List<MultipartFile> files) {
+    public List<CardImage> uploadImageUrlList(Long cardId, List<String> imageUrls) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다"));
-
-        List<String> uploadFileList =  s3FileUploadService.uploadFileList(
-                Domain.CARD.name(),
-                cardId,
-                files
-        );
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         List<CardImage> cardImageList = new ArrayList<>();
 
-        for (String url : uploadFileList) {
+        for (String url : imageUrls) {
             CardImage cardImage = CardImage.builder()
                     .imageUrl(url)
                     .card(card)

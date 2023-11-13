@@ -82,8 +82,8 @@ public class CompleteRequestService {
     private void updateStatus(Boolean isAccepted, CompleteRequest completeRequest, Card fromCard, Card toCard) {
         if (isAccepted) {
             completeRequest.acceptCompleteRequest();
-            fromCard.tradeCompleted();
-            toCard.tradeCompleted();
+            fromCard.updateCardStatusToTradeComplete();
+            toCard.updateCardStatusToTradeComplete();
         } else {
             completeRequest.refuseCompleteRequest();
         }
