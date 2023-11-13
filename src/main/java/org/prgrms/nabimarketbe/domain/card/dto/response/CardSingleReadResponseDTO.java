@@ -1,59 +1,21 @@
 package org.prgrms.nabimarketbe.domain.card.dto.response;
 
 import lombok.Builder;
-import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
-import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
-import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageSingleReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
-
-import java.util.List;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 
 @Builder
-public record CardSingleReadResponseDTO( // TODO: createdAt, modifiedAt, isMyDib, userId, userName, userProfile,
-        Long cardId,
-        String cardTitle,
-        String content,
-        String tradeArea,
-        Boolean pokeAvailable,
-        TradeType tradeType,
-        CardStatus status,
-        Integer viewCount,
-        Integer dibCount,
-        String itemName,
-        CategoryEnum category,
-        PriceRange priceRange,
-        List<CardImageSingleReadResponseDTO> images
+public record CardSingleReadResponseDTO (
+    CardResponseDTO<CardDetail> cardInfo,
+    UserResponseDTO<UserSummaryResponseDTO> userInfo
 ) {
     public static CardSingleReadResponseDTO of(
-            Long cardId,
-            String cardTitle,
-            String content,
-            String tradeArea,
-            Boolean pokeAvailable,
-            TradeType tradeType,
-            CardStatus status,
-            Integer viewCount,
-            Integer dibCount,
-            String itemName,
-            CategoryEnum category,
-            PriceRange priceRange,
-            List<CardImageSingleReadResponseDTO> images
-    ) {
+        CardResponseDTO<CardDetail> cardInfo,
+        UserResponseDTO<UserSummaryResponseDTO> userInfo
+    ){
         return CardSingleReadResponseDTO.builder()
-                .cardId(cardId)
-                .cardTitle(cardTitle)
-                .content(content)
-                .tradeArea(tradeArea)
-                .pokeAvailable(pokeAvailable)
-                .tradeType(tradeType)
-                .status(status)
-                .viewCount(viewCount)
-                .dibCount(dibCount)
-                .itemName(itemName)
-                .category(category)
-                .priceRange(priceRange)
-                .images(images)
-                .build();
+            .cardInfo(cardInfo)
+            .userInfo(userInfo)
+            .build();
     }
 }

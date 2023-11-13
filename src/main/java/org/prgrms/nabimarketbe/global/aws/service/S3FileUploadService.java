@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,22 +25,18 @@ public class S3FileUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private final String defaultUrl = "https://airplanning-bucket.s3.ap-northeast-2.amazonaws.com";
+    @Value("${cloud.aws.s3.defaultUrl}")
+    private String defaultUrl;
 
     public String getThumbnailPath(String path) {
         return amazonS3.getUrl(bucketName, path).toString();
     }
 
     public String uploadFile(
-            String domain,
-            Long entityId,
             MultipartFile file
     ) {
-        String dir = "/" + domain;
-        String subDir = "/" + entityId;
-
-        String bucketDir = bucketName + dir + subDir;
-        String dirUrl = defaultUrl + dir + subDir + "/";
+        String bucketDir = bucketName;
+        String dirUrl = defaultUrl + "/";
 
         String fileName = generateFileName(file);
 
@@ -57,18 +54,13 @@ public class S3FileUploadService {
         return dirUrl + fileName;
     }
 
-    public List<String> uploadFileList(
-            String domain,
-            Long entityId,
+    public List<String> uploadFiles(
             List<MultipartFile> multipartFiles
     ) {
         List<String> imgUrlList = new ArrayList<>();
 
-        String dir = "/" + domain;
-        String subDir = "/" + entityId;
-
-        String bucketDir = bucketName + dir + subDir;
-        String dirUrl = defaultUrl + dir + subDir + "/";
+        String bucketDir = bucketName;
+        String dirUrl = defaultUrl + "/";
 
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file);
@@ -111,4 +103,3 @@ public class S3FileUploadService {
         return UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
     }
 }
-

@@ -142,4 +142,20 @@ public class Card extends BaseEntity {
     public void updateCardStatusToTradeComplete() {
         this.status = CardStatus.TRADE_COMPLETE;
     }
+
+    public void updateCard(
+        String cardTitle,
+        String thumbNailImageUrl,
+        Boolean pokeAvalilable,
+        String content,
+        TradeType tradeType,
+        String tradeArea
+    ) {
+        this.cardTitle = cardTitle;
+        this.thumbNailImage = thumbNailImageUrl;
+        this.poke = pokeAvalilable;
+        this.content = content;
+        this.tradeType = tradeType;
+        this.tradeArea = tradeArea;
+    }
 }

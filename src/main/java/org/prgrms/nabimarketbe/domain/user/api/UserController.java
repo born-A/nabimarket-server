@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,9 +34,9 @@ public class UserController {
     @PutMapping("/profile-image")
     public ResponseEntity<SingleResult<UserResponseDTO<UserUpdateResponseDTO>>> updateUserImageUrl(
         @RequestHeader(name = "authorization") String token,
-        @RequestPart("file") MultipartFile file
+        @RequestParam String profileUrl
     ) {
-        UserResponseDTO<UserUpdateResponseDTO> userResponseDTO = userService.updateUserImageUrl(token, file);
+        UserResponseDTO<UserUpdateResponseDTO> userResponseDTO = userService.updateUserImageUrl(token, profileUrl);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(userResponseDTO));
     }

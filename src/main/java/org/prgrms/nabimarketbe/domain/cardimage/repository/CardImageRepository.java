@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CardImageRepository extends JpaRepository<CardImage, Long> {
     List<CardImage> findAllByCard(Card card);
+
+    void deleteAllByCard(Card card);
 }
