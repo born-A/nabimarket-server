@@ -1,5 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +12,13 @@ import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
+import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
@@ -134,27 +137,36 @@ public class CardService {
         return new CardResponseDTO<>(cardUpdateResponseDTO);
     }
 
-//    @Transactional
-//    public CardSingleReadResponseDTO getCardById(Long cardId) {
-//        Card card = cardRepository.findById(cardId)
-//                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-//
-//        card.updateViewCount();
-//
-//        Item item = card.getItem();
-//
-//        List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
-//        List<CardImageSingleReadResponseDTO> cardImageSingleReadResponseDTOS = new ArrayList<>();
-//
-//        for (CardImage cardImage : cardImages) {
-//            cardImageSingleReadResponseDTOS.add(CardImageSingleReadResponseDTO.from(cardImage.getImageUrl()));
-//        }
-//
-//        return CardSingleReadResponseDTO.of(
-//            cardInfo,
-//            userinfo
-//        );
-//    }
+   @Transactional(readOnly = true)
+   public CardSingleReadResponseDTO getCardById(
+       String token,
+       Long cardId
+   ) {
+       Long userId = checkService.parseToken(token);
+       User user = userRepository.findById(userId)
+           .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+       Card card = cardRepository.findById(cardId)
+               .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+       if (!user.getUserId().equals(card.getUser().getUserId())) {
+           card.updateViewCount();
+       }
+
+       Item item = card.getItem();
+
+       List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
+       List<CardImageSingleReadResponseDTO> cardImageSingleReadResponseDTOS = new ArrayList<>();
+
+       for (CardImage cardImage : cardImages) {
+           cardImageSingleReadResponseDTOS.add(CardImageSingleReadResponseDTO.from(cardImage.getImageUrl()));
+       }
+
+       return CardSingleReadResponseDTO.of(
+           cardInfo,
+           userinfo
+       );
+   }
 
     @Transactional(readOnly = true)
     public CardListReadPagingResponseDTO getCardsByCondition(
