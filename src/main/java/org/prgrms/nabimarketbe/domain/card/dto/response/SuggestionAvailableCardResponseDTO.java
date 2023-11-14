@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class SuggestionAvailableCardResponseDTO {
     private Long cardId;
 
-    private String thumbNail;
+    private String thumbnail;
 
     private String itemName;
 

@@ -1,14 +1,9 @@
 package org.prgrms.nabimarketbe.domain.suggestion.repository;
 
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.core.types.dsl.StringTemplate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.entity.QCard;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
@@ -18,10 +13,15 @@ import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 
-import java.util.List;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
@@ -35,7 +35,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             String cursorId,
             Integer size
     ) {
-        List<SuggestionListReadResponseDTO> suggestionList1 = jpaQueryFactory
+        List<SuggestionListReadResponseDTO> suggestionList = jpaQueryFactory
             .select(
                 Projections.fields(
                     SuggestionListReadResponseDTO.class,
@@ -44,7 +44,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                     getQCardCounter(directionType).cardTitle,
                     getQCardCounter(directionType).item.itemName,
                     getQCardCounter(directionType).item.priceRange,
-                    getQCardCounter(directionType).thumbNailImage.as("thumbnail"),
+                    getQCardCounter(directionType).thumbnail,
                     suggestion.suggestionType,
                     suggestion.suggestionStatus,
                     suggestion.createdDate.as("createdAt"),
@@ -59,10 +59,10 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .limit(size)
             .fetch();
 
-        String nextCursor = suggestionList1.size() < size
-            ? null : createCursorId(suggestionList1.get(suggestionList1.size() - 1));
+        String nextCursor = suggestionList.size() < size
+            ? null : createCursorId(suggestionList.get(suggestionList.size() - 1));
 
-        return new SuggestionListReadPagingResponseDTO(suggestionList1, nextCursor);
+        return new SuggestionListReadPagingResponseDTO(suggestionList, nextCursor);
     }
 
     /**

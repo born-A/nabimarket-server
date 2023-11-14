@@ -1,5 +1,10 @@
 package org.prgrms.nabimarketbe.domain.card.dto.request;
 
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
 import org.prgrms.nabimarketbe.domain.cardimage.dto.request.CardImageCreateRequestDTO;
@@ -10,16 +15,12 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-
 public record CardCreateRequestDTO(
         @NotBlank(message = "공백을 허용하지 않습니다.")
         String cardTitle,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
-        String thumbNailImage,
+        String thumbnail,
 
         @NotBlank(message = "공백을 허용하지 않습니다.")
         String itemName,
@@ -55,10 +56,10 @@ public record CardCreateRequestDTO(
         public Card toCardEntity(Item item, User user) {
                 return Card.builder()
                         .cardTitle(cardTitle)
-                        .thumbNailImage(thumbNailImage)
+                        .thumbnail(thumbnail)
                         .content(content)
                         .tradeArea(tradeArea)
-                        .poke(pokeAvailable)
+                        .pokeAvailable(pokeAvailable)
                         .tradeType(tradeType)
                         .item(item)
                         .user(user)

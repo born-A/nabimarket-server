@@ -1,20 +1,19 @@
 package org.prgrms.nabimarketbe.domain.cardimage.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
-
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +29,12 @@ public class CardImageService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        if (card.getThumbNailImage() != null) {
-            String thumbNailImage = card.getThumbNailImage();
-            s3FileUploadService.deleteImage(thumbNailImage);
+        if (card.getThumbnail() != null) {
+            String thumbnail = card.getThumbnail();
+            s3FileUploadService.deleteImage(thumbnail);
         }
 
-        card.updateThumbNailImage(imageUrl);
+        card.updateThumbnail(imageUrl);
 
         CardImage cardImage = CardImage.builder()
                 .imageUrl(imageUrl)
