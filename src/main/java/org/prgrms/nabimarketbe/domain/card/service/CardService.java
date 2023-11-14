@@ -174,11 +174,11 @@ public class CardService {
     @Transactional(readOnly = true)
     public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
             String token,
-            Long cardId
+            Long targetCardId
     ) {
         User requestUser = userRepository.findById(checkService.parseToken(token))
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-        Card suggestionTargetCard = cardRepository.findById(cardId)
+        Card suggestionTargetCard = cardRepository.findById(targetCardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (requestUser.getUserId().equals(suggestionTargetCard.getUser().getUserId())) {
@@ -190,7 +190,10 @@ public class CardService {
                 suggestionTargetCard.getCardId()
         );
 
-        return new CardListResponseDTO<>(cardListResponse);
+        List<SuggestionAvailableCardResponseDTO> suggestionResultCardList =
+            getSuggestionResultCardList(suggestionTargetCard.getCardId(), cardListResponse);
+
+        return new CardListResponseDTO<>(suggestionResultCardList);
     }
 
     @Transactional(readOnly = true)

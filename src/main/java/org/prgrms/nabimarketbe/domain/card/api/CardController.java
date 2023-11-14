@@ -85,16 +85,7 @@ public class CardController {
         CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
                 = cardService.getSuggestionAvailableCards(token, targetCardId);
 
-
-        List<SuggestionAvailableCardResponseDTO> suggestionResultCardList = cardService.getSuggestionResultCardList(
-            targetCardId,
-            cardListResponseDTO.cardList()
-        );
-
-        CardListResponseDTO<SuggestionAvailableCardResponseDTO> listResponseDTO =
-            new CardListResponseDTO<>(suggestionResultCardList);
-
-        return ResponseEntity.ok(ResponseFactory.getSingleResult(listResponseDTO));
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }
 
     @PutMapping("/{cardId}")

@@ -133,8 +133,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .from(card)
                 .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
                 .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
-            .where(card.user.userId.eq(userId))
-            .distinct()
+            .where(card.user.userId.eq(userId),
+                suggestion.toCard.cardId.eq(targetCardId).or(suggestion.toCard.cardId.isNull()))
             .fetch();
 
         return cardList;
