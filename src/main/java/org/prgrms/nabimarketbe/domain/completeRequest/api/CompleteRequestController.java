@@ -1,16 +1,22 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.api;
 
-import lombok.RequiredArgsConstructor;
-
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.service.CompleteRequestService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +27,7 @@ public class CompleteRequestController {
     @PostMapping
     public ResponseEntity<SingleResult<CompleteRequestDTO>> createCompleteRequest(
         @RequestHeader(name = "Authorization") String token,
-        @RequestBody org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO completeRequestDTO
+        @RequestBody CompleteRequestDTO completeRequestDTO
     ) {
         CompleteRequestDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
             token,

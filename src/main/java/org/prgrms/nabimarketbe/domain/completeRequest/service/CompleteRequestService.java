@@ -7,6 +7,8 @@ import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListRe
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
+import org.prgrms.nabimarketbe.domain.suggestion.repository.SuggestionRepository;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -22,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class CompleteRequestService {
     private final CompleteRequestRepository completeRequestRepository;
 
+    private final SuggestionRepository suggestionRepository;
+
     private final UserRepository userRepository;
 
     private final CardRepository cardRepository;
@@ -31,7 +35,7 @@ public class CompleteRequestService {
     @Transactional
     public CompleteRequestDTO createCompleteRequest(
         String token,
-        org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO requestDTO
+        CompleteRequestDTO requestDTO
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
@@ -41,6 +45,13 @@ public class CompleteRequestService {
 
         Card toCard = cardRepository.findById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
+            .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
+
+        if (!suggestion.isAccepted()) {
+            throw new BaseException(ErrorCode.SUGGESTION_NOT_ACCEPTED);
+        }
 
         if (user.getUserId().equals(toCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_MYSELF_ERROR);

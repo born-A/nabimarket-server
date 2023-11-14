@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
@@ -62,7 +64,10 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        List<CardImage> images = cardCreateRequestDTO.images().stream()
+        // images 비어있을 경우..
+        List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
+            .orElseGet(Collections::emptyList)
+            .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 

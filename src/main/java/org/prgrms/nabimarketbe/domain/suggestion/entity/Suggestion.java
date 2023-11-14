@@ -1,11 +1,22 @@
 package org.prgrms.nabimarketbe.domain.suggestion.entity;
 
-import lombok.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 
-import javax.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -42,11 +53,24 @@ public class Suggestion extends BaseEntity {
         this.suggestionStatus = SuggestionStatus.WAITING;
     }
 
+    public void decideSuggestion(Boolean isAccpeted) {
+        if(isAccpeted) {
+            acceptSuggestion();
+        }
+        else {
+            refuseSuggestion();
+        }
+    }
+
     public void acceptSuggestion() {
         this.suggestionStatus = SuggestionStatus.ACCEPTED;
     }
 
     public void refuseSuggestion() {
         this.suggestionStatus = SuggestionStatus.REFUSED;
+    }
+
+    public boolean isAccepted() {
+        return suggestionStatus.equals(SuggestionStatus.ACCEPTED);
     }
 }
