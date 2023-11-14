@@ -115,7 +115,7 @@ public class SuggestionService {
                 .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
         suggestion.decideSuggestion(isAccepted);
-        
+
         //TODO : 채팅방 생성
 
         return SuggestionResponseDTO.from(suggestion);
