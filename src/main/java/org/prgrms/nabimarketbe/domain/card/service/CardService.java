@@ -165,7 +165,6 @@ public class CardService {
 
        boolean isMyDib = dibRepository.existsDibByCardAndUser(card, user);
 
-
        CardDetail cardDetail = CardDetail.of(
            card,
            cardImages,

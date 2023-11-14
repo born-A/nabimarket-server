@@ -53,6 +53,10 @@ public class Suggestion extends BaseEntity {
         this.suggestionStatus = SuggestionStatus.WAITING;
     }
 
+    public boolean isAccepted() {
+        return suggestionStatus.equals(SuggestionStatus.ACCEPTED);
+    }
+
     public void decideSuggestion(Boolean isAccpeted) {
         if(isAccpeted) {
             acceptSuggestion();
@@ -62,15 +66,11 @@ public class Suggestion extends BaseEntity {
         }
     }
 
-    public void acceptSuggestion() {
+    private void acceptSuggestion() {
         this.suggestionStatus = SuggestionStatus.ACCEPTED;
     }
 
-    public void refuseSuggestion() {
+    private void refuseSuggestion() {
         this.suggestionStatus = SuggestionStatus.REFUSED;
-    }
-
-    public boolean isAccepted() {
-        return suggestionStatus.equals(SuggestionStatus.ACCEPTED);
     }
 }
