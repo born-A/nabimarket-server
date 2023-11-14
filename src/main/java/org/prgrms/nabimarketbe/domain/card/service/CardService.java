@@ -1,7 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetail;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
@@ -18,15 +18,17 @@ import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardR
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
+import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -52,6 +54,8 @@ public class CardService {
 
     private final CheckService checkService;
 
+    private final DibRepository dibRepository;
+
     @Transactional
     public CardResponseDTO<CardCreateResponseDTO> createCard(
             String token,
@@ -67,16 +71,20 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
+        CardImage thumbNail = new CardImage(cardCreateRequestDTO.thumbNailImage(), card);
+
         // images 비어있을 경우..
         List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
-            .orElseGet(Collections::emptyList)
+            .orElse(new ArrayList<>())
             .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
+        List<CardImage> newCardImages = addThumbNail(images, thumbNail);
+
         Item savedItem = itemRepository.save(item);
-        Card savedCard =  cardRepository.save(card);
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(images);    // TODO: images bulk insert로 전환
+        Card savedCard = cardRepository.save(card);
+        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);    // TODO: images bulk insert로 전환
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
@@ -153,18 +161,25 @@ public class CardService {
            card.updateViewCount();
        }
 
-       Item item = card.getItem();
-
        List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
-       List<CardImageSingleReadResponseDTO> cardImageSingleReadResponseDTOS = new ArrayList<>();
 
-       for (CardImage cardImage : cardImages) {
-           cardImageSingleReadResponseDTOS.add(CardImageSingleReadResponseDTO.from(cardImage.getImageUrl()));
-       }
+       boolean isMyDib = dibRepository.existsDibByCardAndUser(card, user);
+
+
+       CardDetail cardDetail = CardDetail.of(
+           card,
+           cardImages,
+           isMyDib
+       );
+
+       UserSummaryResponseDTO userSummaryResponseDTO = UserSummaryResponseDTO.from(user);
+
+       CardResponseDTO<CardDetail> cardInfo = new CardResponseDTO<>(cardDetail);
+       UserResponseDTO<UserSummaryResponseDTO> userInfo = new UserResponseDTO<>(userSummaryResponseDTO);
 
        return CardSingleReadResponseDTO.of(
            cardInfo,
-           userinfo
+           userInfo
        );
    }
 
@@ -261,5 +276,12 @@ public class CardService {
         }
 
         cardRepository.delete(card);
+    }
+
+    private List<CardImage> addThumbNail(List<CardImage> cardImages, CardImage thumbnail) {
+        List<CardImage> newCardImages = new ArrayList<>(cardImages);
+        newCardImages.add(0, thumbnail);
+
+        return newCardImages;
     }
 }
