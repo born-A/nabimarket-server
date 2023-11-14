@@ -2,16 +2,18 @@ package org.prgrms.nabimarketbe.domain.card.repository;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
 import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 import java.util.List;
 
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardInfo;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionInfo;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 import com.querydsl.core.types.ConstantImpl;
@@ -106,29 +108,38 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 
     @Override
     public List<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
-            Long userId,
-            PriceRange priceRange,
-            Boolean pokeAvailable
+        Long userId,
+        Long targetCardId
     ) {
-        List<SuggestionAvailableCardResponseDTO> cardList = jpaQueryFactory.select(
+        List<SuggestionAvailableCardResponseDTO> cardList = jpaQueryFactory
+            .select(
                 Projections.fields(
-                        SuggestionAvailableCardResponseDTO.class,
+                    SuggestionAvailableCardResponseDTO.class,
+                    Projections.fields(
+                        CardInfo.class,
                         card.cardId,
-                        card.thumbNailImage.as("thumbNail"),
-                        item.itemName,
-                        item.priceRange
-                ))
-                .from(card)
-                .leftJoin(item).on(card.item.itemId.eq(item.itemId))
-                .where(card.user.userId.eq(userId))
-                .fetch();
+                        card.thumbNailImage.as("thumbnail"),
+                        card.cardTitle,
+                        card.item.itemName,
+                        card.item.priceRange
+                    ).as("cardInfo"),
+                    Projections.fields(
+                        SuggestionInfo.class,
+                        suggestion.suggestionType,
+                        suggestion.suggestionStatus
+                    ).as("suggestionInfo")
+                )
+            )
+            .from(card)
+                .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
+                .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
+            .where(card.user.userId.eq(userId))
+            .distinct()
+            .fetch();
 
-        return getSuggestionResultCardList(
-                pokeAvailable,
-                priceRange,
-                cardList
-        );
+        return cardList;
     }
+
 
     private BooleanExpression cursorId(String cursorId){
         if (cursorId == null) {
@@ -191,30 +202,5 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .replace("-", "")
                 .replace(":", "")
                 + String.format("%08d", cardListReadResponseDTO.getCardId());
-    }
-
-    private List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
-            Boolean pokeAvailable,
-            PriceRange priceRange,
-            List<SuggestionAvailableCardResponseDTO> cardList
-    ) {
-        if (pokeAvailable) {
-            return cardList.stream()
-                    .peek(c -> {
-                        if (c.getPriceRange().getValue() < priceRange.getValue()) {
-                            c.updateSuggestionType(SuggestionType.POKE);
-                        } else {
-                            c.updateSuggestionType(SuggestionType.OFFER);
-                        }
-                    })
-                    .toList();
-        }
-
-        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
-                .filter(c -> c.getPriceRange().getValue() >= priceRange.getValue())
-                .toList();
-        offerOnlyCardList.forEach(o -> o.updateSuggestionType(SuggestionType.OFFER));
-
-        return offerOnlyCardList;
     }
 }
