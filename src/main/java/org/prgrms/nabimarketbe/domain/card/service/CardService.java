@@ -71,7 +71,7 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        CardImage thumbNail = new CardImage(cardCreateRequestDTO.thumbNailImage(), card);
+        CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
 
         // images 비어있을 경우..
         List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
@@ -80,7 +80,7 @@ public class CardService {
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> newCardImages = addThumbNail(images, thumbNail);
+        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
 
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
@@ -121,8 +121,8 @@ public class CardService {
 
         card.updateCard(
             cardUpdateRequestDTO.cardTitle(),
-            cardUpdateRequestDTO.thumbNailImage(),
-            cardUpdateRequestDTO.poke(),
+            cardUpdateRequestDTO.thumbnail(),
+            cardUpdateRequestDTO.pokeAvailable(),
             cardUpdateRequestDTO.content(),
             cardUpdateRequestDTO.tradeType(),
             cardUpdateRequestDTO.tradeArea()
@@ -130,11 +130,17 @@ public class CardService {
 
         cardImageRepository.deleteAllByCard(card);
 
-        List<CardImage> cardImages = cardUpdateRequestDTO.images().stream()
+        CardImage thumbnail = new CardImage(cardUpdateRequestDTO.thumbnail(), card);
+
+        List<CardImage> images = Optional.ofNullable(cardUpdateRequestDTO.images())
+            .orElse(new ArrayList<>())
+            .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(cardImages);
+        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
+
+        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
@@ -277,7 +283,7 @@ public class CardService {
         cardRepository.delete(card);
     }
 
-    private List<CardImage> addThumbNail(List<CardImage> cardImages, CardImage thumbnail) {
+    private List<CardImage> addThumbnail(List<CardImage> cardImages, CardImage thumbnail) {
         List<CardImage> newCardImages = new ArrayList<>(cardImages);
         newCardImages.add(0, thumbnail);
 
