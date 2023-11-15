@@ -1,5 +1,20 @@
 package org.prgrms.nabimarketbe.domain.suggestion.repository;
 
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+
+import java.util.List;
+
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.QCard;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionDetailResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -9,19 +24,6 @@ import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
-
-import org.prgrms.nabimarketbe.domain.card.entity.QCard;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
-import java.util.List;
-
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
 public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
