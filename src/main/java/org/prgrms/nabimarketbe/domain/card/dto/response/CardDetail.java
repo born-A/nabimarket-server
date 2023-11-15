@@ -1,17 +1,17 @@
 package org.prgrms.nabimarketbe.domain.card.dto.response;
 
-import lombok.Builder;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
 import org.prgrms.nabimarketbe.domain.cardimage.dto.response.CardImageSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record CardDetail(
@@ -34,26 +34,27 @@ public record CardDetail(
 ) {
     public static CardDetail of(
         Card card,
-        Item item,
-        List<CardImage> cardImages
+        List<CardImage> cardImages,
+        boolean isMyDib
     ) {
         return CardDetail.builder()
             .cardId(card.getCardId())
             .cardTitle(card.getCardTitle())
-            .category(item.getCategory().getCategoryName())
-            .itemName(item.getItemName())
-            .pokeAvailable(card.getPoke())
+            .category(card.getItem().getCategory().getCategoryName())
+            .itemName(card.getItem().getItemName())
+            .pokeAvailable(card.getPokeAvailable())
             .createdAt(card.getCreatedDate())
             .modifiedAt(card.getModifiedDate())
             .viewCount(card.getViewCount())
-            .priceRange(item.getPriceRange())
+            .priceRange(card.getItem().getPriceRange())
             .content(card.getContent())
             .cardStatus(card.getStatus())
             .tradeType(card.getTradeType())
             .tradeArea(card.getTradeArea())
             .dibsCount(card.getDibCount())
-            .isMyDib(true) //TODO
-            .images(cardImages)
+            .isMyDib(isMyDib)
+            .images(cardImages.stream().map(
+                cardImage -> CardImageSingleReadResponseDTO.from(cardImage.getImageUrl())).toList())
             .build();
     }
 }

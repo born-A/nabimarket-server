@@ -1,14 +1,18 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetail;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
@@ -19,9 +23,12 @@ import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
+import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -48,6 +55,8 @@ public class CardService {
 
     private final CheckService checkService;
 
+    private final DibRepository dibRepository;
+
     @Transactional
     public CardResponseDTO<CardCreateResponseDTO> createCard(
             String token,
@@ -63,13 +72,20 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        List<CardImage> images = cardCreateRequestDTO.images().stream()
+        CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
+
+        // images 비어있을 경우..
+        List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
+            .orElse(new ArrayList<>())
+            .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
+        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
+
         Item savedItem = itemRepository.save(item);
-        Card savedCard =  cardRepository.save(card);
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(images);    // TODO: images bulk insert로 전환
+        Card savedCard = cardRepository.save(card);
+        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);    // TODO: images bulk insert로 전환
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
@@ -106,8 +122,8 @@ public class CardService {
 
         card.updateCard(
             cardUpdateRequestDTO.cardTitle(),
-            cardUpdateRequestDTO.thumbNailImage(),
-            cardUpdateRequestDTO.poke(),
+            cardUpdateRequestDTO.thumbnail(),
+            cardUpdateRequestDTO.pokeAvailable(),
             cardUpdateRequestDTO.content(),
             cardUpdateRequestDTO.tradeType(),
             cardUpdateRequestDTO.tradeArea()
@@ -115,11 +131,17 @@ public class CardService {
 
         cardImageRepository.deleteAllByCard(card);
 
-        List<CardImage> cardImages = cardUpdateRequestDTO.images().stream()
+        CardImage thumbnail = new CardImage(cardUpdateRequestDTO.thumbnail(), card);
+
+        List<CardImage> images = Optional.ofNullable(cardUpdateRequestDTO.images())
+            .orElse(new ArrayList<>())
+            .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(cardImages);
+        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
+
+        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
@@ -130,27 +152,42 @@ public class CardService {
         return new CardResponseDTO<>(cardUpdateResponseDTO);
     }
 
-//    @Transactional
-//    public CardSingleReadResponseDTO getCardById(Long cardId) {
-//        Card card = cardRepository.findById(cardId)
-//                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-//
-//        card.updateViewCount();
-//
-//        Item item = card.getItem();
-//
-//        List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
-//        List<CardImageSingleReadResponseDTO> cardImageSingleReadResponseDTOS = new ArrayList<>();
-//
-//        for (CardImage cardImage : cardImages) {
-//            cardImageSingleReadResponseDTOS.add(CardImageSingleReadResponseDTO.from(cardImage.getImageUrl()));
-//        }
-//
-//        return CardSingleReadResponseDTO.of(
-//            cardInfo,
-//            userinfo
-//        );
-//    }
+   @Transactional(readOnly = true)
+   public CardSingleReadResponseDTO getCardById(
+       String token,
+       Long cardId
+   ) {
+       Long userId = checkService.parseToken(token);
+       User user = userRepository.findById(userId)
+           .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+       Card card = cardRepository.findById(cardId)
+               .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+       if (!user.getUserId().equals(card.getUser().getUserId())) {
+           card.updateViewCount();
+       }
+
+       List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
+
+       boolean isMyDib = dibRepository.existsDibByCardAndUser(card, user);
+
+       CardDetail cardDetail = CardDetail.of(
+           card,
+           cardImages,
+           isMyDib
+       );
+
+       UserSummaryResponseDTO userSummaryResponseDTO = UserSummaryResponseDTO.from(user);
+
+       CardResponseDTO<CardDetail> cardInfo = new CardResponseDTO<>(cardDetail);
+       UserResponseDTO<UserSummaryResponseDTO> userInfo = new UserResponseDTO<>(userSummaryResponseDTO);
+
+       return CardSingleReadResponseDTO.of(
+           cardInfo,
+           userInfo
+       );
+   }
 
     @Transactional(readOnly = true)
     public CardListReadPagingResponseDTO getCardsByCondition(
@@ -248,7 +285,7 @@ public class CardService {
 
         cardRepository.delete(card);
     }
-
+  
     @Transactional
     public List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
         Long targetId,
@@ -276,5 +313,15 @@ public class CardService {
         offerOnlyCardList.forEach(o -> o.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER));
 
         return offerOnlyCardList;
+    }
+  
+    private List<CardImage> addThumbnail(
+      List<CardImage> cardImages,
+      CardImage thumbnail
+    ) {
+        List<CardImage> newCardImages = new ArrayList<>(cardImages);
+        newCardImages.add(0, thumbnail);
+
+        return newCardImages;
     }
 }

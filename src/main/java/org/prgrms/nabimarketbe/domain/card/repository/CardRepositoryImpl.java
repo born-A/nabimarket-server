@@ -46,7 +46,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                                 card.cardTitle,
                                 item.itemName,
                                 item.priceRange,
-                                card.thumbNailImage.as("thumbNail"),
+                                card.thumbnail,
                                 card.status,
                                 card.createdDate.as("createdAt"),
                                 card.modifiedDate.as("modifiedAt")
@@ -84,7 +84,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                                 card.cardTitle,
                                 item.itemName,
                                 item.priceRange,
-                                card.thumbNailImage.as("thumbNail"),
+                                card.thumbnail,
                                 card.status,
                                 card.createdDate.as("createdAt"),
                                 card.modifiedDate.as("modifiedAt")
@@ -118,7 +118,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                     Projections.fields(
                         CardInfo.class,
                         card.cardId,
-                        card.thumbNailImage.as("thumbnail"),
+                        card.thumbnail,
                         card.cardTitle,
                         card.item.itemName,
                         card.item.priceRange

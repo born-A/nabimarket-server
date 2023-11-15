@@ -42,8 +42,8 @@ public class Card extends BaseEntity {
     @Column(name = "card_title", nullable = false)
     private String cardTitle;
 
-    @Column(name = "thumbnail_image")
-    private String thumbNailImage;
+    @Column(name = "thumbnail")
+    private String thumbnail;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     @Lob
@@ -55,8 +55,8 @@ public class Card extends BaseEntity {
     private String tradeArea;
 
     @NotNull(message = "비울 수 없는 값입니다.")
-    @Column(name = "poke", nullable = false)
-    private Boolean poke;
+    @Column(name = "poke_available", nullable = false)
+    private Boolean pokeAvailable;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "trade_type", nullable = false)
@@ -85,27 +85,27 @@ public class Card extends BaseEntity {
     @Builder
     private Card(
             String cardTitle,
-            String thumbNailImage,
+            String thumbnail,
             String content,
             String tradeArea,
-            Boolean poke,
+            Boolean pokeAvailable,
             TradeType tradeType,
             Item item,
             User user
     ) {
-        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {  // TODO: 구조 변경 후 thumbNailImage null 처리 추가
+        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {  // TODO: 구조 변경 후 thumbnail null 처리 추가
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
-        if (poke == null || tradeType == null || item == null || user == null) {
+        if (pokeAvailable == null || tradeType == null || item == null || user == null) {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
         this.cardTitle = cardTitle;
-        this.thumbNailImage = thumbNailImage;
+        this.thumbnail = thumbnail;
         this.content = content;
         this.tradeArea = tradeArea;
-        this.poke = poke;
+        this.pokeAvailable = pokeAvailable;
         this.tradeType = tradeType;
         this.status = CardStatus.TRADE_AVAILABLE;
         this.viewCount = 0;
@@ -114,8 +114,8 @@ public class Card extends BaseEntity {
         this.user = user;
     }
 
-    public void updateThumbNailImage(String url) {
-        this.thumbNailImage = url;
+    public void updateThumbnail(String url) {
+        this.thumbnail = url;
     }
 
     public void updateViewCount() {
@@ -143,17 +143,21 @@ public class Card extends BaseEntity {
         this.status = CardStatus.TRADE_COMPLETE;
     }
 
+    public Boolean isPokeAvailable() {
+        return pokeAvailable;
+    }
+
     public void updateCard(
         String cardTitle,
-        String thumbNailImageUrl,
-        Boolean pokeAvalilable,
+        String thumbnail,
+        Boolean pokeAvailable,
         String content,
         TradeType tradeType,
         String tradeArea
     ) {
         this.cardTitle = cardTitle;
-        this.thumbNailImage = thumbNailImageUrl;
-        this.poke = pokeAvalilable;
+        this.thumbnail = thumbnail;
+        this.pokeAvailable = pokeAvailable;
         this.content = content;
         this.tradeType = tradeType;
         this.tradeArea = tradeArea;

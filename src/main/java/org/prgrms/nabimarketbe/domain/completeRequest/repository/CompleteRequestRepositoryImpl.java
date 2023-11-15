@@ -1,5 +1,17 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.repository;
 
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteRequest.completeRequest;
+
+import java.util.List;
+
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardSummaryResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequestStatus;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -10,18 +22,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSummaryResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequestStatus;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
-
-import java.util.List;
-
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteRequest.completeRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,14 +38,14 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,
                         completeRequest.fromCard.item.itemName,
-                        completeRequest.fromCard.thumbNailImage.as("thumbnail"),
+                        completeRequest.fromCard.thumbnail.as("thumbnail"),
                         completeRequest.fromCard.item.priceRange
                     ).as("fromCard"),
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.toCard.cardId,
                         completeRequest.toCard.item.itemName,
-                        completeRequest.toCard.thumbNailImage.as("thumbnail"),
+                        completeRequest.toCard.thumbnail.as("thumbnail"),
                         completeRequest.toCard.item.priceRange
                     ).as("toCard"),
                     completeRequest.createdDate.as("createdAt"),
@@ -77,14 +77,14 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,
                         completeRequest.fromCard.item.itemName,
-                        completeRequest.fromCard.thumbNailImage.as("thumbnail"),
+                        completeRequest.fromCard.thumbnail.as("thumbnail"),
                         completeRequest.fromCard.item.priceRange
                     ).as("fromCard"),
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.toCard.cardId,
                         completeRequest.toCard.item.itemName,
-                        completeRequest.toCard.thumbNailImage.as("thumbnail"),
+                        completeRequest.toCard.thumbnail.as("thumbnail"),
                         completeRequest.toCard.item.priceRange
                     ).as("toCard"),
                     completeRequest.createdDate.as("createdAt"),

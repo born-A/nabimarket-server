@@ -32,7 +32,7 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 				card.cardTitle,
 				card.item.itemName,
 				card.item.priceRange,
-				card.thumbNailImage.as("thumbNail"),
+				card.thumbnail.as("thumbnail"),
 				card.status
 			)
 		)
