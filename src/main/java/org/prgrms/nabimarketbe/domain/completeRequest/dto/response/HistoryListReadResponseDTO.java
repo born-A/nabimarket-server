@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 public class HistoryListReadResponseDTO {
+    private Long historyId;
+
     private CardSummaryResponseDTO fromCard;
 
     private CardSummaryResponseDTO toCard;

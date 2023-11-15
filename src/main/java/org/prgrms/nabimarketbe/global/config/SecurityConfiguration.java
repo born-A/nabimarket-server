@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/cards/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/suggestions/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                     .anyRequest().hasRole(Role.USER.toString()))
