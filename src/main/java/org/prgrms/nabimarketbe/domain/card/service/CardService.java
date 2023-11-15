@@ -19,6 +19,7 @@ import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
+import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageBatchRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
@@ -57,6 +58,8 @@ public class CardService {
 
     private final DibRepository dibRepository;
 
+    private final CardImageBatchRepository cardImageBatchRepository;
+
     @Transactional
     public CardResponseDTO<CardCreateResponseDTO> createCard(
             String token,
@@ -74,7 +77,6 @@ public class CardService {
 
         CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
 
-        // images 비어있을 경우..
         List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
             .orElse(new ArrayList<>())
             .stream()
@@ -85,12 +87,13 @@ public class CardService {
 
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);    // TODO: images bulk insert로 전환
+
+        cardImageBatchRepository.saveAll(newCardImages);
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
             savedItem,
-            savedCardImages
+            newCardImages
         );
 
         return new CardResponseDTO<>(cardCreateResponseDTO);
@@ -141,12 +144,12 @@ public class CardService {
 
         List<CardImage> newCardImages = addThumbnail(images, thumbnail);
 
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(newCardImages);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
             item,
-            savedCardImages
+            images
         );
 
         return new CardResponseDTO<>(cardUpdateResponseDTO);
