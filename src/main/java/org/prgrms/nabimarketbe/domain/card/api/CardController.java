@@ -1,9 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.api;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
@@ -12,6 +9,7 @@ import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
@@ -21,11 +19,22 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/cards")
@@ -49,12 +58,14 @@ public class CardController {
         return ResponseEntity.ok(ResponseFactory.getSingleResult(card));
     }
 
-//    @GetMapping("/{cardId}")
-//    public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(@PathVariable Long cardId) {
-//        CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(cardId);
-//
-//        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
-//    }
+   @GetMapping("/{cardId}")
+   public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(
+       @RequestHeader("Authorization") String token,
+       @PathVariable Long cardId) {
+       CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(token, cardId);
+
+       return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
+   }
 
     @GetMapping
     public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getCardsByCondition(
@@ -80,10 +91,10 @@ public class CardController {
     @GetMapping("/{cardId}/available-cards")
     public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
             @RequestHeader(name = "Authorization") String token,
-            @PathVariable Long cardId
+            @PathVariable(name = "cardId") Long targetCardId
     ) {
         CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
-                = cardService.getSuggestionAvailableCards(token, cardId);
+                = cardService.getSuggestionAvailableCards(token, targetCardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }

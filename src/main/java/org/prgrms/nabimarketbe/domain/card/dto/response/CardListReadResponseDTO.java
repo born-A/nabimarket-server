@@ -1,11 +1,12 @@
 package org.prgrms.nabimarketbe.domain.card.dto.response;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
@@ -18,7 +19,7 @@ public class CardListReadResponseDTO {
 
     private PriceRange priceRange;
 
-    private String thumbNail;
+    private String thumbnail;
 
     private CardStatus status;
 
@@ -31,7 +32,7 @@ public class CardListReadResponseDTO {
             String cardTitle,
             String itemName,
             PriceRange priceRange,
-            String thumbNail,
+            String thumbnail,
             CardStatus status,
             LocalDateTime createdAt,
             LocalDateTime modifiedAt
@@ -40,7 +41,7 @@ public class CardListReadResponseDTO {
         this.cardTitle = cardTitle;
         this.itemName = itemName;
         this.priceRange = priceRange;
-        this.thumbNail = thumbNail;
+        this.thumbnail = thumbnail;
         this.status = status;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;

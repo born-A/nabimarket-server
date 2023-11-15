@@ -28,7 +28,6 @@ public interface CardRepositoryCustom {
 
     List<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
             Long userId,
-            PriceRange priceRange,
-            Boolean pokeAvailable
+            Long targetCardId
     );
 }

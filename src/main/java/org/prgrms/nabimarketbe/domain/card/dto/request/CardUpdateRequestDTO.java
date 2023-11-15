@@ -1,6 +1,9 @@
 package org.prgrms.nabimarketbe.domain.card.dto.request;
 
-import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
@@ -10,17 +13,14 @@ import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 
 public record CardUpdateRequestDTO(
     @NotBlank(message = "공백을 허용하지 않습니다.")
     String cardTitle,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
-    String thumbNailImage,
+    String thumbnail,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     String itemName,
@@ -38,7 +38,7 @@ public record CardUpdateRequestDTO(
     String tradeArea,
 
     @NotNull(message = "비울 수 없는 값입니다.")
-    Boolean poke,
+    Boolean pokeAvailable,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     String content,
@@ -56,10 +56,10 @@ public record CardUpdateRequestDTO(
     public Card toCardEntity(Item item, User user) {
         return Card.builder()
             .cardTitle(cardTitle)
-            .thumbNailImage(thumbNailImage)
+            .thumbnail(thumbnail)
             .content(content)
             .tradeArea(tradeArea)
-            .poke(poke)
+            .pokeAvailable(pokeAvailable)
             .tradeType(tradeType)
             .item(item)
             .user(user)

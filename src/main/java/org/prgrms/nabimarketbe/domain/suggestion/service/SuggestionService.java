@@ -33,7 +33,7 @@ public class SuggestionService {
     @Transactional
     public SuggestionResponseDTO createSuggestion(
             String token,
-            String type,
+            String suggestionType,
             SuggestionRequestDTO requestDto
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
@@ -45,8 +45,23 @@ public class SuggestionService {
         Card toCard = cardRepository.findById(requestDto.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
+        if (isAuthorEquals(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
+        }
+
+        SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
+
+        if (suggestionTypeEnum.equals(SuggestionType.POKE)) {
+            if(!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
+                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
+            }
+            if(!toCard.isPokeAvailable()) {
+                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
+            }
+        }
+
         Suggestion suggestion = Suggestion.builder()
-            .suggestionType(SuggestionType.valueOf(type))
+            .suggestionType(suggestionTypeEnum)
             .fromCard(fromCard)
             .toCard(toCard)
             .build();
@@ -100,14 +115,17 @@ public class SuggestionService {
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
                 .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
-        if (isAccepted) {
-            suggestion.acceptSuggestion();
-        } else {
-            suggestion.refuseSuggestion();
-        }
+        suggestion.decideSuggestion(isAccepted);
 
         //TODO : 채팅방 생성
 
         return SuggestionResponseDTO.from(suggestion);
+    }
+
+    private boolean isAuthorEquals(
+        Card fromCard,
+        Card toCard
+    ) {
+        return fromCard.getUser().getUserId().equals(toCard.getUser().getUserId());
     }
 }
