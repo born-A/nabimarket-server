@@ -88,7 +88,9 @@ public class CardService {
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
 
-        cardImageBatchRepository.saveAll(newCardImages);
+        if (!cardImageBatchRepository.saveAll(newCardImages)) {
+            throw new BaseException(ErrorCode.BATCH_INSERT_ERROR);
+        }
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
