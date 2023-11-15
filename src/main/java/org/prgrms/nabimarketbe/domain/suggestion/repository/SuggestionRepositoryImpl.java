@@ -1,18 +1,5 @@
 package org.prgrms.nabimarketbe.domain.suggestion.repository;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
-
-import java.util.List;
-
-import org.prgrms.nabimarketbe.domain.card.entity.QCard;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -22,6 +9,19 @@ import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+
+import org.prgrms.nabimarketbe.domain.card.entity.QCard;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
+import java.util.List;
+
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
 public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
@@ -39,16 +39,23 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .select(
                 Projections.fields(
                     SuggestionListReadResponseDTO.class,
-                    suggestion.suggestionId,
-                    getQCardCounter(directionType).cardId,
-                    getQCardCounter(directionType).cardTitle,
-                    getQCardCounter(directionType).item.itemName,
-                    getQCardCounter(directionType).item.priceRange,
-                    getQCardCounter(directionType).thumbnail,
-                    suggestion.suggestionType,
-                    suggestion.suggestionStatus,
-                    suggestion.createdDate.as("createdAt"),
-                    Expressions.as(Expressions.constant(directionType),"directionType")
+                    Projections.fields(
+                        CardReadResponseDTO.class,
+                        getQCardCounter(directionType).cardId,
+                        getQCardCounter(directionType).cardTitle,
+                        getQCardCounter(directionType).item.itemName,
+                        getQCardCounter(directionType).item.priceRange,
+                        getQCardCounter(directionType).thumbnail.as("thumbnail")
+                    ).as("cardInfo"),
+                    Projections.fields(
+                        SuggestionDetailResponseDTO.class,
+                        suggestion.suggestionId,
+                        suggestion.suggestionType,
+                        suggestion.suggestionStatus,
+                        suggestion.createdDate.as("createdAt"),
+                        suggestion.modifiedDate.as("modifiedAt"),
+                        Expressions.as(Expressions.constant(directionType),"directionType")
+                    ).as("suggestionInfo")
                 )
             )
             .from(suggestion)
@@ -101,11 +108,11 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
      * 커서 id 생성
      */
     private String createCursorId(SuggestionListReadResponseDTO suggestionListReadResponseDTO) {
-        return suggestionListReadResponseDTO.getCreatedAt().toString()
+        return suggestionListReadResponseDTO.getSuggestionInfo().getCreatedAt().toString()
                 .replace("T", "")
                 .replace("-", "")
                 .replace(":", "")
-                + String.format("%08d", suggestionListReadResponseDTO.getSuggestionId());
+                + String.format("%08d", suggestionListReadResponseDTO.getSuggestionInfo().getSuggestionId());
     }
 
     /**

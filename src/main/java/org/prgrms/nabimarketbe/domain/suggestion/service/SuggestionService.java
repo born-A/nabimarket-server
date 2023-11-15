@@ -80,11 +80,12 @@ public class SuggestionService {
             String cursorId,
             Integer size
     ){
-        User user = userRepository.findById(checkService.parseToken(token))
-            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-
-        Card card = cardRepository.findByCardIdAndUser(cardId, user)
+        Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
+
+        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+        }
 
         return suggestionRepository.getSuggestionsByType(
             directionType,
