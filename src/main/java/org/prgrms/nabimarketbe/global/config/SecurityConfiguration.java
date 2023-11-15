@@ -16,6 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @Configuration
@@ -30,18 +33,20 @@ public class SecurityConfiguration {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .httpBasic(Customizer.withDefaults())
+                .cors().configurationSource(configurationSource())
+                .and()
                 .csrf().disable()
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                     .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/cards/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                     .anyRequest().hasRole(Role.USER.toString()))
-            .exceptionHandling(exceptionHandling -> exceptionHandling
+                .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
@@ -49,10 +54,25 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
        return (web) -> web.ignoring().
         antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/favicon.ico", "/error","/h2-console/**");
+    }
+
+    @Bean
+    public CorsConfigurationSource configurationSource() {  // TODO: 개발용 설정 입니다..!
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("https://nabi-market-client.vercel.app/");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
