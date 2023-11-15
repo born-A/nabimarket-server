@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.prgrms.nabimarketbe.config.TestConfig;
-import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
@@ -116,15 +116,15 @@ class CardRepositoryTest {
         Boolean targetCardPokeAvailable = true; // 찔러보기 혀용
 
         // 반환 예상 값
-        List<SuggestionAvailableCardResponseDTO> expectCardList = new ArrayList<>();
-        SuggestionAvailableCardResponseDTO card1 = new SuggestionAvailableCardResponseDTO();
+        List<CardSuggestionResponseDTO> expectCardList = new ArrayList<>();
+        CardSuggestionResponseDTO card1 = new CardSuggestionResponseDTO();
         ReflectionTestUtils.setField(card1, "cardId", 1L);
         ReflectionTestUtils.setField(card1, "thumbNail", "xxx");
         ReflectionTestUtils.setField(card1, "itemName", "lg pad");
         ReflectionTestUtils.setField(card1, "priceRange", PriceRange.PRICE_RANGE_THREE);
         ReflectionTestUtils.setField(card1, "suggestionType", SuggestionType.POKE);
 
-        SuggestionAvailableCardResponseDTO card2 = new SuggestionAvailableCardResponseDTO();
+        CardSuggestionResponseDTO card2 = new CardSuggestionResponseDTO();
         ReflectionTestUtils.setField(card2, "cardId", 2L);
         ReflectionTestUtils.setField(card2, "thumbNail", "xxx");
         ReflectionTestUtils.setField(card2, "itemName", "lg TV");
@@ -135,7 +135,7 @@ class CardRepositoryTest {
         expectCardList.add(card2);
 
         // when
-        List<SuggestionAvailableCardResponseDTO> actualCardList = cardRepository.getSuggestionAvailableCards(
+        List<CardSuggestionResponseDTO> actualCardList = cardRepository.getSuggestionAvailableCards(
                 suggestionUserId,
                 targetCardPriceRange,
                 targetCardPokeAvailable
@@ -161,9 +161,9 @@ class CardRepositoryTest {
         Boolean targetCardPokeAvailable = false;    // 찔러보기 불가
 
         // 반환 예상 값
-        List<SuggestionAvailableCardResponseDTO> expectCardList = new ArrayList<>();
+        List<CardSuggestionResponseDTO> expectCardList = new ArrayList<>();
 
-        SuggestionAvailableCardResponseDTO card1 = new SuggestionAvailableCardResponseDTO();
+        CardSuggestionResponseDTO card1 = new CardSuggestionResponseDTO();
         ReflectionTestUtils.setField(card1, "cardId", 2L);
         ReflectionTestUtils.setField(card1, "thumbNail", "xxx");
         ReflectionTestUtils.setField(card1, "itemName", "lg TV");
@@ -173,7 +173,7 @@ class CardRepositoryTest {
         expectCardList.add(card1);
 
         // when
-        List<SuggestionAvailableCardResponseDTO> actualCardList = cardRepository.getSuggestionAvailableCards(
+        List<CardSuggestionResponseDTO> actualCardList = cardRepository.getSuggestionAvailableCards(
                 suggestionUserId,
                 targetCardPriceRange,
                 targetCardPokeAvailable

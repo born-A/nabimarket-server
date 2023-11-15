@@ -1,11 +1,12 @@
-package org.prgrms.nabimarketbe.domain.suggestion.dto.response;
+package org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection;
 
-import lombok.Getter;
+import java.time.LocalDateTime;
+
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionStatus;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Getter
 public class SuggestionDetailResponseDTO {

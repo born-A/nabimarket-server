@@ -18,12 +18,16 @@ public enum PriceRange {
     private Integer priceTo;
 
     PriceRange(
-            Integer value,
-            Integer priceFrom,
-            Integer priceTo
+        Integer value,
+        Integer priceFrom,
+        Integer priceTo
     ) {
         this.value = value;
         this.priceFrom = priceFrom;
         this.priceTo = priceTo;
+    }
+
+    public boolean isHigherThan(PriceRange priceRange) {
+        return this.value > priceRange.value;
     }
 }

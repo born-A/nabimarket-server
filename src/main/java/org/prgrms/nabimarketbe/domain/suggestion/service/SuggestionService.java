@@ -3,7 +3,7 @@ package org.prgrms.nabimarketbe.domain.suggestion.service;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionRequestDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;

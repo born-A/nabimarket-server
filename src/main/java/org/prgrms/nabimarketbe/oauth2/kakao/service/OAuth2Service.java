@@ -1,19 +1,23 @@
 package org.prgrms.nabimarketbe.oauth2.kakao.service;
 
-import com.google.gson.Gson;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.RetKakaoOAuth;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.Gson;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +43,7 @@ public class OAuth2Service {
                 .append(env.getProperty("social.kakao.url.login"))
                 .append("?response_type=code")
                 .append("&client_id=").append(kakaoClientId)
-                .append("&redirect_uri=").append(baseUrl).append(kakaoRedirectUri);
+                .append("&redirect_uri=").append(kakaoRedirectUri);
 
         return loginUri;
     }
@@ -74,7 +78,7 @@ public class OAuth2Service {
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoClientId);
-        params.add("redirect_uri", baseUrl + kakaoRedirectUri);
+        params.add("redirect_uri", kakaoRedirectUri);
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");

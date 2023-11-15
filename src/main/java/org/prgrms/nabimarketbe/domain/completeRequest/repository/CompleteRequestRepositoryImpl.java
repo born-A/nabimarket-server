@@ -5,7 +5,7 @@ import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteReq
 
 import java.util.List;
 
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSummaryResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadResponseDTO;

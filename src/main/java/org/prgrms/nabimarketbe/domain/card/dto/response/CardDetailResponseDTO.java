@@ -14,7 +14,7 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import lombok.Builder;
 
 @Builder
-public record CardDetail(
+public record CardDetailResponseDTO(
     Long cardId,
     String cardTitle,
     CategoryEnum category,
@@ -32,12 +32,12 @@ public record CardDetail(
     Boolean isMyDib,
     List<CardImageSingleReadResponseDTO> images
 ) {
-    public static CardDetail of(
+    public static CardDetailResponseDTO of(
         Card card,
         List<CardImage> cardImages,
         boolean isMyDib
     ) {
-        return CardDetail.builder()
+        return CardDetailResponseDTO.builder()
             .cardId(card.getCardId())
             .cardTitle(card.getCardTitle())
             .category(card.getItem().getCategory().getCategoryName())

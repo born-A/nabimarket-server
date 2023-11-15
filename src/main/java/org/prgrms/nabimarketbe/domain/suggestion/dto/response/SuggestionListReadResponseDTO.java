@@ -1,12 +1,13 @@
 package org.prgrms.nabimarketbe.domain.suggestion.dto.response;
 
-import lombok.Getter;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfo;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionDetailResponseDTO;
 
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardReadResponseDTO;
+import lombok.Getter;
 
 @Getter
 public class SuggestionListReadResponseDTO{
-        private CardReadResponseDTO cardInfo;
+        private CardInfo cardInfo;
 
         private SuggestionDetailResponseDTO suggestionInfo;
 }

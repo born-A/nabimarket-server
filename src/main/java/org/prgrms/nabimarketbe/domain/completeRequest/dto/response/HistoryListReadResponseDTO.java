@@ -2,7 +2,7 @@ package org.prgrms.nabimarketbe.domain.completeRequest.dto.response;
 
 import lombok.Getter;
 
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSummaryResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardSummaryResponseDTO;
 
 import java.time.LocalDateTime;
 

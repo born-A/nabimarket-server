@@ -15,26 +15,26 @@ import lombok.Builder;
 
 @Builder
 public record CardCreateResponseDTO(
-        Long cardId,
-        String cardTitle,
-        String thumbnail,
-        String itemName,
-        PriceRange priceRange,
-        TradeType tradeType,
-        CategoryEnum category,
-        String tradeArea,
-        Boolean pokeAvailable,
-        String content,
-        Integer viewCount,
-        Integer dibCount,
-        LocalDateTime createdAt,
-        LocalDateTime modifiedAt,
-        List<CardImageCreateResponseDTO> images
+    Long cardId,
+    String cardTitle,
+    String thumbnail,
+    String itemName,
+    PriceRange priceRange,
+    TradeType tradeType,
+    CategoryEnum category,
+    String tradeArea,
+    Boolean pokeAvailable,
+    String content,
+    Integer viewCount,
+    Integer dibCount,
+    LocalDateTime createdAt,
+    LocalDateTime modifiedAt,
+    List<CardImageCreateResponseDTO> images
 ) {
     public static CardCreateResponseDTO of(
-            Card card,
-            Item item,
-            List<CardImage> cardImages
+        Card card,
+        Item item,
+        List<CardImage> cardImages
     ) {
         List<CardImageCreateResponseDTO> cardImagesResponses = cardImages.stream()
             .map(cardImage -> CardImageCreateResponseDTO.from(cardImage.getImageUrl()))

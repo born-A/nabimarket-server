@@ -5,10 +5,10 @@ import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.sugge
 
 import java.util.List;
 
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfo;
 import org.prgrms.nabimarketbe.domain.card.entity.QCard;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionDetailResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionDetailResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
@@ -42,12 +42,12 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                 Projections.fields(
                     SuggestionListReadResponseDTO.class,
                     Projections.fields(
-                        CardReadResponseDTO.class,
+                        CardInfo.class,
                         getQCardCounter(directionType).cardId,
                         getQCardCounter(directionType).cardTitle,
                         getQCardCounter(directionType).item.itemName,
                         getQCardCounter(directionType).item.priceRange,
-                        getQCardCounter(directionType).thumbnail.as("thumbnail")
+                        getQCardCounter(directionType).thumbnail
                     ).as("cardInfo"),
                     Projections.fields(
                         SuggestionDetailResponseDTO.class,
