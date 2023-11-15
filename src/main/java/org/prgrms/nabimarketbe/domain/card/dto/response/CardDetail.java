@@ -17,6 +17,7 @@ import lombok.Builder;
 public record CardDetail(
     Long cardId,
     String cardTitle,
+    String thumbnail,
     CategoryEnum category,
     String itemName,
     Boolean pokeAvailable,
@@ -28,7 +29,7 @@ public record CardDetail(
     CardStatus cardStatus,
     TradeType tradeType,
     String tradeArea,
-    Integer dibsCount,
+    Integer dibCount,
     Boolean isMyDib,
     List<CardImageSingleReadResponseDTO> images
 ) {
@@ -40,6 +41,7 @@ public record CardDetail(
         return CardDetail.builder()
             .cardId(card.getCardId())
             .cardTitle(card.getCardTitle())
+            .thumbnail(card.getThumbnail())
             .category(card.getItem().getCategory().getCategoryName())
             .itemName(card.getItem().getItemName())
             .pokeAvailable(card.getPokeAvailable())
@@ -51,7 +53,7 @@ public record CardDetail(
             .cardStatus(card.getStatus())
             .tradeType(card.getTradeType())
             .tradeArea(card.getTradeArea())
-            .dibsCount(card.getDibCount())
+            .dibCount(card.getDibCount())
             .isMyDib(isMyDib)
             .images(cardImages.stream().map(
                 cardImage -> CardImageSingleReadResponseDTO.from(cardImage.getImageUrl())).toList())
