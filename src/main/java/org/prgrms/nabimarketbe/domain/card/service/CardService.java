@@ -283,6 +283,7 @@ public class CardService {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
+        cardImageRepository.deleteAllByCard(card);
         cardRepository.delete(card);
     }
   
