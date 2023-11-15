@@ -52,7 +52,7 @@ public record CardDetail(
             .tradeType(card.getTradeType())
             .tradeArea(card.getTradeArea())
             .dibsCount(card.getDibCount())
-            .isMyDib() //TODO
+            .isMyDib(true) //TODO
             .images(cardImages)
             .build();
     }

@@ -22,6 +22,7 @@ import org.prgrms.nabimarketbe.domain.category.repository.CategoryRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -173,11 +174,11 @@ public class CardService {
     @Transactional(readOnly = true)
     public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
             String token,
-            Long cardId
+            Long targetCardId
     ) {
         User requestUser = userRepository.findById(checkService.parseToken(token))
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-        Card suggestionTargetCard = cardRepository.findById(cardId)
+        Card suggestionTargetCard = cardRepository.findById(targetCardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (requestUser.getUserId().equals(suggestionTargetCard.getUser().getUserId())) {
@@ -186,11 +187,13 @@ public class CardService {
 
         List<SuggestionAvailableCardResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
                 requestUser.getUserId(),
-                suggestionTargetCard.getItem().getPriceRange(),
-                suggestionTargetCard.getPoke()
+                suggestionTargetCard.getCardId()
         );
 
-        return new CardListResponseDTO<>(cardListResponse);
+        List<SuggestionAvailableCardResponseDTO> suggestionResultCardList =
+            getSuggestionResultCardList(suggestionTargetCard.getCardId(), cardListResponse);
+
+        return new CardListResponseDTO<>(suggestionResultCardList);
     }
 
     @Transactional(readOnly = true)
@@ -244,5 +247,34 @@ public class CardService {
         }
 
         cardRepository.delete(card);
+    }
+
+    @Transactional
+    public List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
+        Long targetId,
+        List<SuggestionAvailableCardResponseDTO> cardList
+    ) {
+        Card targetCard = cardRepository.findById(targetId).orElseThrow();
+
+        Boolean pokeAvailable = targetCard.getPoke();
+        PriceRange priceRange = targetCard.getItem().getPriceRange();;
+
+        if (pokeAvailable) {
+            return cardList.stream()
+                .peek(c -> {
+                    if (c.getCardInfo().getPriceRange().getValue() < priceRange.getValue()) {
+                        c.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
+                    } else {
+                        c.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER);
+                    }
+                }).toList();
+        }
+
+        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
+            .filter(c -> c.getCardInfo().getPriceRange().getValue() >= priceRange.getValue())
+            .toList();
+        offerOnlyCardList.forEach(o -> o.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER));
+
+        return offerOnlyCardList;
     }
 }

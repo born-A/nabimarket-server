@@ -80,10 +80,10 @@ public class CardController {
     @GetMapping("/{cardId}/available-cards")
     public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
             @RequestHeader(name = "Authorization") String token,
-            @PathVariable Long cardId
+            @PathVariable(name = "cardId") Long targetCardId
     ) {
         CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
-                = cardService.getSuggestionAvailableCards(token, cardId);
+                = cardService.getSuggestionAvailableCards(token, targetCardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
     }
