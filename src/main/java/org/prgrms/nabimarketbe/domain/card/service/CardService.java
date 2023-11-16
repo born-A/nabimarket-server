@@ -8,17 +8,18 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetail;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetailResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
+import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageBatchRepository;
 import org.prgrms.nabimarketbe.domain.cardimage.repository.CardImageRepository;
 import org.prgrms.nabimarketbe.domain.category.entity.Category;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
@@ -27,9 +28,8 @@ import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -226,7 +226,7 @@ public class CardService {
         Long targetCardId
     ) {
         Long userId = checkService.parseToken(token);
-        User requestUser = userRepository.findById(checkService.parseToken(userId))
+        User requestUser = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
         Card suggestionTargetCard = cardRepository.findById(targetCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
