@@ -17,10 +17,10 @@ public class CardImageBatchRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String sql = "INSERT INTO card_images (created_date, modified_date, image_url, card_id) VALUES (?, ?, ?, ?)";
+
     @Transactional
     public boolean saveAll(List<CardImage> cardImages) {
-        String sql = "INSERT INTO card_images (created_date, modified_date, image_url, card_id) VALUES (?, ?, ?, ?)";
-
         int[][] result = jdbcTemplate.batchUpdate(sql,
             cardImages,
             cardImages.size(),
@@ -37,6 +37,7 @@ public class CardImageBatchRepository {
                 return false;
             }
         }
+
         return true;
     }
 }
