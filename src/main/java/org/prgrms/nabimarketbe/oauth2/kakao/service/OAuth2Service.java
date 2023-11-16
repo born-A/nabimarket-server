@@ -25,9 +25,6 @@ public class OAuth2Service {
 
     private final Gson gson;
 
-    @Value("${spring.url.base}")
-    private String baseUrl;
-
     @Value("${social.kakao.client-id}")
     private String kakaoClientId;
 
@@ -39,7 +36,7 @@ public class OAuth2Service {
                 .append(env.getProperty("social.kakao.url.login"))
                 .append("?response_type=code")
                 .append("&client_id=").append(kakaoClientId)
-                .append("&redirect_uri=").append(baseUrl).append(kakaoRedirectUri);
+                .append("&redirect_uri=").append(kakaoRedirectUri);
 
         return loginUri;
     }
@@ -74,7 +71,7 @@ public class OAuth2Service {
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoClientId);
-        params.add("redirect_uri", baseUrl + kakaoRedirectUri);
+        params.add("redirect_uri", kakaoRedirectUri);
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");
