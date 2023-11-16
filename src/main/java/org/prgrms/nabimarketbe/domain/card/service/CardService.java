@@ -161,20 +161,26 @@ public class CardService {
        String token,
        Long cardId
    ) {
-       Long userId = checkService.parseToken(token);
-       User user = userRepository.findById(userId)
-           .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
        Card card = cardRepository.findById(cardId)
            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-       if (!checkService.isEqual(userId, card.getUser().getUserId())) {
-           card.updateViewCount();
+       Boolean isMyDib = false;
+
+       if(token != null) {
+           Long userId = checkService.parseToken(token);
+           User loginUser = userRepository.findById(userId)
+               .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+           if (!checkService.isEqual(userId, card.getUser().getUserId())) {
+               card.updateViewCount();
+               isMyDib = dibRepository.existsDibByCardAndUser(card, loginUser);
+           }
        }
 
-       List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
+       User cardOwner = card.getUser();
 
-       boolean isMyDib = dibRepository.existsDibByCardAndUser(card, user);
+       List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
 
        CardDetailResponseDTO cardInfo = CardDetailResponseDTO.of(
            card,
@@ -182,7 +188,7 @@ public class CardService {
            isMyDib
        );
 
-       UserSummaryResponseDTO userInfo = UserSummaryResponseDTO.from(user);
+       UserSummaryResponseDTO userInfo = UserSummaryResponseDTO.from(cardOwner);
 
        return CardUserResponseDTO.of(
            cardInfo,
