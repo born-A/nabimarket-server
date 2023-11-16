@@ -34,6 +34,7 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
             .select(
                 Projections.fields(
                     HistoryListReadResponseDTO.class,
+                    completeRequest.completeRequestId,
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,
@@ -73,6 +74,7 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
             .select(
                 Projections.fields(
                     HistoryListReadResponseDTO.class,
+                    completeRequest.completeRequestId,
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,

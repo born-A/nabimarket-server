@@ -29,9 +29,6 @@ public class OAuth2Service {
 
     private final Gson gson;
 
-    @Value("${spring.url.base}")
-    private String baseUrl;
-
     @Value("${social.kakao.client-id}")
     private String kakaoClientId;
 

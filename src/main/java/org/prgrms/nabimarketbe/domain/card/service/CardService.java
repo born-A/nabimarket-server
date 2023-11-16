@@ -8,13 +8,13 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetailResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetail;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
@@ -27,8 +27,9 @@ import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -56,16 +57,18 @@ public class CardService {
 
     private final DibRepository dibRepository;
 
+    private final CardImageBatchRepository cardImageBatchRepository;
+
     @Transactional
     public CardResponseDTO<CardCreateResponseDTO> createCard(
             String token,
             CardCreateRequestDTO cardCreateRequestDTO
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
-            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoryByCategoryName(cardCreateRequestDTO.category())
-            .orElseThrow(() -> new BaseException(ErrorCode.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Item item = cardCreateRequestDTO.toItemEntity(category);
 
@@ -77,19 +80,22 @@ public class CardService {
         List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
             .orElse(new ArrayList<>())
             .stream()
-            .map(cardImageCreateRequestDTO -> cardImageCreateRequestDTO.toCardImageEntity(card))
+            .map(i -> i.toCardImageEntity(card))
             .toList();
 
         List<CardImage> newCardImages = addThumbnail(images, thumbnail);
 
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);    // TODO: images bulk insert로 전환
+
+        if (!cardImageBatchRepository.saveAll(newCardImages)) {
+            throw new BaseException(ErrorCode.BATCH_INSERT_ERROR);
+        }
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
             savedItem,
-            savedCardImages
+            newCardImages
         );
 
         return new CardResponseDTO<>(cardCreateResponseDTO);
@@ -145,12 +151,12 @@ public class CardService {
 
         List<CardImage> newCardImages = addThumbnail(images, thumbnail);
 
-        List<CardImage> savedCardImages = cardImageRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(newCardImages);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
             item,
-            savedCardImages
+            newCardImages
         );
 
         return new CardResponseDTO<>(cardUpdateResponseDTO);
@@ -220,8 +226,8 @@ public class CardService {
         Long targetCardId
     ) {
         Long userId = checkService.parseToken(token);
-        User requestUser = userRepository.findById(userId)
-            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        User requestUser = userRepository.findById(checkService.parseToken(userId))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
         Card suggestionTargetCard = cardRepository.findById(targetCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 

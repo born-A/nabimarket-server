@@ -14,11 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
@@ -32,25 +32,26 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic(Customizer.withDefaults())
-                .cors().configurationSource(configurationSource())
-                .and()
-                .csrf().disable()
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(authorizeRequests -> authorizeRequests
-                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/v1/cards/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                    .anyRequest().hasRole(Role.USER.toString()))
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+            .httpBasic(Customizer.withDefaults())
+            .cors().configurationSource(configurationSource())
+            .and()
+            .csrf().disable()
+            .sessionManagement(sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeRequests(authorizeRequests -> authorizeRequests
+                .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/cards/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/index.html", "/swagger-ui/**",
+                    "/v3/api-docs/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
+                .anyRequest().hasRole(Role.USER.toString()))
+            .exceptionHandling(exceptionHandling -> exceptionHandling
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler)
+            )
+            .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
