@@ -39,7 +39,6 @@ public class SecurityConfiguration {
             .sessionManagement(sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeRequests(authorizeRequests -> authorizeRequests
-                .antMatchers(HttpMethod.OPTIONS, "/**/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/google/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/oauth2/authorize/kakao/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/complete-requests/**").permitAll()
