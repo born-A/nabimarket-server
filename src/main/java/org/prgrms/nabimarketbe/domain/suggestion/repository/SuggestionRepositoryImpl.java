@@ -1,20 +1,5 @@
 package org.prgrms.nabimarketbe.domain.suggestion.repository;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
-
-import java.util.List;
-
-import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfo;
-import org.prgrms.nabimarketbe.domain.card.entity.QCard;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionDetailResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
-import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -22,8 +7,21 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import lombok.RequiredArgsConstructor;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfoResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.QCard;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionDetailResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
+import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
+import java.util.List;
+
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
 public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
@@ -31,18 +29,18 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
 
     @Override
     public SuggestionListReadPagingResponseDTO getSuggestionsByType(
-            DirectionType directionType,
-            SuggestionType suggestionType,
-            Long cardId,
-            String cursorId,
-            Integer size
+        DirectionType directionType,
+        SuggestionType suggestionType,
+        Long cardId,
+        String cursorId,
+        Integer size
     ) {
         List<SuggestionListReadResponseDTO> suggestionList = jpaQueryFactory
             .select(
                 Projections.fields(
                     SuggestionListReadResponseDTO.class,
                     Projections.fields(
-                        CardInfo.class,
+                        CardInfoResponseDTO.class,
                         getQCardCounter(directionType).cardId,
                         getQCardCounter(directionType).cardTitle,
                         getQCardCounter(directionType).item.itemName,
@@ -56,13 +54,13 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
                         suggestion.suggestionStatus,
                         suggestion.createdDate.as("createdAt"),
                         suggestion.modifiedDate.as("modifiedAt"),
-                        Expressions.as(Expressions.constant(directionType),"directionType")
+                        Expressions.as(Expressions.constant(directionType), "directionType")
                     ).as("suggestionInfo")
                 )
             )
             .from(suggestion)
-            .join(getQcardByDirectionType(directionType),card)
-            .on(getExpressionByDirectionType(directionType,cardId))
+            .join(getQcardByDirectionType(directionType), card)
+            .on(getExpressionByDirectionType(directionType, cardId))
             .where(cursorIdLessThan(cursorId), suggestionTypeEquals(suggestionType))
             .orderBy(suggestion.createdDate.desc())
             .limit(size)
@@ -94,9 +92,9 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
         }
 
         StringTemplate stringTemplate = Expressions.stringTemplate(
-                "DATE_FORMAT({0}, {1})",
-                suggestion.createdDate,
-                ConstantImpl.create("%Y%m%d%H%i%s")
+            "DATE_FORMAT({0}, {1})",
+            suggestion.createdDate,
+            ConstantImpl.create("%Y%m%d%H%i%s")
         );
 
         return stringTemplate.concat(StringExpressions.lpad(
@@ -111,10 +109,10 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
      */
     private String createCursorId(SuggestionListReadResponseDTO suggestionListReadResponseDTO) {
         return suggestionListReadResponseDTO.getSuggestionInfo().getCreatedAt().toString()
-                .replace("T", "")
-                .replace("-", "")
-                .replace(":", "")
-                + String.format("%08d", suggestionListReadResponseDTO.getSuggestionInfo().getSuggestionId());
+            .replace("T", "")
+            .replace("-", "")
+            .replace(":", "")
+            + String.format("%08d", suggestionListReadResponseDTO.getSuggestionInfo().getSuggestionId());
     }
 
     /**

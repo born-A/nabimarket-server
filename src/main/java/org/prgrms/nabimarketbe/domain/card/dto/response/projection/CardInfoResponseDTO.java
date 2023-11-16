@@ -5,7 +5,7 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import lombok.Getter;
 
 @Getter
-public class CardInfo {
+public class CardInfoResponseDTO {
     private Long cardId;
 
     private String thumbNail;
@@ -13,6 +13,6 @@ public class CardInfo {
     private String cardTitle;
 
     private String itemName;
-    
+
     private PriceRange priceRange;
 }

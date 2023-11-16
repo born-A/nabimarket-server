@@ -1,21 +1,5 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
-
-import java.util.List;
-
-import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfo;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardListReadResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionInfo;
-import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
-import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
-
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,8 +7,22 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import lombok.RequiredArgsConstructor;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfoResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
+import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionInfo;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+
+import java.util.List;
+
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
@@ -32,26 +30,26 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 
     @Override
     public CardPagingResponseDTO getCardsByCondition(
-            CategoryEnum category,
-            PriceRange priceRange,
-            List<CardStatus> status,
-            String cardTitle,
-            String cursorId,
-            Integer size
+        CategoryEnum category,
+        PriceRange priceRange,
+        List<CardStatus> status,
+        String cardTitle,
+        String cursorId,
+        Integer size
     ) {
         List<CardListReadResponseDTO> cardList = jpaQueryFactory.select(
-            Projections.fields(
-                CardListReadResponseDTO.class,
-                card.cardId,
-                card.cardTitle,
-                item.itemName,
-                item.priceRange,
-                card.thumbnail,
-                card.status,
-                card.createdDate.as("createdAt"),
-                card.modifiedDate.as("modifiedAt")
+                Projections.fields(
+                    CardListReadResponseDTO.class,
+                    card.cardId,
+                    card.cardTitle,
+                    item.itemName,
+                    item.priceRange,
+                    card.thumbnail,
+                    card.status,
+                    card.createdDate.as("createdAt"),
+                    card.modifiedDate.as("modifiedAt")
+                )
             )
-        )
             .from(card)
             .leftJoin(item).on(card.item.itemId.eq(item.itemId))
             .where(
@@ -78,18 +76,18 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         Integer size
     ) {
         List<CardListReadResponseDTO> cardList = jpaQueryFactory.select(
-            Projections.fields(
-                CardListReadResponseDTO.class,
-                card.cardId,
-                card.cardTitle,
-                item.itemName,
-                item.priceRange,
-                card.thumbnail,
-                card.status,
-                card.createdDate.as("createdAt"),
-                card.modifiedDate.as("modifiedAt")
+                Projections.fields(
+                    CardListReadResponseDTO.class,
+                    card.cardId,
+                    card.cardTitle,
+                    item.itemName,
+                    item.priceRange,
+                    card.thumbnail,
+                    card.status,
+                    card.createdDate.as("createdAt"),
+                    card.modifiedDate.as("modifiedAt")
+                )
             )
-        )
             .from(card)
             .leftJoin(item).on(card.item.itemId.eq(item.itemId))
             .where(
@@ -116,7 +114,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 Projections.fields(
                     CardSuggestionResponseDTO.class,
                     Projections.fields(
-                        CardInfo.class,
+                        CardInfoResponseDTO.class,
                         card.cardId,
                         card.thumbnail,
                         card.cardTitle,
@@ -131,8 +129,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 )
             )
             .from(card)
-                .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
-                .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
+            .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
+            .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
             .where(card.user.userId.eq(userId),
                 suggestion.toCard.cardId.eq(targetCardId).or(suggestion.toCard.cardId.isNull()))
             .fetch();
@@ -140,8 +138,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         return cardList;
     }
 
-
-    private BooleanExpression cursorId(String cursorId){
+    private BooleanExpression cursorId(String cursorId) {
         if (cursorId == null) {
             return null;
         }
@@ -153,11 +150,11 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         );
 
         return stringTemplate.concat(StringExpressions.lpad(
-            card.cardId.stringValue(),
-            8,
-            '0'
-        ))
-        .lt(cursorId);
+                card.cardId.stringValue(),
+                8,
+                '0'
+            ))
+            .lt(cursorId);
     }
 
     private BooleanExpression categoryEquals(CategoryEnum category) {
@@ -174,8 +171,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         }
 
         BooleanExpression[] expressions = statuses.stream()
-                .map(card.status::eq)
-                .toArray(BooleanExpression[]::new);
+            .map(card.status::eq)
+            .toArray(BooleanExpression[]::new);
 
         return Expressions.anyOf(expressions);
     }
@@ -198,9 +195,9 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 
     private String generateCursor(CardListReadResponseDTO cardListReadResponseDTO) {
         return cardListReadResponseDTO.getCreatedAt().toString()    // 디폴트는 생성일자 최신순 정렬
-                .replace("T", "")
-                .replace("-", "")
-                .replace(":", "")
-                + String.format("%08d", cardListReadResponseDTO.getCardId());
+            .replace("T", "")
+            .replace("-", "")
+            .replace(":", "")
+            + String.format("%08d", cardListReadResponseDTO.getCardId());
     }
 }
