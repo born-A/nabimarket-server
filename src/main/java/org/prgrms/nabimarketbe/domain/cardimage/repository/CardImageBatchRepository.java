@@ -19,21 +19,22 @@ public class CardImageBatchRepository {
 
     private static final String sql = "INSERT INTO card_images (created_date, modified_date, image_url, card_id) VALUES (?, ?, ?, ?)";
 
+    private static final Integer SUCCESS_SIGNAL = -2;
+
     @Transactional
     public boolean saveAll(List<CardImage> cardImages) {
         int[][] result = jdbcTemplate.batchUpdate(sql,
             cardImages,
             cardImages.size(),
-            (PreparedStatement ps, CardImage cardImage) -> {
-                ps.setTimestamp(1,Timestamp.valueOf(LocalDateTime.now()));
-                ps.setTimestamp(2,Timestamp.valueOf(LocalDateTime.now()));
-                ps.setString(3, cardImage.getImageUrl());
-                ps.setLong(4,cardImage.getCard().getCardId());
+            (PreparedStatement preparedStatement, CardImage cardImage) -> {
+                preparedStatement.setTimestamp(1,Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(2,Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setString(3, cardImage.getImageUrl());
+                preparedStatement.setLong(4,cardImage.getCard().getCardId());
             });
 
-        // 각 배열의 값이 모두 -2이면 성공
-        for (int[] r : result) {
-            if ( r[0] != -2) {
+        for (int[] value : result) {
+            if ( value[0] != SUCCESS_SIGNAL) {
                 return false;
             }
         }
