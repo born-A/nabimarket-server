@@ -45,11 +45,11 @@ public class CardImage extends BaseEntity {
         Card card
     ) {
         if (imageUrl.isBlank()) {
-            throw new BaseException(ErrorCode.UNKNOWN);
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         if (card == null) {
-            throw new BaseException(ErrorCode.UNKNOWN);
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         this.imageUrl = imageUrl;

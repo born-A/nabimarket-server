@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,6 +46,10 @@ public class CompleteRequest extends BaseEntity {
         Card fromCard,
         Card toCard
     ) {
+        if(fromCard == null || toCard == null) {
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
+        }
+
         this.fromCard = fromCard;
         this.toCard = toCard;
         this.completeRequestStatus = CompleteRequestStatus.WAITING;
