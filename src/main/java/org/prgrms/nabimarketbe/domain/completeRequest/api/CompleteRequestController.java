@@ -1,8 +1,9 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.api;
 
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadLimitResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.service.CompleteRequestService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
@@ -25,11 +26,11 @@ public class CompleteRequestController {
     private final CompleteRequestService completeRequestService;
 
     @PostMapping
-    public ResponseEntity<SingleResult<CompleteRequestDTO>> createCompleteRequest(
+    public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> createCompleteRequest(
         @RequestHeader(name = "Authorization") String token,
         @RequestBody CompleteRequestDTO completeRequestDTO
     ) {
-        CompleteRequestDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
+        CompleteRequestResponseDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
             token,
             completeRequestDTO
         );
@@ -60,13 +61,13 @@ public class CompleteRequestController {
     }
 
     @PutMapping("/confirm")
-    public ResponseEntity<SingleResult<CompleteRequestDTO>> updateCompleteRequestStatus(
+    public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> updateCompleteRequestStatus(
         @RequestHeader(name = "Authorization") String token,
         @RequestParam Long fromCardId,
         @RequestParam Long toCardId,
         @RequestParam Boolean isAccepted
     ) {
-        CompleteRequestDTO completeRequestDTO = completeRequestService.updateCompleteRequestStatus(
+        CompleteRequestResponseDTO completeRequestDTO = completeRequestService.updateCompleteRequestStatus(
             token,
             fromCardId,
             toCardId,

@@ -1,10 +1,10 @@
-package org.prgrms.nabimarketbe.domain.completeRequest.dto.response;
+package org.prgrms.nabimarketbe.domain.completeRequest.dto.response.projection;
 
-import lombok.Getter;
+import java.time.LocalDateTime;
 
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardSummaryResponseDTO;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Getter
 public class HistoryListReadResponseDTO {

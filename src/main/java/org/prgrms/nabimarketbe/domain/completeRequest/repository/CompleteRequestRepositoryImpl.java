@@ -6,9 +6,9 @@ import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteReq
 import java.util.List;
 
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardSummaryResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadLimitResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.projection.HistoryListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequestStatus;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
@@ -38,14 +38,14 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,
                         completeRequest.fromCard.item.itemName,
-                        completeRequest.fromCard.thumbnail.as("thumbnail"),
+                        completeRequest.fromCard.thumbnail,
                         completeRequest.fromCard.item.priceRange
                     ).as("fromCard"),
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.toCard.cardId,
                         completeRequest.toCard.item.itemName,
-                        completeRequest.toCard.thumbnail.as("thumbnail"),
+                        completeRequest.toCard.thumbnail,
                         completeRequest.toCard.item.priceRange
                     ).as("toCard"),
                     completeRequest.createdDate.as("createdAt"),
@@ -77,14 +77,14 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
                         CardSummaryResponseDTO.class,
                         completeRequest.fromCard.cardId,
                         completeRequest.fromCard.item.itemName,
-                        completeRequest.fromCard.thumbnail.as("thumbnail"),
+                        completeRequest.fromCard.thumbnail,
                         completeRequest.fromCard.item.priceRange
                     ).as("fromCard"),
                     Projections.fields(
                         CardSummaryResponseDTO.class,
                         completeRequest.toCard.cardId,
                         completeRequest.toCard.item.itemName,
-                        completeRequest.toCard.thumbnail.as("thumbnail"),
+                        completeRequest.toCard.thumbnail,
                         completeRequest.toCard.item.priceRange
                     ).as("toCard"),
                     completeRequest.createdDate.as("createdAt"),

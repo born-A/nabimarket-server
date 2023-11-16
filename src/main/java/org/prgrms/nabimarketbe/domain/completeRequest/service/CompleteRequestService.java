@@ -2,9 +2,10 @@ package org.prgrms.nabimarketbe.domain.completeRequest.service;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.HistoryListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadLimitResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
@@ -33,7 +34,7 @@ public class CompleteRequestService {
     private final CheckService checkService;
 
     @Transactional
-    public CompleteRequestDTO createCompleteRequest(
+    public CompleteRequestResponseDTO createCompleteRequest(
         String token,
         CompleteRequestDTO requestDTO
     ) {
@@ -53,7 +54,7 @@ public class CompleteRequestService {
             throw new BaseException(ErrorCode.SUGGESTION_NOT_ACCEPTED);
         }
 
-        if (user.getUserId().equals(toCard.getUser().getUserId())) {
+        if (checkService.isEqual(user.getUserId(), toCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_MYSELF_ERROR);
         }
 
@@ -61,17 +62,19 @@ public class CompleteRequestService {
 
         CompleteRequest savedCompleteRequest = completeRequestRepository.save(completeRequest);
 
-        return CompleteRequestDTO.from(savedCompleteRequest);
+        return CompleteRequestResponseDTO.from(savedCompleteRequest);
     }
 
     @Transactional
-    public CompleteRequestDTO updateCompleteRequestStatus(
+    public CompleteRequestResponseDTO updateCompleteRequestStatus(
         String token,
         Long fromCardId,
         Long toCardId,
         Boolean isAccepted
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
@@ -84,19 +87,14 @@ public class CompleteRequestService {
             .findCompleteRequestByFromCardAndToCard(fromCard, toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.COMPLETE_REQUEST_NOT_FOUND));
 
+        if (!checkService.isEqual(userId, fromCard.getUser().getUserId()) &&
+            !checkService.isEqual(userId, toCard.getUser().getUserId())) {
+           throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+        }
+
         updateStatus(isAccepted, completeRequest, fromCard, toCard);
 
-        return CompleteRequestDTO.from(completeRequest);
-    }
-
-    private void updateStatus(Boolean isAccepted, CompleteRequest completeRequest, Card fromCard, Card toCard) {
-        if (isAccepted) {
-            completeRequest.acceptCompleteRequest();
-            fromCard.updateCardStatusToTradeComplete();
-            toCard.updateCardStatusToTradeComplete();
-        } else {
-            completeRequest.refuseCompleteRequest();
-        }
+        return CompleteRequestResponseDTO.from(completeRequest);
     }
 
     @Transactional(readOnly = true)
@@ -114,5 +112,20 @@ public class CompleteRequestService {
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         return completeRequestRepository.getHistoryByUser(user, cursorId, size);
+    }
+
+    private void updateStatus(
+        Boolean isAccepted,
+        CompleteRequest completeRequest,
+        Card fromCard,
+        Card toCard
+    ) {
+        if (isAccepted) {
+            completeRequest.acceptCompleteRequest();
+            fromCard.updateCardStatusToTradeComplete();
+            toCard.updateCardStatusToTradeComplete();
+        } else {
+            completeRequest.refuseCompleteRequest();
+        }
     }
 }
