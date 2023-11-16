@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.domain.dibs.repository;
 
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibListReadPagingResponseDTO;
 
 public interface DibRepositoryCustom {
 	DibListReadPagingResponseDTO getUserDibsByDibId(

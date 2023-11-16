@@ -3,13 +3,15 @@ package org.prgrms.nabimarketbe.domain.dibs.service;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.entity.Dib;
 import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +35,17 @@ public class DibService {
 	) {
 		Long userId = checkService.parseToken(token);
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
 		Card card = cardRepository.findById(cardId)
-			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
+			.orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-		if(checkService.isEqual(token, card.getUser().getUserId())) {
-			throw new RuntimeException("자신의 카드는 찜할 수 없습니다.");
+		if(checkService.isEqual(userId, card.getUser().getUserId())) {
+			throw new BaseException(ErrorCode.DIB_MYSELF_ERROR);
 		}
 
-
 		if (dibRepository.existsDibByCardAndUser(card, user)) {
-			throw new RuntimeException("이미 찜한 카드는 또 찜할 수 없습니다.");
+			throw new BaseException(ErrorCode.DIB_DUPLICATE_ERROR);
 		}
 
 		Dib dib = new Dib(user, card);
@@ -64,13 +65,13 @@ public class DibService {
 	) {
 		Long userId = checkService.parseToken(token);
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
 		Card card = cardRepository.findById(cardId)
-			.orElseThrow(() -> new RuntimeException("해당 카드가 없습니다."));
+			.orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
 		Dib dib = dibRepository.findDibByUserAndCard(user, card)
-			.orElseThrow(() -> new RuntimeException("해당 찜이 존재하지 않습니다."));
+			.orElseThrow(() -> new BaseException(ErrorCode.DIB_NOT_FOUND));
 
 		dibRepository.delete(dib);
 
@@ -85,7 +86,7 @@ public class DibService {
 	) {
 		Long userId = checkService.parseToken(token);
 		if (!userRepository.existsById(userId)) {
-			throw new RuntimeException("해당 회원이 없습니다.");
+			throw new BaseException(ErrorCode.USER_NOT_FOUND);
 		}
 
 		DibListReadPagingResponseDTO dibListReadPagingResponseDTO = dibRepository.getUserDibsByDibId(
