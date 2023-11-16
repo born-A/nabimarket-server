@@ -293,7 +293,7 @@ public class CardService {
     ) {
         Card targetCard = cardRepository.findById(targetId).orElseThrow();
 
-        Boolean pokeAvailable = targetCard.getPoke();
+        Boolean pokeAvailable = targetCard.getPokeAvailable();
         PriceRange priceRange = targetCard.getItem().getPriceRange();;
 
         if (pokeAvailable) {
