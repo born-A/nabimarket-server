@@ -42,7 +42,7 @@ public class Dib extends BaseEntity {
 		User user,
 		Card card
 	) {
-		if(user == null || card == null) {
+		if (user == null || card == null) {
 			throw new BaseException(ErrorCode.INVALID_REQUEST);
 		}
 
