@@ -10,8 +10,12 @@ import lombok.Getter;
 public enum ErrorCode {
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "G0001", "알 수 없는 오류가 발생했습니다."),
     INVALID_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR, "G0002","잘못된 요청입니다."),
+    EXTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G0003", "외부 서버 오류입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "U0001", "존재하지 않는 사용자입니다."),
     CARD_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "C0001", "존재하지 않는 카드입니다."),
+    DIB_NOT_FOUND(HttpStatus.BAD_REQUEST, "D0001", "존재하지 않는 찜입니다."),
+    DIB_MYSELF_ERROR(HttpStatus.BAD_REQUEST, "D0002", "자신의 카드는 찜할 수 없습니다."),
+    DIB_DUPLICATE_ERROR(HttpStatus.BAD_REQUEST, "D0003", "이미 찜한 카드는 또 찜할 수 없습니다."),
     SUGGESTION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "S0001", "존재하지 않는 제안입니다."),
     SUGGESTION_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "S0002", "잘못된 제안 타입입니다."),
     SUGGESTION_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "S0003", "수락된 제안이 아닙니다."),

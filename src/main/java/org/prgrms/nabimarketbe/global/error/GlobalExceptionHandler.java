@@ -1,6 +1,5 @@
 package org.prgrms.nabimarketbe.global.error;
 
-import lombok.extern.slf4j.Slf4j;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.springframework.http.HttpStatus;
@@ -20,11 +19,11 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
       
         return new ResponseEntity<>(
-                ResponseFactory.getFailResult(
-                        ErrorCode.UNKNOWN.getCode(),
-                        ErrorCode.UNKNOWN.getMessage()
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
+            ResponseFactory.getFailResult(
+                    ErrorCode.UNKNOWN.getCode(),
+                    ErrorCode.UNKNOWN.getMessage()
+            ),
+            HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
@@ -33,11 +32,11 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
 
         return new ResponseEntity<>(
-                ResponseFactory.getFailResult(
-                        errorCode.getCode(),
-                        errorCode.getMessage()
-                ),
-                errorCode.getStatus()
+            ResponseFactory.getFailResult(
+                    errorCode.getCode(),
+                    errorCode.getMessage()
+            ),
+            errorCode.getStatus()
         );
     }
 
@@ -48,10 +47,10 @@ public class GlobalExceptionHandler {
         String message = bindingResult.getFieldError().getDefaultMessage();
 
         return new ResponseEntity<>(
-                ResponseFactory.getFailResult(
-                        ErrorCode.INVALID_REQUEST.getCode(),
-                        message),
-                HttpStatus.BAD_REQUEST
+            ResponseFactory.getFailResult(
+                    ErrorCode.INVALID_REQUEST.getCode(),
+                    message),
+            HttpStatus.BAD_REQUEST
         );
     }
 }

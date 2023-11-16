@@ -32,9 +32,9 @@ public class SuggestionService {
 
     @Transactional
     public SuggestionResponseDTO createSuggestion(
-            String token,
-            String suggestionType,
-            SuggestionRequestDTO requestDto
+        String token,
+        String suggestionType,
+        SuggestionRequestDTO requestDto
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
@@ -51,13 +51,12 @@ public class SuggestionService {
 
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
+        if(!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
+            throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
+        }
+
         if (suggestionTypeEnum.equals(SuggestionType.POKE)) {
-            if(!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
-                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
-            }
-            if(!toCard.isPokeAvailable()) {
-                throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
-            }
+            pokeValidation(toCard);
         }
 
         Suggestion suggestion = Suggestion.builder()
@@ -127,5 +126,11 @@ public class SuggestionService {
         Card toCard
     ) {
         return fromCard.getUser().getUserId().equals(toCard.getUser().getUserId());
+    }
+
+    private void pokeValidation(Card toCard) {
+        if (!toCard.isPokeAvailable()) {
+            throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
+        }
     }
 }

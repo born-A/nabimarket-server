@@ -6,6 +6,8 @@ import org.prgrms.nabimarketbe.domain.user.dto.request.UserSignInRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
@@ -51,7 +53,7 @@ public class SignService {
             try {
                 return signUp(userSignInRequestDTO);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new BaseException(ErrorCode.EXTERNAL_SERVER_ERROR);
             }
         });
 
@@ -72,7 +74,7 @@ public class SignService {
             try {
                 return signUp(userInfo);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new BaseException(ErrorCode.EXTERNAL_SERVER_ERROR);
             }
         });
         TokenResponseDTO tokenResponseDTO = jwtProvider.createTokenDTO(user.getUserId(), user.getRole());
