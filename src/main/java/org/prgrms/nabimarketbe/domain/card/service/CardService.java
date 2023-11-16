@@ -161,7 +161,6 @@ public class CardService {
        String token,
        Long cardId
    ) {
-
        Card card = cardRepository.findById(cardId)
            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
