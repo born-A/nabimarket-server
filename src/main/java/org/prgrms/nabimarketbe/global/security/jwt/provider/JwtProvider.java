@@ -2,6 +2,7 @@ package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +75,14 @@ public class JwtProvider {
                 .compact();
 
         RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
-        refreshTokenRepository.save(refreshTokenEntity);
+
+        Optional<RefreshToken> refreshTokenByUserId = refreshTokenRepository.findByUserId(userPk);
+
+        if(refreshTokenByUserId.isPresent()){
+            refreshTokenByUserId.get().updateToken(refreshToken);
+        } else{
+            refreshTokenRepository.save(refreshTokenEntity);
+        }
 
         return TokenResponseDTO.builder()
             .grantType("Bearer")
