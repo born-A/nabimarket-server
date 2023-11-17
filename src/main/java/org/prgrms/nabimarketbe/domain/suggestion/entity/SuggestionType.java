@@ -5,9 +5,9 @@ import java.util.function.BiFunction;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 
 public enum SuggestionType {
-    OFFER( (fromItem, toItem) -> (fromItem.getPriceRange().equals(toItem.getPriceRange())) ),
-    POKE( (fromItem, toItem) -> (fromItem.getPriceRange().getValue() < toItem.getPriceRange().getValue()
-        || fromItem.getPriceRange().getValue() > toItem.getPriceRange().getValue()));
+    OFFER( (fromItem, toItem) -> (fromItem.getPriceRange().equals(toItem.getPriceRange())
+            || fromItem.getPriceRange().getValue() > toItem.getPriceRange().getValue()) ),
+    POKE( (fromItem, toItem) -> (fromItem.getPriceRange().getValue() < toItem.getPriceRange().getValue()) );
 
     public final BiFunction<Item, Item, Boolean> suggestionValidationFunction;
 
