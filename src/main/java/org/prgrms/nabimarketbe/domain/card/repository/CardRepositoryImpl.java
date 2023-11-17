@@ -130,9 +130,9 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             )
             .from(card)
             .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
-            .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
-            .where(card.user.userId.eq(userId),
-                suggestion.toCard.cardId.eq(targetCardId).or(suggestion.toCard.cardId.isNull()))
+            .where(card.user.userId.eq(userId))
+            .distinct()
+            .on(suggestion.toCard.cardId.eq(targetCardId))
             .fetch();
 
         return cardList;
@@ -157,6 +157,21 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .lt(cursorId);
     }
 
+//    private BooleanExpression targetIdEquals(Long targetCardId) {
+//        BooleanExpression condition = suggestion.toCard.cardId.eq(targetCardId);
+//
+//        condition.isTrue().
+//        if (condition.isTrue().) {
+//            // 조건이 참일 때 수행할 작업
+//        } else {
+//            // 조건이 거짓일 때 수행할 작업
+//        }
+//
+//        suggestion.toCard.cardId.eq(targetCardId);
+//
+//
+//        return suggestion.toCard.cardId.ne(targetCardId)
+//    }
     private BooleanExpression categoryEquals(CategoryEnum category) {
         if (category == null) {
             return null;
