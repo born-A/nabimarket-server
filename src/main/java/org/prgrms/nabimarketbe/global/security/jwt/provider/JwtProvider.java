@@ -27,6 +27,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class JwtProvider {
     }
 
     // Jwt 생성
+    @Transactional
     public TokenResponseDTO createTokenDTO(Long userPk, String role) {
         // Claims 에 user 구분을 위한 User pk 및 authorities 목록 삽입
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
