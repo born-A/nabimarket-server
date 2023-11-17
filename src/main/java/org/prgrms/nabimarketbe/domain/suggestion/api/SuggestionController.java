@@ -3,7 +3,7 @@ package org.prgrms.nabimarketbe.domain.suggestion.api;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionRequestDTO;
-import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;

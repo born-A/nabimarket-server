@@ -1,8 +1,8 @@
-package org.prgrms.nabimarketbe.domain.card.dto.response;
-
-import lombok.Getter;
+package org.prgrms.nabimarketbe.domain.card.dto.response.projection;
 
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+
+import lombok.Getter;
 
 @Getter
 public class CardSummaryResponseDTO{

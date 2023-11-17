@@ -1,16 +1,26 @@
 package org.prgrms.nabimarketbe.domain.item.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.prgrms.nabimarketbe.domain.category.entity.Category;
+import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.global.BaseEntity;
-import org.prgrms.nabimarketbe.domain.category.entity.Category;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "items")
@@ -34,10 +44,10 @@ public class Item extends BaseEntity {
     private Category category;
 
     @Builder
-    public Item(
-            String itemName,
-            PriceRange priceRange,
-            Category category
+    private Item(
+        String itemName,
+        PriceRange priceRange,
+        Category category
     ) {
         if (itemName.isBlank()) {
             throw new BaseException(ErrorCode.UNKNOWN);

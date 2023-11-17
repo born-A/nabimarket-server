@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.dibs.dto.response;
+package org.prgrms.nabimarketbe.domain.dibs.dto.response.projection;
 
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;

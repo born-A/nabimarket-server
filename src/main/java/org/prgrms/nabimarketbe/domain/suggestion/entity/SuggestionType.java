@@ -8,16 +8,16 @@ public enum SuggestionType {
     OFFER( (fromItem, toItem) -> (fromItem.getPriceRange().equals(toItem.getPriceRange())) ),
     POKE( (fromItem, toItem) -> (fromItem.getPriceRange().getValue() < toItem.getPriceRange().getValue()) );
 
-    public final BiFunction<Item, Item, Boolean> suggestionAvailableFunction;
+    public final BiFunction<Item, Item, Boolean> suggestionValidationFunction;
 
     SuggestionType(BiFunction<Item, Item, Boolean> suggestionAvailableFunction) {
-        this.suggestionAvailableFunction = suggestionAvailableFunction;
+        this.suggestionValidationFunction = suggestionAvailableFunction;
     }
 
     public boolean isSuggestionAvailable(
         Item fromItem,
         Item toItem
     ) {
-        return this.suggestionAvailableFunction.apply(fromItem, toItem);
+        return this.suggestionValidationFunction.apply(fromItem, toItem);
     }
 }

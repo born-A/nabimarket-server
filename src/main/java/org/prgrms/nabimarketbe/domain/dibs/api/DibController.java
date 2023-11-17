@@ -1,8 +1,8 @@
 package org.prgrms.nabimarketbe.domain.dibs.api;
 
 import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibResponseDTO;
 import org.prgrms.nabimarketbe.domain.dibs.service.DibService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
@@ -27,7 +27,7 @@ public class DibController {
 
 	@PostMapping("/{cardId}")
 	public ResponseEntity<SingleResult<DibResponseDTO<DibCreateResponseDTO>>> createDib(
-		@RequestHeader(name = "authorization") String token,
+		@RequestHeader(name = "Authorization") String token,
 		@PathVariable Long cardId
 	) {
 		DibResponseDTO<DibCreateResponseDTO> dibResponseDTO = dibService.createDib(token, cardId);

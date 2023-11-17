@@ -1,6 +1,8 @@
-package org.prgrms.nabimarketbe.domain.dibs.dto.response;
+package org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper;
 
 import java.util.List;
+
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.projection.DibListReadResponseDTO;
 
 public record DibListReadPagingResponseDTO (
     List<DibListReadResponseDTO> dibList,

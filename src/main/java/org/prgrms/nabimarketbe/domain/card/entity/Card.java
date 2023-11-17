@@ -93,12 +93,12 @@ public class Card extends BaseEntity {
             Item item,
             User user
     ) {
-        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank()) {  // TODO: 구조 변경 후 thumbnail null 처리 추가
-            throw new BaseException(ErrorCode.UNKNOWN);
+        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank() || thumbnail.isBlank()) {
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         if (pokeAvailable == null || tradeType == null || item == null || user == null) {
-            throw new BaseException(ErrorCode.UNKNOWN);
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         this.cardTitle = cardTitle;

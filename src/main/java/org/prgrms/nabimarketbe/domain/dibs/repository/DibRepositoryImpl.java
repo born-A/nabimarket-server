@@ -5,8 +5,8 @@ import static org.prgrms.nabimarketbe.domain.dibs.entity.QDib.*;
 
 import java.util.List;
 
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.dibs.dto.response.DibListReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.wrapper.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.dibs.dto.response.projection.DibListReadResponseDTO;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -32,7 +32,7 @@ public class DibRepositoryImpl implements DibRepositoryCustom{
 				card.cardTitle,
 				card.item.itemName,
 				card.item.priceRange,
-				card.thumbnail.as("thumbnail"),
+				card.thumbnail,
 				card.status
 			)
 		)
