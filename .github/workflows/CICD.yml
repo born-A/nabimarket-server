@@ -9,7 +9,9 @@ on:
     branches: [ "main", "dev" ]  # master branch로 pull request될 때 실행
 
 env:
+  # 아무거나 해도 됨
   PROJECT_NAME: nabi
+  # aws 이름 똑같아야됨
   BUCKET_NAME: team-01-bucket
   CODE_DEPLOY_APP_NAME: team01-codedeploy
   DEPLOYMENT_GROUP_NAME: team01-instance-group
