@@ -34,12 +34,12 @@ jobs:
           distribution: 'temurin'
 
       # application.properties를 프로젝트에 포함
-      - name: add Application.yml
+      - name: Make application.properties
         run: |
           cd ./src/main/resources
-          touch ./application.yml
-          
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          touch ./application.properties
+
+          echo "${{ secrets.DATABASE_PROPERTIES }}" >> ./application.properties
         shell: bash
 
       - name: Setup MySQL
