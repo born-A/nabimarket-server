@@ -318,6 +318,7 @@ public class CardService {
     ) {
         Card targetCard = cardRepository.findById(targetId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+        
         Boolean pokeAvailable = targetCard.getPokeAvailable();
         PriceRange priceRange = targetCard.getItem().getPriceRange();
 
