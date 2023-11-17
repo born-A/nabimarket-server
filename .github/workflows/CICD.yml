@@ -36,7 +36,9 @@ jobs:
       # application.properties를 프로젝트에 포함
       - name: add Application.yml
         run:
-          touch ./src/main/resources/application.yml
+          cd ./src/main/resources
+          touch ./application.yml
+          
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
         shell: bash
 
