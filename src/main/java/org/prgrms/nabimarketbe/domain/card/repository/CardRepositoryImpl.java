@@ -157,21 +157,6 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .lt(cursorId);
     }
 
-//    private BooleanExpression targetIdEquals(Long targetCardId) {
-//        BooleanExpression condition = suggestion.toCard.cardId.eq(targetCardId);
-//
-//        condition.isTrue().
-//        if (condition.isTrue().) {
-//            // 조건이 참일 때 수행할 작업
-//        } else {
-//            // 조건이 거짓일 때 수행할 작업
-//        }
-//
-//        suggestion.toCard.cardId.eq(targetCardId);
-//
-//
-//        return suggestion.toCard.cardId.ne(targetCardId)
-//    }
     private BooleanExpression categoryEquals(CategoryEnum category) {
         if (category == null) {
             return null;
