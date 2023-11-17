@@ -35,7 +35,7 @@ jobs:
 
       # application.properties를 프로젝트에 포함
       - name: add Application.yml
-        run:
+        run: |
           cd ./src/main/resources
           touch ./application.yml
           
