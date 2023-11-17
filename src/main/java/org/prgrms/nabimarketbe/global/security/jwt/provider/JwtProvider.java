@@ -1,22 +1,5 @@
 package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-
-import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
-import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
-import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
@@ -27,7 +10,22 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
+import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -63,18 +61,18 @@ public class JwtProvider {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
 
         String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
 
         RefreshToken refreshTokenEntity = new RefreshToken(userPk, refreshToken);
 
@@ -84,6 +82,7 @@ public class JwtProvider {
             refreshToken2 -> refreshToken2.updateToken(refreshToken),
             () -> refreshTokenRepository.save(refreshTokenEntity)
         );
+
 
         return TokenResponseDTO.builder()
             .grantType("Bearer")
