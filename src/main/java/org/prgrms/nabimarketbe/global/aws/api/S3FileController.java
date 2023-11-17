@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,16 +52,5 @@ public class S3FileController {
         List<String> uploadUrls = s3FileUploadService.uploadFiles(files);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(uploadUrls));
-    }
-
-    /**
-     * @param url example : 8300a5cd-341f-46bc-8eca-2e79355c7cd4-after.png
-     */
-    @GetMapping
-    public String getImgPath(String url) {
-        String imgPath = s3FileUploadService.getThumbnailPath(url);
-        log.info(imgPath);
-
-        return imgPath;
     }
 }

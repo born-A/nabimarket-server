@@ -25,18 +25,10 @@ public class S3FileUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${cloud.aws.s3.defaultUrl}")
-    private String defaultUrl;
-
-    public String getThumbnailPath(String path) {
-        return amazonS3.getUrl(bucketName, path).toString();
-    }
-
     public String uploadFile(
             MultipartFile file
     ) {
         String bucketDir = bucketName;
-        String dirUrl = defaultUrl + "/";
 
         String fileName = generateFileName(file);
 
@@ -51,7 +43,7 @@ public class S3FileUploadService {
             throw new RuntimeException("단건 이미지 업로드를 실패하였습니다.");
         }
 
-        return dirUrl + fileName;
+        return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
     public List<String> uploadFiles(
@@ -60,7 +52,6 @@ public class S3FileUploadService {
         List<String> imgUrlList = new ArrayList<>();
 
         String bucketDir = bucketName;
-        String dirUrl = defaultUrl + "/";
 
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file);
@@ -75,8 +66,9 @@ public class S3FileUploadService {
             } catch (IOException e) {
                 throw new RuntimeException("다건 이미지 업로드를 실패하였습니다.");
             }
+            String uploadedUrl = amazonS3.getUrl(bucketName, fileName).toString();
 
-            imgUrlList.add(dirUrl + fileName);
+            imgUrlList.add(uploadedUrl);
         }
 
         return imgUrlList;
