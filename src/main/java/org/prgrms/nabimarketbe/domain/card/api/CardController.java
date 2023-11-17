@@ -6,12 +6,12 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
@@ -50,8 +50,8 @@ public class CardController {
         in = ParameterIn.HEADER)
     @PostMapping
     public ResponseEntity<SingleResult<CardResponseDTO<CardCreateResponseDTO>>> createCard(
-            @RequestHeader("Authorization") String token,
-            @RequestBody CardCreateRequestDTO cardCreateRequestDTO
+        @RequestHeader("Authorization") String token,
+        @RequestBody CardCreateRequestDTO cardCreateRequestDTO
     ) {
         CardResponseDTO<CardCreateResponseDTO> card = cardService.createCard(token, cardCreateRequestDTO);
 
@@ -59,16 +59,16 @@ public class CardController {
     }
 
    @GetMapping("/{cardId}")
-   public ResponseEntity<SingleResult<CardSingleReadResponseDTO>> getCardById(
-       @RequestHeader("Authorization") String token,
+   public ResponseEntity<SingleResult<CardUserResponseDTO>> getCardById(
+       @RequestHeader(value = "Authorization", required = false) String token,
        @PathVariable Long cardId) {
-       CardSingleReadResponseDTO cardSingleReadResponseDTO = cardService.getCardById(token, cardId);
+       CardUserResponseDTO cardSingleReadResponseDTO = cardService.getCardById(token, cardId);
 
        return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
    }
 
     @GetMapping
-    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getCardsByCondition(
+    public ResponseEntity<SingleResult<CardPagingResponseDTO>> getCardsByCondition(
             @RequestParam(required = false) CategoryEnum category,
             @RequestParam(required = false) PriceRange priceRange,
             @RequestParam(required = false) List<CardStatus> status,
@@ -76,7 +76,7 @@ public class CardController {
             @RequestParam(required = false) String cursorId,
             @RequestParam Integer size
     ) {
-        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getCardsByCondition(
+        CardPagingResponseDTO cardListReadPagingResponseDTO = cardService.getCardsByCondition(
                 category,
                 priceRange,
                 status,
@@ -89,11 +89,11 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/available-cards")
-    public ResponseEntity<SingleResult<CardListResponseDTO<SuggestionAvailableCardResponseDTO>>> getSuggestionAvailableCards(
+    public ResponseEntity<SingleResult<CardListResponseDTO<CardSuggestionResponseDTO>>> getSuggestionAvailableCards(
             @RequestHeader(name = "Authorization") String token,
             @PathVariable(name = "cardId") Long targetCardId
     ) {
-        CardListResponseDTO<SuggestionAvailableCardResponseDTO> cardListResponseDTO
+        CardListResponseDTO<CardSuggestionResponseDTO> cardListResponseDTO
                 = cardService.getSuggestionAvailableCards(token, targetCardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListResponseDTO));
@@ -130,13 +130,13 @@ public class CardController {
     }
 
     @GetMapping("/{status}/my-cards")
-    public ResponseEntity<SingleResult<CardListReadPagingResponseDTO>> getMyCardsByStatus(
+    public ResponseEntity<SingleResult<CardPagingResponseDTO>> getMyCardsByStatus(
             @RequestHeader(name = "authorization") String token,
             @PathVariable CardStatus status,
             @RequestParam(required = false) String cursorId,
             @RequestParam Integer size
     ) {
-        CardListReadPagingResponseDTO cardListReadPagingResponseDTO = cardService.getMyCardsByStatus(
+        CardPagingResponseDTO cardListReadPagingResponseDTO = cardService.getMyCardsByStatus(
                 token,
                 status,
                 cursorId,

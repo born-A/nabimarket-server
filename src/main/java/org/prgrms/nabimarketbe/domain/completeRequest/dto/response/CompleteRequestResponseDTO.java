@@ -1,21 +1,22 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.dto.response;
 
-import lombok.Builder;
+import java.time.LocalDateTime;
+
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequestStatus;
 
-import java.time.LocalDateTime;
+import lombok.Builder;
 
 @Builder
-public record CompleteRequestDTO(
+public record CompleteRequestResponseDTO(
     Long completeRequestId,
     Long fromCardId,
     Long toCardId,
     CompleteRequestStatus completeRequestStatus,
     LocalDateTime createdAt
 ) {
-    public static CompleteRequestDTO from(CompleteRequest completeRequest) {
-        return CompleteRequestDTO.builder()
+    public static CompleteRequestResponseDTO from(CompleteRequest completeRequest) {
+        return CompleteRequestResponseDTO.builder()
             .completeRequestId(completeRequest.getCompleteRequestId())
             .fromCardId(completeRequest.getFromCard().getCardId())
             .toCardId(completeRequest.getToCard().getCardId())

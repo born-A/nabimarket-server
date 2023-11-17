@@ -8,13 +8,13 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetail;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardListResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardSingleReadResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetailResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.SuggestionAvailableCardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
@@ -28,9 +28,8 @@ import org.prgrms.nabimarketbe.domain.dibs.repository.DibRepository;
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
-import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
@@ -77,6 +76,7 @@ public class CardService {
 
         CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
 
+        // images 비어있을 경우..
         List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
             .orElse(new ArrayList<>())
             .stream()
@@ -107,10 +107,15 @@ public class CardService {
         Long cardId,
         CardUpdateRequestDTO cardUpdateRequestDTO
     ) {
+        Long userId = checkService.parseToken(token);
+        if (userRepository.existsById(userId)) {
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);
+        }
+
         Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
-        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+        if (!checkService.isEqual(userId, card.getUser().getUserId())) {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
@@ -151,121 +156,129 @@ public class CardService {
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
             item,
-            images
+            newCardImages
         );
 
         return new CardResponseDTO<>(cardUpdateResponseDTO);
     }
 
    @Transactional(readOnly = true)
-   public CardSingleReadResponseDTO getCardById(
+   public CardUserResponseDTO getCardById(
        String token,
        Long cardId
    ) {
-       Long userId = checkService.parseToken(token);
-       User user = userRepository.findById(userId)
-           .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-
        Card card = cardRepository.findById(cardId)
-               .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+           .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-       if (!user.getUserId().equals(card.getUser().getUserId())) {
-           card.updateViewCount();
+       Boolean isMyDib = false;
+
+       if(token != null) {
+           Long userId = checkService.parseToken(token);
+           User loginUser = userRepository.findById(userId)
+               .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+           if (!checkService.isEqual(userId, card.getUser().getUserId())) {
+               card.updateViewCount();
+               isMyDib = dibRepository.existsDibByCardAndUser(card, loginUser);
+           }
        }
+
+       User cardOwner = card.getUser();
 
        List<CardImage> cardImages = cardImageRepository.findAllByCard(card);
 
-       boolean isMyDib = dibRepository.existsDibByCardAndUser(card, user);
-
-       CardDetail cardDetail = CardDetail.of(
+       CardDetailResponseDTO cardInfo = CardDetailResponseDTO.of(
            card,
            cardImages,
            isMyDib
        );
 
-       UserSummaryResponseDTO userSummaryResponseDTO = UserSummaryResponseDTO.from(user);
+       UserSummaryResponseDTO userInfo = UserSummaryResponseDTO.from(cardOwner);
 
-       CardResponseDTO<CardDetail> cardInfo = new CardResponseDTO<>(cardDetail);
-       UserResponseDTO<UserSummaryResponseDTO> userInfo = new UserResponseDTO<>(userSummaryResponseDTO);
-
-       return CardSingleReadResponseDTO.of(
+       return CardUserResponseDTO.of(
            cardInfo,
            userInfo
        );
    }
 
     @Transactional(readOnly = true)
-    public CardListReadPagingResponseDTO getCardsByCondition(
-            CategoryEnum category,
-            PriceRange priceRange,
-            List<CardStatus> status,
-            String title,
-            String cursorId,
-            Integer size
+    public CardPagingResponseDTO getCardsByCondition(
+        CategoryEnum category,
+        PriceRange priceRange,
+        List<CardStatus> status,
+        String title,
+        String cursorId,
+        Integer size
     ) {
         return cardRepository.getCardsByCondition(
-                category,
-                priceRange,
-                status,
-                title,
-                cursorId,
-                size
+            category,
+            priceRange,
+            status,
+            title,
+            cursorId,
+            size
         );
     }
 
     @Transactional(readOnly = true)
-    public CardListResponseDTO<SuggestionAvailableCardResponseDTO> getSuggestionAvailableCards(
-            String token,
-            Long targetCardId
+    public CardListResponseDTO<CardSuggestionResponseDTO> getSuggestionAvailableCards(
+        String token,
+        Long targetCardId
     ) {
-        User requestUser = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User requestUser = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
         Card suggestionTargetCard = cardRepository.findById(targetCardId)
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        if (requestUser.getUserId().equals(suggestionTargetCard.getUser().getUserId())) {
+        if (checkService.isEqual(userId, suggestionTargetCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
         }
 
-        List<SuggestionAvailableCardResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
-                requestUser.getUserId(),
-                suggestionTargetCard.getCardId()
+        List<CardSuggestionResponseDTO> cardListResponse = cardRepository.getSuggestionAvailableCards(
+            requestUser.getUserId(),
+            suggestionTargetCard.getCardId()
         );
 
-        List<SuggestionAvailableCardResponseDTO> suggestionResultCardList =
+        List<CardSuggestionResponseDTO> suggestionResultCardList =
             getSuggestionResultCardList(suggestionTargetCard.getCardId(), cardListResponse);
 
         return new CardListResponseDTO<>(suggestionResultCardList);
     }
 
     @Transactional(readOnly = true)
-    public CardListReadPagingResponseDTO getMyCardsByStatus(
-            String token,
-            CardStatus status,
-            String cursorId,
-            Integer size
+    public CardPagingResponseDTO getMyCardsByStatus(
+        String token,
+        CardStatus status,
+        String cursorId,
+        Integer size
     ) {
         User user = userRepository.findById(checkService.parseToken(token))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         return cardRepository.getMyCardsByStatus(
-                user,
-                status,
-                cursorId,
-                size
+            user,
+            status,
+            cursorId,
+            size
         );
     }
 
     @Transactional
     public void updateCardStatusById(
-            String token,
-            Long cardId,
-            CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
+        String token,
+        Long cardId,
+        CardStatusUpdateRequestDTO cardStatusUpdateRequestDTO
     ) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+        Long userId = checkService.parseToken(token);
+        if (!userRepository.existsById(userId)) {
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);
+        }
 
-        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!checkService.isEqual(userId, card.getUser().getUserId())) {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
@@ -278,52 +291,76 @@ public class CardService {
 
     @Transactional
     public void deleteCardById(
-            String token,
-            Long cardId
+        String token,
+        Long cardId
     ) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+        Long userId = checkService.parseToken(token);
+        if (!userRepository.existsById(userId)) {
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);
+        }
 
-        if (!checkService.isEqual(token, card.getUser().getUserId())) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!checkService.isEqual(userId, card.getUser().getUserId())) {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
-        cardImageRepository.deleteAllByCard(card);
         cardRepository.delete(card);
     }
   
     @Transactional
-    public List<SuggestionAvailableCardResponseDTO> getSuggestionResultCardList(
+    public List<CardSuggestionResponseDTO> getSuggestionResultCardList(
         Long targetId,
-        List<SuggestionAvailableCardResponseDTO> cardList
+        List<CardSuggestionResponseDTO> cardList
     ) {
-        Card targetCard = cardRepository.findById(targetId).orElseThrow();
+        Card targetCard = cardRepository.findById(targetId)
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Boolean pokeAvailable = targetCard.getPokeAvailable();
-        PriceRange priceRange = targetCard.getItem().getPriceRange();;
+        PriceRange priceRange = targetCard.getItem().getPriceRange();
 
         if (pokeAvailable) {
-            return cardList.stream()
-                .peek(c -> {
-                    if (c.getCardInfo().getPriceRange().getValue() < priceRange.getValue()) {
-                        c.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
-                    } else {
-                        c.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER);
-                    }
-                }).toList();
+            return parseCardListWithPokeAndOffer(cardList, priceRange);
         }
+        return parseCardListWithOnlyOffer(cardList, priceRange);
+    }
 
-        List<SuggestionAvailableCardResponseDTO> offerOnlyCardList = cardList.stream()
-            .filter(c -> c.getCardInfo().getPriceRange().getValue() >= priceRange.getValue())
+    private List<CardSuggestionResponseDTO> parseCardListWithPokeAndOffer(
+        List<CardSuggestionResponseDTO> cardList,
+        PriceRange targetPriceRange
+    ) {
+        return cardList.stream()
+            .peek(cardSuggestionResponseDTO -> {
+                if (targetPriceRange.isHigherThan(cardSuggestionResponseDTO.getCardInfo().getPriceRange())) {
+                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
+                }
+                else {
+                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER);
+                }
+            }).toList();
+    }
+
+    private List<CardSuggestionResponseDTO> parseCardListWithOnlyOffer(
+        List<CardSuggestionResponseDTO> cardList,
+        PriceRange priceRange
+    ) {
+        List<CardSuggestionResponseDTO> offerOnlyCardList = cardList.stream()
+            .filter(cardSuggestionResponseDTO ->
+                cardSuggestionResponseDTO.getCardInfo()
+                    .getPriceRange()
+                    .isHigherThan(priceRange))
             .toList();
-        offerOnlyCardList.forEach(o -> o.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER));
+
+        offerOnlyCardList.forEach(offerCard ->
+            offerCard.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER));
 
         return offerOnlyCardList;
     }
   
     private List<CardImage> addThumbnail(
-      List<CardImage> cardImages,
-      CardImage thumbnail
+        List<CardImage> cardImages,
+        CardImage thumbnail
     ) {
         List<CardImage> newCardImages = new ArrayList<>(cardImages);
         newCardImages.add(0, thumbnail);

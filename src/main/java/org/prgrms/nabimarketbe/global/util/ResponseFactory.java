@@ -1,10 +1,7 @@
 package org.prgrms.nabimarketbe.global.util;
 
-import java.util.List;
-
 import org.prgrms.nabimarketbe.global.util.model.CommonResponse;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
-import org.prgrms.nabimarketbe.global.util.model.ListResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 
 public class ResponseFactory {
@@ -12,15 +9,6 @@ public class ResponseFactory {
     public static <T> SingleResult<T> getSingleResult(T data) {
         SingleResult<T> result = new SingleResult<>();
         result.setData(data);
-        setSuccessResult(result);
-
-        return result;
-    }
-
-    // 복수건 결과 처리 메서드
-    public static <T> ListResult<T> getListResult(List<T> list) {
-        ListResult<T> result = new ListResult<>();
-        result.setList(list);
         setSuccessResult(result);
 
         return result;

@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,6 +42,10 @@ public class Dib extends BaseEntity {
 		User user,
 		Card card
 	) {
+		if (user == null || card == null) {
+			throw new BaseException(ErrorCode.INVALID_REQUEST);
+		}
+
 		this.user = user;
 		this.card = card;
 	}
