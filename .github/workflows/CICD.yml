@@ -11,8 +11,8 @@ on:
 env:
   PROJECT_NAME: nabi
   BUCKET_NAME: team-01-bucket
-  CODE_DEPLOY_APP_NAME: nabi-market
-  DEPLOYMENT_GROUP_NAME: nabi-instance-group
+  CODE_DEPLOY_APP_NAME: team01-codedeploy
+  DEPLOYMENT_GROUP_NAME: team01-instance-group
 
 permissions:
   contents: read
