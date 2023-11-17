@@ -78,11 +78,10 @@ public class JwtProvider {
 
         Optional<RefreshToken> refreshTokenByUserId = refreshTokenRepository.findByUserId(userPk);
 
-        if(refreshTokenByUserId.isPresent()){
-            refreshTokenByUserId.get().updateToken(refreshToken);
-        } else{
-            refreshTokenRepository.save(refreshTokenEntity);
-        }
+        refreshTokenByUserId.ifPresentOrElse(
+            refreshToken2 -> refreshToken2.updateToken(refreshToken),
+            () -> refreshTokenRepository.save(refreshTokenEntity)
+        );
 
         return TokenResponseDTO.builder()
             .grantType("Bearer")
