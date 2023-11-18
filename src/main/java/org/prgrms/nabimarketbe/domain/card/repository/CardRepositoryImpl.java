@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
 import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -17,7 +19,10 @@ import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionInfo;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
+import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
@@ -59,7 +64,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 priceRangeEquals(priceRange),
                 titleEquals(cardTitle)
             )
-            .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
+            .orderBy(getOrderSpecifier(Sort.by(
+                    Sort.Order.desc("createdDate"),
+                    Sort.Order.desc("cardId")
+            )))
             .limit(size)
             .fetch();
 
@@ -130,9 +138,9 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             )
             .from(card)
             .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
-            .leftJoin(suggestion).on(suggestion.toCard.cardId.eq(targetCardId))
-            .where(card.user.userId.eq(userId),
-                suggestion.toCard.cardId.eq(targetCardId).or(suggestion.toCard.cardId.isNull()))
+            .where(card.user.userId.eq(userId))
+            .distinct()
+            .on(suggestion.toCard.cardId.eq(targetCardId))
             .fetch();
 
         return cardList;
@@ -199,5 +207,16 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .replace("-", "")
             .replace(":", "")
             + String.format("%08d", cardListReadResponseDTO.getCardId());
+    }
+
+    private OrderSpecifier[] getOrderSpecifier(Sort sort) {
+        List<OrderSpecifier> orders = new ArrayList<>();
+
+        for (Sort.Order order : sort) { // Sort에 여러 정렬 기준을 담을 수 있음
+            Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+            orders.add(QueryDslUtil.getSortedColumn(direction, card, order.getProperty()));
+        }
+
+        return orders.toArray(OrderSpecifier[]::new);
     }
 }

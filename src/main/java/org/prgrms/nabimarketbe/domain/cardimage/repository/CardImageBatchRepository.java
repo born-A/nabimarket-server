@@ -19,7 +19,7 @@ public class CardImageBatchRepository {
 
     private static final String sql = "INSERT INTO card_images (created_date, modified_date, image_url, card_id) VALUES (?, ?, ?, ?)";
 
-    private static final Integer SUCCESS_SIGNAL = -2;
+    private static final Integer SUCCESS_SIGNAL = 1;
 
     @Transactional
     public boolean saveAll(List<CardImage> cardImages) {
@@ -27,14 +27,14 @@ public class CardImageBatchRepository {
             cardImages,
             cardImages.size(),
             (PreparedStatement preparedStatement, CardImage cardImage) -> {
-                preparedStatement.setTimestamp(1,Timestamp.valueOf(LocalDateTime.now()));
-                preparedStatement.setTimestamp(2,Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
                 preparedStatement.setString(3, cardImage.getImageUrl());
-                preparedStatement.setLong(4,cardImage.getCard().getCardId());
+                preparedStatement.setLong(4, cardImage.getCard().getCardId());
             });
 
         for (int[] value : result) {
-            if ( value[0] != SUCCESS_SIGNAL) {
+            if (value[0] != SUCCESS_SIGNAL) {
                 return false;
             }
         }
