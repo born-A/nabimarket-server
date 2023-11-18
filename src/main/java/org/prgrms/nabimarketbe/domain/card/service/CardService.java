@@ -108,7 +108,7 @@ public class CardService {
         CardUpdateRequestDTO cardUpdateRequestDTO
     ) {
         Long userId = checkService.parseToken(token);
-        if (userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
 

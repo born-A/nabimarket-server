@@ -1,11 +1,6 @@
 spring:
   profiles:
-    active: dev
-
-  ## .sql문을 실행하기 위함
-
-  ## hibernate ddl 이후 datasource intialize
-
+    active: local
 
 springdoc:
   version: '@springdoc.version@'
