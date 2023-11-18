@@ -1,8 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.dto.response;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import lombok.Builder;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
@@ -11,7 +9,8 @@ import org.prgrms.nabimarketbe.domain.cardimage.entity.CardImage;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 
-import lombok.Builder;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 public record CardDetailResponseDTO(
@@ -26,7 +25,7 @@ public record CardDetailResponseDTO(
     Integer viewCount,
     PriceRange priceRange,
     String content,
-    CardStatus cardStatus,
+    CardStatus status,
     TradeType tradeType,
     String tradeArea,
     Integer dibCount,
@@ -50,7 +49,7 @@ public record CardDetailResponseDTO(
             .viewCount(card.getViewCount())
             .priceRange(card.getItem().getPriceRange())
             .content(card.getContent())
-            .cardStatus(card.getStatus())
+            .status(card.getStatus())
             .tradeType(card.getTradeType())
             .tradeArea(card.getTradeArea())
             .dibCount(card.getDibCount())

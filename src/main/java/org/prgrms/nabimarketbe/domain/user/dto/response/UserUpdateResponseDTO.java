@@ -6,15 +6,15 @@ import lombok.Builder;
 
 @Builder
 public record UserUpdateResponseDTO(
-	Long userId,
-	String nickname,
-	String profileUrl
+    Long userId,
+    String nickname,
+    String imageUrl
 ) {
-	public static UserUpdateResponseDTO from(User user) {
-		return UserUpdateResponseDTO.builder()
-			.userId(user.getUserId())
-			.nickname(user.getNickname())
-			.profileUrl(user.getImageUrl())
-			.build();
-	}
+    public static UserUpdateResponseDTO from(User user) {
+        return UserUpdateResponseDTO.builder()
+            .userId(user.getUserId())
+            .nickname(user.getNickname())
+            .imageUrl(user.getImageUrl())
+            .build();
+    }
 }
