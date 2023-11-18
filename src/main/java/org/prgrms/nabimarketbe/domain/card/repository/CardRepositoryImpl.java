@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardFamousResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfoResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
@@ -31,6 +32,8 @@ import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.sugge
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
+    private static final int FAMOUS_CARD_SIZE = 5;
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -65,8 +68,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 titleEquals(cardTitle)
             )
             .orderBy(getOrderSpecifier(Sort.by(
-                    Sort.Order.desc("createdDate"),
-                    Sort.Order.desc("cardId")
+                Sort.Order.desc("createdDate"),
+                Sort.Order.desc("cardId")
             )))
             .limit(size)
             .fetch();
@@ -144,6 +147,35 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .fetch();
 
         return cardList;
+    }
+
+    @Override
+    public List<CardFamousResponseDTO> getCardsByPopularity() {
+        List<CardFamousResponseDTO> cardList = jpaQueryFactory
+            .select(
+                Projections.fields(
+                    CardFamousResponseDTO.class,
+                    card.cardId,
+                    card.item.itemName,
+                    card.item.priceRange,
+                    card.thumbnail
+                )
+            )
+            .from(card)
+            .where(statusEquals(CardStatus.TRADE_AVAILABLE))
+            .orderBy(card.viewCount.desc(), card.dibCount.desc())
+            .limit(FAMOUS_CARD_SIZE)
+            .fetch();
+
+        return cardList;
+    }
+
+    private BooleanExpression statusEquals(CardStatus status) {
+        if (status == null) {
+            return null;
+        }
+
+        return card.status.eq(status);
     }
 
     private BooleanExpression cursorId(String cursorId) {
