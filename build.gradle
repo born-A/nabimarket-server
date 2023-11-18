@@ -5,6 +5,11 @@ plugins {
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
+// SNAPSHOT-plain 생성 막기위함
+jar {
+    enabled = false
+}
+
 group = 'org.prgrms'
 version = '0.0.1-SNAPSHOT'
 
@@ -74,7 +79,7 @@ querydsl {
 sourceSets {
     main.java.srcDir querydslDir
 }
-compileQuerydsl{
+compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
 configurations {
