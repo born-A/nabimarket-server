@@ -3,13 +3,8 @@ spring:
     active: dev
 
   ## .sql문을 실행하기 위함
-  sql:
-    init:
-      mode: always
 
   ## hibernate ddl 이후 datasource intialize
-  jpa:
-    defer-datasource-initialization: true
 
 
 springdoc:
