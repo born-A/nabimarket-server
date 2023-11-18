@@ -225,8 +225,10 @@ public class CardService {
         Long targetCardId
     ) {
         Long userId = checkService.parseToken(token);
+
         User requestUser = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
         Card suggestionTargetCard = cardRepository.findById(targetCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
@@ -315,7 +317,7 @@ public class CardService {
     ) {
         Card targetCard = cardRepository.findById(targetId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-
+        
         Boolean pokeAvailable = targetCard.getPokeAvailable();
         PriceRange priceRange = targetCard.getItem().getPriceRange();
 
