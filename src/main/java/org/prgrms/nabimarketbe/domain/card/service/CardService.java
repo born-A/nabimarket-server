@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
@@ -33,12 +35,13 @@ import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
+import org.prgrms.nabimarketbe.global.util.OrderCondition;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -74,26 +77,21 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
-
         // images 비어있을 경우..
-        List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
-            .orElse(new ArrayList<>())
+        List<CardImage> images = cardCreateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
-
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
 
-        cardImageBatchRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(images);
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
             savedItem,
-            newCardImages
+            images
         );
 
         return new CardResponseDTO<>(cardCreateResponseDTO);
@@ -139,22 +137,17 @@ public class CardService {
 
         cardImageRepository.deleteAllByCard(card);
 
-        CardImage thumbnail = new CardImage(cardUpdateRequestDTO.thumbnail(), card);
-
-        List<CardImage> images = Optional.ofNullable(cardUpdateRequestDTO.images())
-            .orElse(new ArrayList<>())
+        List<CardImage> images = cardUpdateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
-
-        cardImageBatchRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(images);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
             item,
-            newCardImages
+            images
         );
 
         return new CardResponseDTO<>(cardUpdateResponseDTO);
@@ -201,20 +194,29 @@ public class CardService {
 
     @Transactional(readOnly = true)
     public CardPagingResponseDTO getCardsByCondition(
-        CategoryEnum category,
-        PriceRange priceRange,
-        List<CardStatus> status,
-        String title,
-        String cursorId,
-        Integer size
+            CategoryEnum category,
+            PriceRange priceRange,
+            List<CardStatus> status,
+            String title,
+            String cursorId,
+            Integer size,
+            OrderCondition orderCondition
     ) {
+
+        // 전달 받은 orderCondition 과 page size 에 맞게 pageRequest 를 구성 후 repo 에 넘김
+        PageRequest pageRequest = PageRequest.of(
+                0,
+                size,
+                getSortFromOrderCondition(orderCondition)
+        );
+
         return cardRepository.getCardsByCondition(
             category,
             priceRange,
             status,
             title,
             cursorId,
-            size
+            pageRequest
         );
     }
 
@@ -387,5 +389,17 @@ public class CardService {
         newCardImages.add(0, thumbnail);
 
         return newCardImages;
+    }
+
+    private Sort getSortFromOrderCondition(OrderCondition orderCondition) {
+        switch (orderCondition) {
+            case CARD_CREATED_DESC -> {
+                return Sort.by(
+                        Sort.Order.desc("createdDate"),
+                        Sort.Order.desc("cardId")
+                );
+            }
+            default -> throw new BaseException(ErrorCode.INVALID_ORDER_CONDITION);
+        }
     }
 }
