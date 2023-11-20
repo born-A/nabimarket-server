@@ -1,6 +1,8 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
@@ -39,9 +41,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -77,26 +77,21 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        CardImage thumbnail = new CardImage(cardCreateRequestDTO.thumbnail(), card);
-
         // images 비어있을 경우..
-        List<CardImage> images = Optional.ofNullable(cardCreateRequestDTO.images())
-            .orElse(new ArrayList<>())
+        List<CardImage> images = cardCreateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
-
         Item savedItem = itemRepository.save(item);
         Card savedCard = cardRepository.save(card);
 
-        cardImageBatchRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(images);
 
         CardCreateResponseDTO cardCreateResponseDTO = CardCreateResponseDTO.of(
             savedCard,
             savedItem,
-            newCardImages
+            images
         );
 
         return new CardResponseDTO<>(cardCreateResponseDTO);
@@ -142,22 +137,17 @@ public class CardService {
 
         cardImageRepository.deleteAllByCard(card);
 
-        CardImage thumbnail = new CardImage(cardUpdateRequestDTO.thumbnail(), card);
-
-        List<CardImage> images = Optional.ofNullable(cardUpdateRequestDTO.images())
-            .orElse(new ArrayList<>())
+        List<CardImage> images = cardUpdateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
             .toList();
 
-        List<CardImage> newCardImages = addThumbnail(images, thumbnail);
-
-        cardImageBatchRepository.saveAll(newCardImages);
+        cardImageBatchRepository.saveAll(images);
 
         CardUpdateResponseDTO cardUpdateResponseDTO = CardUpdateResponseDTO.of(
             card,
             item,
-            newCardImages
+            images
         );
 
         return new CardResponseDTO<>(cardUpdateResponseDTO);
