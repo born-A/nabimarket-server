@@ -325,6 +325,7 @@ public class CardService {
         if (pokeAvailable) {
             return parseCardListWithPokeAndOffer(cardList, priceRange);
         }
+
         return parseCardListWithOnlyOffer(cardList, priceRange);
     }
 
@@ -342,10 +343,19 @@ public class CardService {
     ) {
         return cardList.stream()
             .peek(cardSuggestionResponseDTO -> {
-                if (targetPriceRange.isHigherThan(cardSuggestionResponseDTO.getCardInfo().getPriceRange())) {
-                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
+                if (targetPriceRange.isHigherThan(
+                    cardSuggestionResponseDTO
+                        .getCardInfo()
+                        .getPriceRange()
+                    )
+                ) {
+                    cardSuggestionResponseDTO
+                        .getSuggestionInfo()
+                        .updateSuggestionType(SuggestionType.POKE);
                 } else {
-                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER);
+                    cardSuggestionResponseDTO
+                        .getSuggestionInfo()
+                        .updateSuggestionType(SuggestionType.OFFER);
                 }
             }).toList();
     }
@@ -355,14 +365,18 @@ public class CardService {
         PriceRange priceRange
     ) {
         List<CardSuggestionResponseDTO> offerOnlyCardList = cardList.stream()
-            .filter(cardSuggestionResponseDTO ->
-                cardSuggestionResponseDTO.getCardInfo()
+            .filter(
+                cardSuggestionResponseDTO -> cardSuggestionResponseDTO
+                    .getCardInfo()
                     .getPriceRange()
-                    .isHigherThan(priceRange))
+                    .isHigherThan(priceRange)
+            )
             .toList();
 
         offerOnlyCardList.forEach(offerCard ->
-            offerCard.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER));
+            offerCard
+                .getSuggestionInfo()
+                .updateSuggestionType(SuggestionType.OFFER));
 
         return offerOnlyCardList;
     }

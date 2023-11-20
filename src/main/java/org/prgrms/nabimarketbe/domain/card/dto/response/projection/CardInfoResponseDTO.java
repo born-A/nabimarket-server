@@ -8,7 +8,7 @@ import lombok.Getter;
 public class CardInfoResponseDTO {
     private Long cardId;
 
-    private String thumbNail;
+    private String thumbnail;
 
     private String cardTitle;
 
