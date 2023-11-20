@@ -22,6 +22,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
+import org.springframework.data.domain.Sort;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,7 +59,15 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
             .leftJoin(card).on(card.cardId.eq(completeRequest.fromCard.cardId))
             .leftJoin(card).on(card.cardId.eq(completeRequest.toCard.cardId).as("toCardAlias"))
             .where(completeRequest.completeRequestStatus.eq(CompleteRequestStatus.ACCEPTED))
-            .orderBy(completeRequest.modifiedDate.desc())
+            .orderBy(
+                    QueryDslUtil.getOrderSpecifier(
+                            Sort.by(
+                                    Sort.Order.desc("modifiedDate"),
+                                    Sort.Order.desc("completeRequestId")
+                            ),
+                            completeRequest
+                    )
+            )
             .limit(size)
             .fetch();
 
@@ -99,7 +109,15 @@ public class CompleteRequestRepositoryImpl implements CompleteRequestRepositryCu
             .where(cursorIdLessThan(cursorId),
                 completeRequest.completeRequestStatus.eq(CompleteRequestStatus.ACCEPTED),
                 completeRequest.fromCard.user.eq(user).or(completeRequest.toCard.user.eq(user)))
-            .orderBy(completeRequest.modifiedDate.desc())
+            .orderBy(
+                    QueryDslUtil.getOrderSpecifier(
+                            Sort.by(
+                                    Sort.Order.desc("modifiedDate"),
+                                    Sort.Order.desc("completeRequestId")
+                            ),
+                            completeRequest
+                    )
+            )
             .limit(size)
             .fetch();
 

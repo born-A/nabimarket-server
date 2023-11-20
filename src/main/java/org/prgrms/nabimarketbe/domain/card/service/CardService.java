@@ -33,6 +33,9 @@ import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
+import org.prgrms.nabimarketbe.global.util.OrderCondition;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -201,20 +204,29 @@ public class CardService {
 
     @Transactional(readOnly = true)
     public CardPagingResponseDTO getCardsByCondition(
-        CategoryEnum category,
-        PriceRange priceRange,
-        List<CardStatus> status,
-        String title,
-        String cursorId,
-        Integer size
+            CategoryEnum category,
+            PriceRange priceRange,
+            List<CardStatus> status,
+            String title,
+            String cursorId,
+            Integer size,
+            OrderCondition orderCondition
     ) {
+
+        // 전달 받은 orderCondition 과 page size 에 맞게 pageRequest 를 구성 후 repo 에 넘김
+        PageRequest pageRequest = PageRequest.of(
+                0,
+                size,
+                getSortFromOrderCondition(orderCondition)
+        );
+
         return cardRepository.getCardsByCondition(
             category,
             priceRange,
             status,
             title,
             cursorId,
-            size
+            pageRequest
         );
     }
 
@@ -373,5 +385,17 @@ public class CardService {
         newCardImages.add(0, thumbnail);
 
         return newCardImages;
+    }
+
+    private Sort getSortFromOrderCondition(OrderCondition orderCondition) {
+        switch (orderCondition) {
+            case CARD_CREATED_DESC -> {
+                return Sort.by(
+                        Sort.Order.desc("createdDate"),
+                        Sort.Order.desc("cardId")
+                );
+            }
+            default -> throw new BaseException(ErrorCode.INVALID_ORDER_CONDITION);
+        }
     }
 }

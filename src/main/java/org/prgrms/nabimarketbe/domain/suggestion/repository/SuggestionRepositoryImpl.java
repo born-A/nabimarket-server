@@ -17,10 +17,13 @@ import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
+import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteRequest.completeRequest;
 import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
@@ -62,7 +65,15 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .join(getQcardByDirectionType(directionType), card)
             .on(getExpressionByDirectionType(directionType, cardId))
             .where(cursorIdLessThan(cursorId), suggestionTypeEquals(suggestionType))
-            .orderBy(suggestion.createdDate.desc())
+            .orderBy(
+                    QueryDslUtil.getOrderSpecifier(
+                            Sort.by(
+                                    Sort.Order.desc("createdDate"),
+                                    Sort.Order.desc("suggestionId")
+                            ),
+                            suggestion
+                    )
+            )
             .limit(size)
             .fetch();
 
