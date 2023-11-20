@@ -1,9 +1,7 @@
 package org.prgrms.nabimarketbe.domain.card.api;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
@@ -34,7 +32,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/cards")
@@ -157,8 +158,10 @@ public class CardController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<SingleResult<CardListResponseDTO<CardFamousResponseDTO>>> getCardsByPopularity() {
-        CardListResponseDTO<CardFamousResponseDTO> cardList = cardService.getCardsByPopularity();
+    public ResponseEntity<SingleResult<CardListResponseDTO<CardFamousResponseDTO>>> getCardsByPopularity(
+        @RequestParam Integer size
+    ) {
+        CardListResponseDTO<CardFamousResponseDTO> cardList = cardService.getCardsByPopularity(size);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardList));
     }

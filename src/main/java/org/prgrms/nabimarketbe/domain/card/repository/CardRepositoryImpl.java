@@ -1,15 +1,12 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.core.types.dsl.StringTemplate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardFamousResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfoResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardListReadResponseDTO;
@@ -23,17 +20,20 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
-    private static final int FAMOUS_CARD_SIZE = 5;
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -150,7 +150,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
     }
 
     @Override
-    public List<CardFamousResponseDTO> getCardsByPopularity() {
+    public List<CardFamousResponseDTO> getCardsByPopularity(Integer size) {
         List<CardFamousResponseDTO> cardList = jpaQueryFactory
             .select(
                 Projections.fields(
@@ -164,7 +164,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .from(card)
             .where(statusEquals(CardStatus.TRADE_AVAILABLE))
             .orderBy(card.viewCount.desc(), card.dibCount.desc())
-            .limit(FAMOUS_CARD_SIZE)
+            .limit(size)
             .fetch();
 
         return cardList;
