@@ -21,6 +21,7 @@ import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.util.CursorPaging;
 import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -99,7 +100,15 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
                 card.status.eq(status),
                 card.user.eq(user)
             )
-            .orderBy(card.createdDate.desc())   // 디폴트는 생성일자 최신순 정렬
+            .orderBy(
+                    QueryDslUtil.getOrderSpecifier(
+                            Sort.by(
+                                    Sort.Order.desc("createdDate"),
+                                    Sort.Order.desc("cardId")
+                            ),
+                            card
+                    )
+            )
             .limit(size)
             .fetch();
 
