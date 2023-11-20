@@ -6,6 +6,6 @@ import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.projection.Hi
 
 public record HistoryListReadPagingResponseDTO(
     List<HistoryListReadResponseDTO> historyList,
-    String cursorId
+    String nextCursorId
 ) {
 }

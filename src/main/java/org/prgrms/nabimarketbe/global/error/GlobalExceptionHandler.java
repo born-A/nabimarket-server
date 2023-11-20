@@ -17,11 +17,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<CommonResult> defaultException(Exception e) {
         log.error(e.getMessage());
-      
+
         return new ResponseEntity<>(
             ResponseFactory.getFailResult(
-                    ErrorCode.UNKNOWN.getCode(),
-                    ErrorCode.UNKNOWN.getMessage()
+                ErrorCode.UNKNOWN.getCode(),
+                ErrorCode.UNKNOWN.getMessage()
             ),
             HttpStatus.INTERNAL_SERVER_ERROR
         );
@@ -29,12 +29,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
     protected ResponseEntity<CommonResult> handleCustomException(BaseException e) {
+        log.error(e.getErrorCode().getMessage());
+
         ErrorCode errorCode = e.getErrorCode();
 
         return new ResponseEntity<>(
             ResponseFactory.getFailResult(
-                    errorCode.getCode(),
-                    errorCode.getMessage()
+                errorCode.getCode(),
+                errorCode.getMessage()
             ),
             errorCode.getStatus()
         );
@@ -42,14 +44,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResult> handleValidationExceptions(MethodArgumentNotValidException e) {
+        log.error(e.getMessage());
+
         BindingResult bindingResult = e.getBindingResult();
 
         String message = bindingResult.getFieldError().getDefaultMessage();
 
         return new ResponseEntity<>(
             ResponseFactory.getFailResult(
-                    ErrorCode.INVALID_REQUEST.getCode(),
-                    message),
+                ErrorCode.INVALID_REQUEST.getCode(),
+                message),
             HttpStatus.BAD_REQUEST
         );
     }
