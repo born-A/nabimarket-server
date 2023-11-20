@@ -323,6 +323,7 @@ public class CardService {
         if (pokeAvailable) {
             return parseCardListWithPokeAndOffer(cardList, priceRange);
         }
+
         return parseCardListWithOnlyOffer(cardList, priceRange);
     }
 
@@ -340,10 +341,10 @@ public class CardService {
     ) {
         return cardList.stream()
             .peek(cardSuggestionResponseDTO -> {
-                if (targetPriceRange.isHigherThan(cardSuggestionResponseDTO.getCardInfo().getPriceRange())) {
-                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
-                } else {
+                if (targetPriceRange.equals(cardSuggestionResponseDTO.getCardInfo().getPriceRange())) {
                     cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.OFFER);
+                }else {
+                    cardSuggestionResponseDTO.getSuggestionInfo().updateSuggestionType(SuggestionType.POKE);
                 }
             }).toList();
     }
