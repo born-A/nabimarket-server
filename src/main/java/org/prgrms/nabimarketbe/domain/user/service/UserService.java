@@ -29,14 +29,6 @@ public class UserService {
     private final CheckService checkService;
 
     @Transactional(readOnly = true)
-    public UserGetResponseDTO findById(Long id) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-        return UserGetResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
     public UserResponseDTO<UserGetResponseDTO> getUserByToken(String token) {
         Long userId = checkService.parseToken(token);
 
