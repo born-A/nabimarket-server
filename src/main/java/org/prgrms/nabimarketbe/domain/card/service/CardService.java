@@ -7,6 +7,7 @@ import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardDetailResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardFamousResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
@@ -159,7 +160,7 @@ public class CardService {
         return new CardResponseDTO<>(cardUpdateResponseDTO);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CardUserResponseDTO getCardById(
         String token,
         Long cardId
@@ -315,7 +316,7 @@ public class CardService {
     ) {
         Card targetCard = cardRepository.findById(targetId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
-        
+
         Boolean pokeAvailable = targetCard.getPokeAvailable();
         PriceRange priceRange = targetCard.getItem().getPriceRange();
 
@@ -323,6 +324,14 @@ public class CardService {
             return parseCardListWithPokeAndOffer(cardList, priceRange);
         }
         return parseCardListWithOnlyOffer(cardList, priceRange);
+    }
+
+    @Transactional(readOnly = true)
+    public CardListResponseDTO<CardFamousResponseDTO> getCardsByPopularity() {
+        List<CardFamousResponseDTO> cardList = cardRepository.getCardsByPopularity();
+        CardListResponseDTO<CardFamousResponseDTO> response = new CardListResponseDTO<>(cardList);
+
+        return response;
     }
 
     private List<CardSuggestionResponseDTO> parseCardListWithPokeAndOffer(
