@@ -2,7 +2,8 @@ package org.prgrms.nabimarketbe.domain.user.service;
 
 import javax.validation.Valid;
 
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserNicknameUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserProfileUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
@@ -28,14 +29,6 @@ public class UserService {
     private final CheckService checkService;
 
     @Transactional(readOnly = true)
-    public UserGetResponseDTO findById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-        return UserGetResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
     public UserResponseDTO<UserGetResponseDTO> getUserByToken(String token) {
         Long userId = checkService.parseToken(token);
 
@@ -49,11 +42,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO<UserUpdateResponseDTO> updateUserImageUrl(String token, String imageUrl) {
+    public UserResponseDTO<UserUpdateResponseDTO> updateUserImageUrl(
+        String token,
+        UserProfileUpdateRequestDTO userProfileUpdateRequestDTO
+    ) {
         Long userId = checkService.parseToken(token);
+        String imageUrl = userProfileUpdateRequestDTO.imageUrl();
 
         User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+            .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getImageUrl() != null) {
             String url = user.getImageUrl();
@@ -69,7 +66,7 @@ public class UserService {
     @Transactional
     public UserResponseDTO<UserUpdateResponseDTO> updateUserNickname(
         String token,
-        @Valid UserUpdateRequestDTO userUpdateRequestDTO
+        @Valid UserNicknameUpdateRequestDTO userUpdateRequestDTO
     ) {
         Long userId = checkService.parseToken(token);
 
