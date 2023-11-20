@@ -1,7 +1,9 @@
 package org.prgrms.nabimarketbe.domain.card.api;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
@@ -11,8 +13,6 @@ import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardFamousRes
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardListResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
-import org.prgrms.nabimarketbe.domain.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardSuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
@@ -35,10 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cards")
@@ -84,13 +81,13 @@ public class CardController {
         OrderCondition condition = OrderCondition.CARD_CREATED_DESC;
 
         CardPagingResponseDTO cardListReadPagingResponseDTO = cardService.getCardsByCondition(
-                category,
-                priceRange,
-                status,
-                cardTitle,
-                cursorId,
-                size,
-                condition
+            category,
+            priceRange,
+            status,
+            cardTitle,
+            cursorId,
+            size,
+            condition
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));

@@ -1,11 +1,10 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
 import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +24,6 @@ import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
@@ -182,22 +180,30 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
     @Override
     public List<CardFamousResponseDTO> getCardsByPopularity() {
         List<CardFamousResponseDTO> cardList = jpaQueryFactory
-                .select(
-                        Projections.fields(
-                                CardFamousResponseDTO.class,
-                                card.cardId,
-                                card.item.itemName,
-                                card.item.priceRange,
-                                card.thumbnail
-                        )
+            .select(
+                Projections.fields(
+                    CardFamousResponseDTO.class,
+                    card.cardId,
+                    card.item.itemName,
+                    card.item.priceRange,
+                    card.thumbnail
                 )
-                .from(card)
-                .where(statusEquals(CardStatus.TRADE_AVAILABLE))
-                .orderBy(card.viewCount.desc(), card.dibCount.desc())
-                .limit(FAMOUS_CARD_SIZE)
-                .fetch();
+            )
+            .from(card)
+            .where(statusEquals(CardStatus.TRADE_AVAILABLE))
+            .orderBy(card.viewCount.desc(), card.dibCount.desc())
+            .limit(FAMOUS_CARD_SIZE)
+            .fetch();
 
         return cardList;
+    }
+
+    private BooleanExpression statusEquals(CardStatus status) {
+        if (status == null) {
+            return null;
+        }
+
+        return card.status.eq(status);
     }
 
     private BooleanExpression categoryEquals(CategoryEnum category) {
@@ -242,16 +248,5 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
             .replace("-", "")
             .replace(":", "")
             + String.format("%08d", cardListReadResponseDTO.getCardId());
-    }
-
-    private OrderSpecifier[] getOrderSpecifier(Sort sort) {
-        List<OrderSpecifier> orders = new ArrayList<>();
-
-        for (Sort.Order order : sort) { // Sort에 여러 정렬 기준을 담을 수 있음
-            Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-            orders.add(QueryDslUtil.getSortedColumn(direction, card, order.getProperty()));
-        }
-
-        return orders.toArray(OrderSpecifier[]::new);
     }
 }
