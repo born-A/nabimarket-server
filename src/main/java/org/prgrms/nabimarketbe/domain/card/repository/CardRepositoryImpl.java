@@ -1,11 +1,10 @@
 package org.prgrms.nabimarketbe.domain.card.repository;
 
 import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,10 +18,10 @@ import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionInfo;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.global.util.CursorPaging;
 import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
@@ -30,7 +29,7 @@ import static org.prgrms.nabimarketbe.domain.item.entity.QItem.item;
 import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
 
 @RequiredArgsConstructor
-public class CardRepositoryImpl implements CardRepositoryCustom {
+public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -40,7 +39,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         List<CardStatus> status,
         String cardTitle,
         String cursorId,
-        Integer size
+        Pageable pageable
     ) {
         List<CardListReadResponseDTO> cardList = jpaQueryFactory.select(
                 Projections.fields(
@@ -64,14 +63,11 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 priceRangeEquals(priceRange),
                 titleEquals(cardTitle)
             )
-            .orderBy(getOrderSpecifier(Sort.by(
-                    Sort.Order.desc("createdDate"),
-                    Sort.Order.desc("cardId")
-            )))
-            .limit(size)
+            .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), card))
+            .limit(pageable.getPageSize())
             .fetch();
 
-        String nextCursor = cardList.size() < size ? null : generateCursor(cardList.get(cardList.size() - 1));
+        String nextCursor = cardList.size() < pageable.getPageSize() ? null : generateCursor(cardList.get(cardList.size() - 1));
 
         return new CardPagingResponseDTO(cardList, nextCursor);
     }
@@ -146,23 +142,27 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         return cardList;
     }
 
-    private BooleanExpression cursorId(String cursorId) {
+    @Override
+    public BooleanExpression cursorId(String cursorId) {
         if (cursorId == null) {
             return null;
         }
 
-        StringTemplate stringTemplate = Expressions.stringTemplate(
+        // 생성일자
+        StringTemplate dateCursorTemplate = Expressions.stringTemplate(
             "DATE_FORMAT({0}, {1})",
-            card.createdDate,   // 디폴트는 생성일자 최신순 정렬
+            card.createdDate,
             ConstantImpl.create("%Y%m%d%H%i%s")
         );
 
-        return stringTemplate.concat(StringExpressions.lpad(
+        // pk
+        StringExpression pkCursorTemplate = StringExpressions.lpad(
                 card.cardId.stringValue(),
                 8,
                 '0'
-            ))
-            .lt(cursorId);
+        );
+
+        return dateCursorTemplate.concat(pkCursorTemplate).lt(cursorId);
     }
 
     private BooleanExpression categoryEquals(CategoryEnum category) {
@@ -207,16 +207,5 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .replace("-", "")
             .replace(":", "")
             + String.format("%08d", cardListReadResponseDTO.getCardId());
-    }
-
-    private OrderSpecifier[] getOrderSpecifier(Sort sort) {
-        List<OrderSpecifier> orders = new ArrayList<>();
-
-        for (Sort.Order order : sort) { // Sort에 여러 정렬 기준을 담을 수 있음
-            Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-            orders.add(QueryDslUtil.getSortedColumn(direction, card, order.getProperty()));
-        }
-
-        return orders.toArray(OrderSpecifier[]::new);
     }
 }

@@ -16,6 +16,7 @@ import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.global.util.OrderCondition;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
@@ -76,13 +77,17 @@ public class CardController {
             @RequestParam(required = false) String cursorId,
             @RequestParam Integer size
     ) {
+        // TODO: 클라이언트에게 정렬 조건 받도록 추후에 수정하면 더 유연할 듯
+        OrderCondition condition = OrderCondition.CARD_CREATED_DESC;
+
         CardPagingResponseDTO cardListReadPagingResponseDTO = cardService.getCardsByCondition(
                 category,
                 priceRange,
                 status,
                 cardTitle,
                 cursorId,
-                size
+                size,
+                condition
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardListReadPagingResponseDTO));
