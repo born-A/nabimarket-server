@@ -1,9 +1,6 @@
 package org.prgrms.nabimarketbe.domain.card.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.request.CardUpdateRequestDTO;
@@ -39,7 +36,9 @@ import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -330,8 +329,8 @@ public class CardService {
     }
 
     @Transactional(readOnly = true)
-    public CardListResponseDTO<CardFamousResponseDTO> getCardsByPopularity(Integer size) {
-        List<CardFamousResponseDTO> cardList = cardRepository.getCardsByPopularity(size);
+    public CardListResponseDTO<CardFamousResponseDTO> getCardsByPopularity() {
+        List<CardFamousResponseDTO> cardList = cardRepository.getCardsByPopularity();
         CardListResponseDTO<CardFamousResponseDTO> response = new CardListResponseDTO<>(cardList);
 
         return response;
