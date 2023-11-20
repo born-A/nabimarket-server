@@ -19,11 +19,10 @@ public class CardImageBatchRepository {
 
     private static final String sql = "INSERT INTO card_images (created_date, modified_date, image_url, card_id) VALUES (?, ?, ?, ?)";
 
-    private static final Integer SUCCESS_SIGNAL = 1;
-
     @Transactional
-    public boolean saveAll(List<CardImage> cardImages) {
-        int[][] result = jdbcTemplate.batchUpdate(sql,
+    public void saveAll(List<CardImage> cardImages) {
+        jdbcTemplate.batchUpdate(
+            sql,
             cardImages,
             cardImages.size(),
             (PreparedStatement preparedStatement, CardImage cardImage) -> {
@@ -32,13 +31,5 @@ public class CardImageBatchRepository {
                 preparedStatement.setString(3, cardImage.getImageUrl());
                 preparedStatement.setLong(4, cardImage.getCard().getCardId());
             });
-
-        for (int[] value : result) {
-            if (value[0] != SUCCESS_SIGNAL) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
