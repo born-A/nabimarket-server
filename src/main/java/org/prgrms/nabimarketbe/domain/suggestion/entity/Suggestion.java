@@ -84,7 +84,7 @@ public class Suggestion extends BaseEntity {
 
     public String createSuggestionDecisionMessage(boolean isAccepted) {
         String suggestionResult = isAccepted ? "수락" : "거절";
-        String suggestionType = getSuggestionType().getName();
+        String suggestionType = this.suggestionType.getName();
         String message = String.format(
             "%s에 대한 %s의 %s이(가) %s 되었습니다.",
             toCard.getItem().getItemName(),
