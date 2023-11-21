@@ -3,6 +3,7 @@ package org.prgrms.nabimarketbe.domain.suggestion.api;
 import lombok.RequiredArgsConstructor;
 
 import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionRequestDTO;
+import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionUpdateRequestDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
@@ -59,15 +60,14 @@ public class SuggestionController {
     @PutMapping("/decision")
     public ResponseEntity<SingleResult<SuggestionResponseDTO>> updateSugggestionStatus(
         @RequestHeader(name = "Authorization") String token,
-        @RequestParam Long fromCardId,
-        @RequestParam Long toCardId,
-        @RequestParam Boolean isAccepted
+        @RequestBody SuggestionUpdateRequestDTO suggestionUpdateDTO
+
     ) {
         SuggestionResponseDTO suggestionResponseDTO = suggestionService.updateSuggestionStatus(
             token,
-            fromCardId,
-            toCardId,
-            isAccepted
+            suggestionUpdateDTO.fromCardId(),
+            suggestionUpdateDTO.toCardId(),
+            suggestionUpdateDTO.isAccepted()
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(suggestionResponseDTO));
