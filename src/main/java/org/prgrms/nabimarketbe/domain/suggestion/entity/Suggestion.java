@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
@@ -49,7 +50,7 @@ public class Suggestion extends BaseEntity {
         Card fromCard,
         Card toCard
     ) {
-        if(suggestionType == null || fromCard == null || toCard == null) {
+        if (suggestionType == null || fromCard == null || toCard == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
@@ -64,12 +65,35 @@ public class Suggestion extends BaseEntity {
     }
 
     public void decideSuggestion(Boolean isAccpeted) {
-        if(isAccpeted) {
+        if (isAccpeted) {
             acceptSuggestion();
-        }
-        else {
+        } else {
             refuseSuggestion();
         }
+    }
+
+    public String createSuggestionRequestMessage(User fromUser) {
+        String message = String.format(
+            "%s에 대한 %s님의 새로운 제안이 도착하였습니다.",
+            toCard.getItem().getItemName(),
+            fromUser.getNickname()
+        );
+
+        return message;
+    }
+
+    public String createSuggestionDecisionMessage(boolean isAccepted) {
+        String suggestionResult = isAccepted ? "수락" : "거절";
+        String suggestionType = getSuggestionType().getName();
+        String message = String.format(
+            "%s에 대한 %s의 %s이(가) %s 되었습니다.",
+            toCard.getItem().getItemName(),
+            fromCard.getItem().getItemName(),
+            suggestionType,
+            suggestionResult
+        );
+
+        return message;
     }
 
     private void acceptSuggestion() {
