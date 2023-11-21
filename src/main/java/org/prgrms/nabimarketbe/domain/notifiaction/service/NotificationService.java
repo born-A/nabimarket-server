@@ -1,6 +1,9 @@
 package org.prgrms.nabimarketbe.domain.notifiaction.service;
 
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.notifiaction.dto.request.NotificationReadRequestDTO;
 import org.prgrms.nabimarketbe.domain.notifiaction.dto.response.NotificationUnreadCountResponseDTO;
 import org.prgrms.nabimarketbe.domain.notifiaction.dto.response.wrapper.NotificationPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.notifiaction.entity.Notification;
@@ -84,5 +87,19 @@ public class NotificationService {
         );
 
         return notificationPagingResponseDTO;
+    }
+
+    @Transactional
+    public void updateNotificationToRead(
+        String token,
+        NotificationReadRequestDTO notificationReadRequestDTO
+    ) {
+        Long userId = checkService.parseToken(token);
+        User receiver = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+        List<Long> notificationIds = notificationReadRequestDTO.notificationIds();
+
+        notificationRepository.bulkUpdateNotificationsByIds(notificationIds, receiver);
     }
 }
