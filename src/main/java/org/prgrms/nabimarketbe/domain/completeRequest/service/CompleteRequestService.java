@@ -148,7 +148,7 @@ public class CompleteRequestService {
     }
 
     private void createCompleteRequestDecisionEvent(CompleteRequest completeRequest, boolean isAccepted) {
-        User receiver = completeRequest.getToCard().getUser();
+        User receiver = completeRequest.getFromCard().getUser();
         String message = completeRequest.createCompleteRequestDecisionMessage(isAccepted);
         applicationEventPublisher.publishEvent(new NotificationCreateEvent(
             receiver,
