@@ -1,14 +1,14 @@
 package org.prgrms.nabimarketbe.global.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
+
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.Expressions;
-import org.springframework.data.domain.Sort;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class QueryDslUtil {
     /**
@@ -20,8 +20,8 @@ public class QueryDslUtil {
      * @return
      */
     public static OrderSpecifier[] getOrderSpecifier(
-            Sort sort,
-            Path<?> parent
+        Sort sort,
+        Path<?> parent
     ) {
         List<OrderSpecifier> orders = new ArrayList<>();
 
@@ -43,9 +43,9 @@ public class QueryDslUtil {
      * @return OrderSpecifier 객체
      */
     public static OrderSpecifier<?> getSortedColumn(
-            Order order,
-            Path<?> parent,
-            String fieldName
+        Order order,
+        Path<?> parent,
+        String fieldName
     ) {
         Path<Object> fieldPath = Expressions.path(Object.class, parent, fieldName);
 
