@@ -2,6 +2,7 @@ package org.prgrms.nabimarketbe.domain.suggestion.service;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
+import org.prgrms.nabimarketbe.domain.chatroom.service.ChatRoomService;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionRequestDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionResponseDTO;
@@ -29,6 +30,8 @@ public class SuggestionService {
     private final CardRepository cardRepository;
 
     private final SuggestionRepository suggestionRepository;
+
+    private final ChatRoomService chatRoomService;
 
     @Transactional
     public SuggestionResponseDTO createSuggestion(
@@ -116,7 +119,9 @@ public class SuggestionService {
 
         suggestion.decideSuggestion(isAccepted);
 
-        //TODO : 채팅방 생성
+        if (isAccepted) {
+            chatRoomService.createChatRoom(suggestion);
+        }
 
         return SuggestionResponseDTO.from(suggestion);
     }
