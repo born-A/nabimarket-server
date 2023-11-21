@@ -39,8 +39,8 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-    @Column(name = "is_seen", nullable = false)
-    private boolean isSeen;
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead;
 
     public Notification(
         User user,
@@ -50,10 +50,10 @@ public class Notification extends BaseEntity {
         this.receiver = user;
         this.card = card;
         this.content = content;
-        this.isSeen = false;
+        this.isRead = false;
     }
 
     public void updateToRead() {
-        this.isSeen = true;
+        this.isRead = true;
     }
 }
