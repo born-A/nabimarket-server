@@ -69,16 +69,8 @@ public class SuggestionService {
             .toCard(toCard)
             .build();
 
-        User receiver = toCard.getUser();
-
-        String message = suggestion.createSuggestionRequestMessage(fromUser);
-        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
-            receiver,
-            suggestion.getFromCard(),
-            message
-        ));
-
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
+        createSuggestionEvent(savedSuggestion);
 
         return SuggestionResponseDTO.from(savedSuggestion);
     }
@@ -127,16 +119,9 @@ public class SuggestionService {
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
-        User receiver = fromCard.getUser();
-
         suggestion.decideSuggestion(isAccepted);
-
-        String message = suggestion.createSuggestionDecisionMessage(isAccepted);
-        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
-            receiver,
-            suggestion.getFromCard(),
-            message
-        ));
+        
+        createSuggestionDecisionEvent(suggestion, isAccepted);
 
         //TODO : 채팅방 생성
 
@@ -154,5 +139,25 @@ public class SuggestionService {
         if (!toCard.isPokeAvailable()) {
             throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
         }
+    }
+
+    private void createSuggestionEvent(Suggestion suggestion) {
+        User receiver = suggestion.getToCard().getUser();
+        String message = suggestion.createSuggestionRequestMessage(suggestion.getFromCard().getUser());
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            suggestion.getFromCard(),
+            message
+        ));
+    }
+
+    private void createSuggestionDecisionEvent(Suggestion suggestion, boolean isAccepted) {
+        User receiver = suggestion.getFromCard().getUser();
+        String message = suggestion.createSuggestionDecisionMessage(isAccepted);
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            suggestion.getFromCard(),
+            message
+        ));
     }
 }
