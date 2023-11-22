@@ -16,6 +16,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class ChatRoomService {
     private static final String FIRESTORE_CHATROOM_COLLECTION_NAME = "chats";
+
     private static final String FIRESTORE_MESSAGE_COLLECTION_NAME = "messages";
 
     private static final HashMap<String, Object> INITIAL_MESSAGE = new HashMap<>() {
@@ -44,10 +45,7 @@ public class ChatRoomService {
                 FIRESTORE_MESSAGE_COLLECTION_NAME
         );
 
-        ChatRoom chatRoom = ChatRoom.builder()
-                .fireStoreChatRoomPath(fireStoreChatRoomPath)
-                .suggestion(suggestion)
-                .build();
+        ChatRoom chatRoom = new ChatRoom(fireStoreChatRoomPath, suggestion);
 
         chatRoomRepository.save(chatRoom);
 

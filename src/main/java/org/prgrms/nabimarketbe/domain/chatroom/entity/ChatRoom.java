@@ -1,6 +1,5 @@
 package org.prgrms.nabimarketbe.domain.chatroom.entity;
 
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.global.BaseEntity;
@@ -33,7 +32,6 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(nullable = false, name = "suggestion_id")
     private Suggestion suggestion;
 
-    @Builder
     public ChatRoom(
             String fireStoreChatRoomPath,
             Suggestion suggestion
