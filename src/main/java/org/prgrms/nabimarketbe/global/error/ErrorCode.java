@@ -22,7 +22,7 @@ public enum ErrorCode {
     USER_NOT_MATCHED(HttpStatus.INTERNAL_SERVER_ERROR,"UOO02", "적합한 사용자가 아닙니다."),
     CARD_SUGGESTION_MYSELF_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C0002", "자신의 카드에는 제안을 할 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CA0001", "존재하지 않는 카테고리입니다."),
-    COMPLETE_REQUEST_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CR0001", "존재하지 않는 제안 요청입니다."),
+    COMPLETE_REQUEST_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CR0001", "존재하지 않는 거래 성사 요청입니다."),
     COMPLETE_REQUEST_MYSELF_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "CR0002", "자신의 카드에는 거래 성사 요청을 할 수 없습니다."),
     BATCH_INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "B0001", "이미지 저장 중에 문제가 발생했습니다."),
     INVALID_ORDER_CONDITION(HttpStatus.INTERNAL_SERVER_ERROR, "O0001", "유효하지 않은 정렬 조건입니다.");
