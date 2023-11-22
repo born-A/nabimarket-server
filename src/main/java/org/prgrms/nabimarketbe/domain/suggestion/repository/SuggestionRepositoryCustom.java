@@ -6,10 +6,11 @@ import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 
 public interface SuggestionRepositoryCustom {
     SuggestionListReadPagingResponseDTO getSuggestionsByType(
-            DirectionType directionType,
-            SuggestionType suggestionType,
-            Long cardId,
-            String cursorId,
-            Integer size
+        DirectionType directionType,
+        SuggestionType suggestionType,
+        Long cardId,
+        String cursorId,
+        Integer size
     );
+
 }
