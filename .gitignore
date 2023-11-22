@@ -209,5 +209,6 @@ src/main/resources/application-prod.yml
 src/main/resources/application-local.yml
 src/main/resources/application-jwt.yml
 src/main/resources/application-dev.yml
+src/main/resources/firebase/*
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle,intellij
