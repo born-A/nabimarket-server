@@ -14,6 +14,8 @@ import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
+import org.prgrms.nabimarketbe.global.event.NotificationCreateEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,16 +32,18 @@ public class SuggestionService {
 
     private final SuggestionRepository suggestionRepository;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     @Transactional
     public SuggestionResponseDTO createSuggestion(
         String token,
         String suggestionType,
         SuggestionRequestDTO requestDto
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        User fromUser = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
+        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), fromUser)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Card toCard = cardRepository.findById(requestDto.toCardId())
@@ -51,7 +55,7 @@ public class SuggestionService {
 
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
-        if(!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
+        if (!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
             throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
         }
 
@@ -66,19 +70,20 @@ public class SuggestionService {
             .build();
 
         Suggestion savedSuggestion = suggestionRepository.save(suggestion);
+        createSuggestionEvent(savedSuggestion);
 
         return SuggestionResponseDTO.from(savedSuggestion);
     }
 
     @Transactional(readOnly = true)
     public SuggestionListReadPagingResponseDTO getSuggestionsByType(
-            String token,
-            DirectionType directionType,
-            SuggestionType suggestionType,
-            Long cardId,
-            String cursorId,
-            Integer size
-    ){
+        String token,
+        DirectionType directionType,
+        SuggestionType suggestionType,
+        Long cardId,
+        String cursorId,
+        Integer size
+    ) {
         Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
@@ -102,19 +107,21 @@ public class SuggestionService {
         Long toCardId,
         Boolean isAccepted
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        User toUser = userRepository.findById(checkService.parseToken(token))
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
-                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)
+        Card toCard = cardRepository.findByCardIdAndUser(toCardId, toUser)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
-                .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
+            .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
         suggestion.decideSuggestion(isAccepted);
+        
+        createSuggestionDecisionEvent(suggestion, isAccepted);
 
         //TODO : 채팅방 생성
 
@@ -132,5 +139,25 @@ public class SuggestionService {
         if (!toCard.isPokeAvailable()) {
             throw new BaseException(ErrorCode.SUGGESTION_TYPE_MISMATCH);
         }
+    }
+
+    private void createSuggestionEvent(Suggestion suggestion) {
+        User receiver = suggestion.getToCard().getUser();
+        String message = suggestion.createSuggestionRequestMessage(suggestion.getFromCard().getUser());
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            suggestion.getFromCard(),
+            message
+        ));
+    }
+
+    private void createSuggestionDecisionEvent(Suggestion suggestion, boolean isAccepted) {
+        User receiver = suggestion.getFromCard().getUser();
+        String message = suggestion.createSuggestionDecisionMessage(isAccepted);
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            suggestion.getFromCard(),
+            message
+        ));
     }
 }

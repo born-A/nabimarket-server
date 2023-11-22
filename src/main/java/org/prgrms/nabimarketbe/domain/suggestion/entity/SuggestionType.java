@@ -4,15 +4,24 @@ import java.util.function.BiFunction;
 
 import org.prgrms.nabimarketbe.domain.item.entity.Item;
 
+import lombok.Getter;
+
+@Getter
 public enum SuggestionType {
-    OFFER( (fromItem, toItem) -> (fromItem.getPriceRange().equals(toItem.getPriceRange())
-            || fromItem.getPriceRange().getValue() > toItem.getPriceRange().getValue()) ),
-    POKE( (fromItem, toItem) -> (fromItem.getPriceRange().getValue() < toItem.getPriceRange().getValue()) );
+    OFFER("오퍼", (fromItem, toItem) -> (fromItem.getPriceRange().equals(toItem.getPriceRange())
+        || fromItem.getPriceRange().getValue() > toItem.getPriceRange().getValue())),
+    POKE("찔러보기", (fromItem, toItem) -> (fromItem.getPriceRange().getValue() < toItem.getPriceRange().getValue()));
+
+    private final String name;
 
     public final BiFunction<Item, Item, Boolean> suggestionValidationFunction;
 
-    SuggestionType(BiFunction<Item, Item, Boolean> suggestionAvailableFunction) {
-        this.suggestionValidationFunction = suggestionAvailableFunction;
+    SuggestionType(
+        String name,
+        BiFunction<Item, Item, Boolean> suggestionValidationFunction
+    ) {
+        this.name = name;
+        this.suggestionValidationFunction = suggestionValidationFunction;
     }
 
     public boolean isSuggestionAvailable(
