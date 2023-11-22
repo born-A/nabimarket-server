@@ -31,7 +31,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDTO<UserGetResponseDTO> getUserByToken(String token) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -47,10 +46,10 @@ public class UserService {
         UserProfileUpdateRequestDTO userProfileUpdateRequestDTO
     ) {
         Long userId = checkService.parseToken(token);
-        String imageUrl = userProfileUpdateRequestDTO.imageUrl();
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        User user = userRepository
-            .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+        String imageUrl = userProfileUpdateRequestDTO.imageUrl();
 
         if (user.getImageUrl() != null) {
             String url = user.getImageUrl();
@@ -69,7 +68,6 @@ public class UserService {
         @Valid UserNicknameUpdateRequestDTO userUpdateRequestDTO
     ) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 

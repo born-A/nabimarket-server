@@ -48,7 +48,6 @@ public class CompleteRequestService {
         CompleteRequestDTO requestDTO
     ) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -84,7 +83,6 @@ public class CompleteRequestService {
         Boolean isAccepted
     ) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -120,7 +118,6 @@ public class CompleteRequestService {
         Integer size
     ) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -133,7 +130,6 @@ public class CompleteRequestService {
         Long completeRequestId
     ) {
         Long userId = checkService.parseToken(token);
-
         if (!userRepository.existsById(userId))
             throw new BaseException(ErrorCode.USER_NOT_FOUND);
 
