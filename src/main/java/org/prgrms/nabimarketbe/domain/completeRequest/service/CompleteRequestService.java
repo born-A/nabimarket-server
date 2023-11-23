@@ -1,21 +1,28 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.service;
 
+import org.prgrms.nabimarketbe.domain.card.dto.response.CardCondenseResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.CompleteRequestInfoDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.CompleteRequestSummaryDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadLimitResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.entity.CompleteRequest;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.domain.suggestion.repository.SuggestionRepository;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserIdResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
+
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.event.NotificationCreateEvent;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +49,8 @@ public class CompleteRequestService {
         String token,
         CompleteRequestDTO requestDTO
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findByCardIdAndUser(requestDTO.fromCardId(), user)
@@ -79,7 +87,6 @@ public class CompleteRequestService {
         Boolean isAccepted
     ) {
         Long userId = checkService.parseToken(token);
-
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -116,10 +123,56 @@ public class CompleteRequestService {
         String cursorId,
         Integer size
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         return completeRequestRepository.getHistoryByUser(user, cursorId, size);
+    }
+
+    @Transactional(readOnly = true)
+    public CompleteRequestInfoDTO getCompleteRequestById(
+        String token,
+        Long completeRequestId
+    ) {
+        Long userId = checkService.parseToken(token);
+        if (!userRepository.existsById(userId))
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);
+
+        CompleteRequest completeRequest = completeRequestRepository.findById(completeRequestId)
+            .orElseThrow(() -> new BaseException(ErrorCode.COMPLETE_REQUEST_NOT_FOUND));
+
+        CompleteRequestSummaryDTO cardUserSummaryResponseDTO = getCardUserSummaryResponseDTO(completeRequest);
+
+        return new CompleteRequestInfoDTO(cardUserSummaryResponseDTO);
+    }
+
+    private CompleteRequestSummaryDTO getCardUserSummaryResponseDTO(CompleteRequest completeRequest) {
+        Card fromCard = completeRequest.getFromCard();
+        CardCondenseResponseDTO fromCardCondenseResponseDTO = CardCondenseResponseDTO.from(fromCard);
+
+        UserIdResponseDTO fromUserIdResponseDTO = new UserIdResponseDTO(fromCard.getUser().getUserId());
+
+        CardUserSummaryResponseDTO fromCardResponseDTO = new CardUserSummaryResponseDTO(
+            fromCardCondenseResponseDTO,
+            fromUserIdResponseDTO
+        );
+
+        Card toCard = completeRequest.getToCard();
+        CardCondenseResponseDTO toCardCondenseResponseDTO = CardCondenseResponseDTO.from(toCard);
+
+        UserIdResponseDTO toUserIdResponseDTO = new UserIdResponseDTO(toCard.getUser().getUserId());
+
+        CardUserSummaryResponseDTO toCardResponseDTO = new CardUserSummaryResponseDTO(
+            toCardCondenseResponseDTO,
+            toUserIdResponseDTO
+        );
+
+        return CompleteRequestSummaryDTO.builder()
+            .fromCard(fromCardResponseDTO)
+            .toCard(toCardResponseDTO)
+            .status(completeRequest.getCompleteRequestStatus())
+            .build();
     }
 
     private void updateStatus(
