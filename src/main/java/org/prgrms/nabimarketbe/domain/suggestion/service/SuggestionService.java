@@ -112,7 +112,7 @@ public class SuggestionService {
         Boolean isAccepted
     ) {
         Long userId = checkService.parseToken(token);
-        User user = userRepository.findById(userId)
+        User toUser = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
