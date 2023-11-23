@@ -2,7 +2,9 @@ package org.prgrms.nabimarketbe.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.Optional;
 
@@ -19,9 +21,9 @@ import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
+import org.prgrms.nabimarketbe.setup.user.UserBuilder;
 import org.prgrms.nabimarketbe.setup.user.request.UserNicknameUpdateRequestDTOBuilder;
 import org.prgrms.nabimarketbe.setup.user.request.UserProfileUpdateRequestDTOBuilder;
-import org.prgrms.nabimarketbe.setup.user.UserBuilder;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -43,9 +45,10 @@ class UserServiceTest {
     @Test
     void GetUserByTokenTest() {
         // given
-        User user = UserBuilder.build();
+        User user = UserBuilder.createTestUser();
         UserResponseDTO<UserGetResponseDTO> expectedResponseDTO = new UserResponseDTO<>(UserGetResponseDTO.from(user));
 
+        given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
         given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(user));
 
         // when
@@ -62,9 +65,11 @@ class UserServiceTest {
     void UpdateUserImageTest() {
         // given
         UserProfileUpdateRequestDTO requestDTO = UserProfileUpdateRequestDTOBuilder.build();
-        User user = UserBuilder.build();
+        User user = UserBuilder.createTestUser();
 
+        given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
         given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(user));
+        willDoNothing().given(s3FileUploadService).deleteImage(anyString());
 
         // when
         userService.updateUserImageUrl(TEST_TOKEN, requestDTO);
@@ -78,8 +83,9 @@ class UserServiceTest {
     void UpdateUserNicknameTest() {
         // given
         UserNicknameUpdateRequestDTO requestDTO = UserNicknameUpdateRequestDTOBuilder.build();
-        User user = UserBuilder.build();
+        User user = UserBuilder.createTestUser();
 
+        given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
         given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(user));
 
         // when
