@@ -49,8 +49,7 @@ public class SignService {
         return response;
     }
 
-    @Transactional
-    public User signUp(SocialUserInfoDTO socialUserInfoDTO) throws JsonProcessingException {
+    private User signUp(SocialUserInfoDTO socialUserInfoDTO) throws JsonProcessingException {
         String randomNickname = randomNicknameGenerator.generateRandomNickname();
         User user = socialUserInfoDTO.toEntity(randomNickname);
         User savedUser = userRepository.save(user);
