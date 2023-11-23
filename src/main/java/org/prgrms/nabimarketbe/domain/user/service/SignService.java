@@ -10,7 +10,6 @@ import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
-import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,18 +27,6 @@ public class SignService {
     private final JwtProvider jwtProvider;
 
     private final RandomNicknameGenerator randomNicknameGenerator;
-
-    @Transactional
-    public UserLoginResponseDTO signInBySocial(KakaoProfile kakaoProfile) {
-        SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTO.builder()
-            .accountId(kakaoProfile.getId())
-            .provider("KAKAO")
-            .build();
-
-        UserLoginResponseDTO result = signIn(socialUserInfoDTO);
-
-        return result;
-    }
 
     @Transactional
     public UserLoginResponseDTO signIn(SocialUserInfoDTO socialUserInfoDTO) {

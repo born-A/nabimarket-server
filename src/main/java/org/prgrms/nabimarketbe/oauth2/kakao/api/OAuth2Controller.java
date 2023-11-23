@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
@@ -12,9 +13,16 @@ import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
 import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
 import org.springframework.core.env.Environment;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +50,15 @@ public class OAuth2Controller {
     @GetMapping(value = "/redirect")
     public ResponseEntity<SingleResult<UserLoginResponseDTO>> redirectKakao(@RequestParam String code) {
         KakaoProfile profile = OAuth2Service.getResultProfile(code);
-        if (profile == null) throw new RuntimeException("카카오에 해당 회원이 없습니다.");
-        UserLoginResponseDTO userLoginResponseDTO = signService.signInBySocial(profile);
+        if (profile == null)
+            throw new RuntimeException("카카오에 해당 회원이 없습니다.");
+        
+        SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTO.builder()
+            .accountId(profile.getId())
+            .provider("KAKAO")
+            .build();
+
+        UserLoginResponseDTO userLoginResponseDTO = signService.signIn(socialUserInfoDTO);
         SingleResult<UserLoginResponseDTO> response = ResponseFactory.getSingleResult(userLoginResponseDTO);
 
         return ResponseEntity.ok(response);
@@ -53,7 +68,8 @@ public class OAuth2Controller {
     @GetMapping(value = "/unlink")
     public CommonResult unlinkKakao(@RequestParam String accessToken) {
         String unlinkUri = env.getProperty("social.kakao.url.unlink");
-        if (unlinkUri == null) throw new RuntimeException("CommunicationException");
+        if (unlinkUri == null)
+            throw new RuntimeException("CommunicationException");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
