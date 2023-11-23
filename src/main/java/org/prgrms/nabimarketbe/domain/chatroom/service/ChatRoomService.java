@@ -25,6 +25,8 @@ public class ChatRoomService {
 
     private static final String FIRESTORE_MESSAGE_COLLECTION_NAME = "messages";
 
+    private static final Long COMPLETE_REQUEST_NOT_EXIST = Long.valueOf(-1);
+
     private final CheckService checkService;
 
     private final ChatRoomRepository chatRoomRepository;
@@ -120,7 +122,7 @@ public class ChatRoomService {
                     .get()
                     .getCompleteRequestId();
         } else {
-            return Long.valueOf(-1);
+            return COMPLETE_REQUEST_NOT_EXIST;
         }
     }
 }
