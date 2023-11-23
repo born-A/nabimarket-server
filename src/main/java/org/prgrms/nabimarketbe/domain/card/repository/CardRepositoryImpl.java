@@ -234,12 +234,12 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
         return item.priceRange.eq(priceRange);
     }
 
-    private BooleanExpression titleEquals(String title) { // TODO: 검색 단어를 '포함'한 제목 검색 가능
+    private BooleanExpression titleEquals(String title) {
         if (title == null) {
             return null;
         }
 
-        return card.cardTitle.eq(title);
+        return card.cardTitle.contains(title);
     }
 
     private String generateCursor(CardListReadResponseDTO cardListReadResponseDTO) {
