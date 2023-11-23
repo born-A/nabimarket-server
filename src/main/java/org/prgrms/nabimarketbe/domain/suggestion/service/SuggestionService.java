@@ -43,10 +43,11 @@ public class SuggestionService {
         String suggestionType,
         SuggestionRequestDTO requestDto
     ) {
-        User fromUser = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), fromUser)
+        Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Card toCard = cardRepository.findById(requestDto.toCardId())
@@ -88,7 +89,7 @@ public class SuggestionService {
         Integer size
     ) {
         Card card = cardRepository.findById(cardId)
-            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
+            .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (!checkService.isEqual(token, card.getUser().getUserId())) {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
@@ -110,7 +111,8 @@ public class SuggestionService {
         Long toCardId,
         Boolean isAccepted
     ) {
-        User toUser = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
