@@ -136,20 +136,12 @@ public class CompleteRequestService {
         CompleteRequest completeRequest = completeRequestRepository.findById(completeRequestId)
             .orElseThrow(() -> new BaseException(ErrorCode.COMPLETE_REQUEST_NOT_FOUND));
 
-        List<CardUserSummaryResponseDTO> cardUserSummaryResponseDTOS = getCardUserSummaryResponseDTO(completeRequest);
+        CompleteRequestSummaryDTO cardUserSummaryResponseDTO = getCardUserSummaryResponseDTO(completeRequest);
 
-        CompleteRequestSummaryDTO completeRequestSummaryDTO = new CompleteRequestSummaryDTO(
-            cardUserSummaryResponseDTOS.get(0),
-            cardUserSummaryResponseDTOS.get(1),
-            completeRequest.getCompleteRequestStatus()
-        );
-
-        return new CompleteRequestInfoDTO(completeRequestSummaryDTO);
+        return new CompleteRequestInfoDTO(cardUserSummaryResponseDTO);
     }
 
-    private List<CardUserSummaryResponseDTO> getCardUserSummaryResponseDTO(CompleteRequest completeRequest) {
-        List<CardUserSummaryResponseDTO> cardUserSummaryResponseDTOS = new ArrayList<>();
-
+    private CompleteRequestSummaryDTO getCardUserSummaryResponseDTO(CompleteRequest completeRequest) {
         Card fromCard = completeRequest.getFromCard();
         CardCondenseResponseDTO fromCardCondenseResponseDTO = CardCondenseResponseDTO.from(fromCard);
 
@@ -159,8 +151,6 @@ public class CompleteRequestService {
             fromCardCondenseResponseDTO,
             fromUserIdResponseDTO
         );
-
-        cardUserSummaryResponseDTOS.add(0,fromCardResponseDTO);
 
         Card toCard = completeRequest.getToCard();
         CardCondenseResponseDTO toCardCondenseResponseDTO = CardCondenseResponseDTO.from(toCard);
@@ -172,9 +162,11 @@ public class CompleteRequestService {
             toUserIdResponseDTO
         );
 
-        cardUserSummaryResponseDTOS.add(1,toCardResponseDTO);
-
-        return cardUserSummaryResponseDTOS;
+        return CompleteRequestSummaryDTO.builder()
+            .fromCard(fromCardResponseDTO)
+            .toCard(toCardResponseDTO)
+            .status(completeRequest.getCompleteRequestStatus())
+            .build();
     }
 
     private void updateStatus(
