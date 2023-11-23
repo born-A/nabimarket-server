@@ -65,6 +65,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom, CursorP
             .where(chatRoom.chatRoomId.eq(chatRoomId))
             .fetchOne();
 
+        chatRoomInfo.getChatRoomInfo().updateFireStoreChatRoomId();
         chatRoomInfo.getChatRoomInfo().setCompleteRequestId(completeRequestId);
 
         return chatRoomInfo;

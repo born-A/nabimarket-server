@@ -12,4 +12,10 @@ public class ChatRoomInfoDTO {
     public void setCompleteRequestId(Long completeRequestId) {
         this.completeRequestId = completeRequestId;
     }
+
+    public void updateFireStoreChatRoomId() {
+        String fireStoreDocumentName = fireStoreChatRoomId.split("/")[2];
+
+        this.fireStoreChatRoomId = fireStoreDocumentName;
+    }
 }
