@@ -1,0 +1,9 @@
+package org.prgrms.nabimarketbe.domain.chatroom.dto.response.list;
+
+import lombok.Getter;
+
+@Getter
+public class ToCardInfoListDTO {
+    CardInfoListDTO cardInfo;
+    UserInfoListDTO userInfo;
+}
