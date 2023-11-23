@@ -1,5 +1,6 @@
 package org.prgrms.nabimarketbe.domain.chatroom.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.global.BaseEntity;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "chat_rooms")
 @NoArgsConstructor
+@Getter
 public class ChatRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
