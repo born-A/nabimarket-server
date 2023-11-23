@@ -7,7 +7,10 @@ import java.time.LocalDateTime;
 @Getter
 public class ChatRoomInfoListDTO {
     private Long chatRoomId;
+
     private LocalDateTime createdAt;
+
     private FromCardInfoListDTO fromCardInfo;
+
     private ToCardInfoListDTO toCardInfo;
 }

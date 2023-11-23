@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class FromCardInfoDTO {
     private CardInfoDTO cardInfo;
+
     private UserInfoDTO userInfo;
 }

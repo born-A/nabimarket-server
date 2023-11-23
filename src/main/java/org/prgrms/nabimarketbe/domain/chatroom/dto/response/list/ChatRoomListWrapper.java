@@ -9,5 +9,6 @@ import java.util.List;
 @Getter
 public class ChatRoomListWrapper {
     private List<ChatRoomInfoListDTO> chatRoomList;
+
     private String nextCursorId;
 }

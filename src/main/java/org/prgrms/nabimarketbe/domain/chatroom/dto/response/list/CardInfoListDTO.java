@@ -6,7 +6,10 @@ import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 @Getter
 public class CardInfoListDTO {
     private Long cardId;
+
     private String itemName;
+
     private PriceRange priceRange;
+
     private String thumbnail;
 }
