@@ -18,16 +18,16 @@ import org.prgrms.nabimarketbe.domain.user.dto.response.UserIdResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.domain.user.service.CheckService;
+
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
+import org.prgrms.nabimarketbe.global.event.NotificationCreateEvent;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +41,8 @@ public class CompleteRequestService {
     private final CardRepository cardRepository;
 
     private final CheckService checkService;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public CompleteRequestResponseDTO createCompleteRequest(
@@ -72,6 +74,8 @@ public class CompleteRequestService {
 
         CompleteRequest savedCompleteRequest = completeRequestRepository.save(completeRequest);
 
+        createCompleteRequestEvent(savedCompleteRequest);
+
         return CompleteRequestResponseDTO.from(savedCompleteRequest);
     }
 
@@ -98,10 +102,12 @@ public class CompleteRequestService {
 
         if (!checkService.isEqual(userId, fromCard.getUser().getUserId()) &&
             !checkService.isEqual(userId, toCard.getUser().getUserId())) {
-           throw new BaseException(ErrorCode.USER_NOT_MATCHED);
+            throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
         updateStatus(isAccepted, completeRequest, fromCard, toCard);
+
+        createCompleteRequestDecisionEvent(completeRequest, isAccepted);
 
         return CompleteRequestResponseDTO.from(completeRequest);
     }
@@ -182,5 +188,25 @@ public class CompleteRequestService {
         } else {
             completeRequest.refuseCompleteRequest();
         }
+    }
+
+    private void createCompleteRequestEvent(CompleteRequest completeRequest) {
+        User receiver = completeRequest.getToCard().getUser();
+        String message = completeRequest.createCompleteRequestMessage();
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            completeRequest.getToCard(),
+            message
+        ));
+    }
+
+    private void createCompleteRequestDecisionEvent(CompleteRequest completeRequest, boolean isAccepted) {
+        User receiver = completeRequest.getFromCard().getUser();
+        String message = completeRequest.createCompleteRequestDecisionMessage(isAccepted);
+        applicationEventPublisher.publishEvent(new NotificationCreateEvent(
+            receiver,
+            completeRequest.getToCard(),
+            message
+        ));
     }
 }

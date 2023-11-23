@@ -46,13 +46,35 @@ public class CompleteRequest extends BaseEntity {
         Card fromCard,
         Card toCard
     ) {
-        if(fromCard == null || toCard == null) {
+        if (fromCard == null || toCard == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         this.fromCard = fromCard;
         this.toCard = toCard;
         this.completeRequestStatus = CompleteRequestStatus.WAITING;
+    }
+
+    public String createCompleteRequestMessage() {
+        String message = String.format(
+            "%s님이 %s과의 거래성사를 요청했습니다.",
+            fromCard.getUser().getNickname(),
+            toCard.getItem().getItemName()
+        );
+
+        return message;
+    }
+
+    public String createCompleteRequestDecisionMessage(boolean isAccepted) {
+        String result = isAccepted ? "성사되었습니다" : "성사되지 못했습니다.";
+        String message = String.format(
+            "%s과 %s의 거래가 %s",
+            this.toCard.getItem().getItemName(),
+            this.fromCard.getItem().getItemName(),
+            result
+        );
+
+        return message;
     }
 
     public void acceptCompleteRequest() {
