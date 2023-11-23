@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.chatroom.dto.response;
+package org.prgrms.nabimarketbe.domain.chatroom.dto.response.single;
 
 import lombok.Getter;
 
