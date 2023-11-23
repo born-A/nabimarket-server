@@ -120,7 +120,7 @@ public class ChatRoomService {
                     .get()
                     .getCompleteRequestId();
         } else {
-            return null;
+            return Long.valueOf(-1);
         }
     }
 }
