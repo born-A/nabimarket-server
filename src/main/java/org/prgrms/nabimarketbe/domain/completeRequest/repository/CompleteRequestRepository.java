@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CompleteRequestRepository extends JpaRepository<CompleteRequest, Long>,
     CompleteRequestRepositryCustom {
     Optional<CompleteRequest> findCompleteRequestByFromCardAndToCard(Card fromCard, Card toCard);
+    Boolean existsByFromCardAndToCard(Card fromCard, Card toCard);
 }
