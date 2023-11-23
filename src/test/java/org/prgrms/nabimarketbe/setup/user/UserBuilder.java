@@ -1,11 +1,16 @@
 package org.prgrms.nabimarketbe.setup.user;
 
+import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
-import org.prgrms.nabimarketbe.setup.oauth2.request.SocialUserInfoDTOBuilder;
 
 public class UserBuilder {
     public static User build() {
-        return SocialUserInfoDTOBuilder.build()
-            .toEntity("testNickname");
+        return User.builder()
+            .accountId("testAccountId")
+            .nickname("testNickname")
+            .role(Role.USER.getKey())
+            .imageUrl("testImageUrl")
+            .provider("KAKAO")
+            .build();
     }
 }
