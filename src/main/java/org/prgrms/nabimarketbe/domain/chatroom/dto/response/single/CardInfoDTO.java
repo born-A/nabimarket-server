@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CardInfoDTO {
-    Long cardId;
-    String itemName;
-    String thumbnail;
+    private Long cardId;
+    private String itemName;
+    private String thumbnail;
 }

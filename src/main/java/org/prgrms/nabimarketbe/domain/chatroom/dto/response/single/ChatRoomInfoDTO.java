@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class ChatRoomInfoDTO {
-    String fireStoreChatRoomId;
-    FromCardInfoDTO fromCardInfo;
-    ToCardInfoDTO toCardInfo;
-    Long completeRequestId;
+    private String fireStoreChatRoomId;
+    private FromCardInfoDTO fromCardInfo;
+    private ToCardInfoDTO toCardInfo;
+    private Long completeRequestId;
 
     public void setCompleteRequestId(Long completeRequestId) {
         this.completeRequestId = completeRequestId;

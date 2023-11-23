@@ -8,6 +8,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ChatRoomListWrapper {
-    List<ChatRoomInfoListDTO> chatRoomList;
-    String nextCursorId;
+    private List<ChatRoomInfoListDTO> chatRoomList;
+    private String nextCursorId;
 }

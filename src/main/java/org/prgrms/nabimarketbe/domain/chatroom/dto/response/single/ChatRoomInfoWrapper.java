@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class ChatRoomInfoWrapper {
-    ChatRoomInfoDTO chatRoomInfo;
+    private ChatRoomInfoDTO chatRoomInfo;
 }

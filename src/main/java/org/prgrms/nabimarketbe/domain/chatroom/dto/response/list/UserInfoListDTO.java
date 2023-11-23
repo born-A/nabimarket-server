@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class UserInfoListDTO {
-    Long userId;
+    private Long userId;
 }
