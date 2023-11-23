@@ -4,7 +4,8 @@ import com.google.cloud.firestore.FieldValue;
 import com.google.cloud.firestore.Firestore;
 import lombok.RequiredArgsConstructor;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
-import org.prgrms.nabimarketbe.domain.chatroom.dto.response.ChatRoomInfoWrapper;
+import org.prgrms.nabimarketbe.domain.chatroom.dto.response.list.ChatRoomListWrapper;
+import org.prgrms.nabimarketbe.domain.chatroom.dto.response.single.ChatRoomInfoWrapper;
 import org.prgrms.nabimarketbe.domain.chatroom.entity.ChatRoom;
 import org.prgrms.nabimarketbe.domain.chatroom.repository.ChatRoomRepository;
 import org.prgrms.nabimarketbe.domain.completeRequest.repository.CompleteRequestRepository;
@@ -78,6 +79,21 @@ public class ChatRoomService {
         Long completeRequestId = getCompleteRequestId(fromCard, toCard);
 
         return chatRoomRepository.getChatRoomInfoById(chatRoomId, completeRequestId);
+    }
+
+    @Transactional(readOnly = true)
+    public ChatRoomListWrapper getChatRooms(
+            String token,
+            String cursorId,
+            Integer size
+    ) {
+        Long userId = checkService.parseToken(token);
+
+        return chatRoomRepository.getChatRoomList(
+                size,
+                cursorId,
+                userId
+        );
     }
 
     private void createDocumentInFireStore(String fireStoreDocumentName) {
