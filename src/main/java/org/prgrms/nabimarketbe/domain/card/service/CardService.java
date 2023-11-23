@@ -226,7 +226,6 @@ public class CardService {
         Long targetCardId
     ) {
         Long userId = checkService.parseToken(token);
-
         User requestUser = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
@@ -255,7 +254,8 @@ public class CardService {
         String cursorId,
         Integer size
     ) {
-        User user = userRepository.findById(checkService.parseToken(token))
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         return cardRepository.getMyCardsByStatus(
