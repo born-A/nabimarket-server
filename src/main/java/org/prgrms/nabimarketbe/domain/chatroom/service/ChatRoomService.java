@@ -129,12 +129,8 @@ public class ChatRoomService {
     }
 
     private Long getCompleteRequestId(Card fromCard, Card toCard) {
-        if (completeRequestRepository.existsByFromCardAndToCard(fromCard, toCard)) {
+        if (completeRequestRepository.exists(fromCard, toCard)) {
             return completeRequestRepository.findCompleteRequestByFromCardAndToCard(fromCard, toCard)
-                    .get()
-                    .getCompleteRequestId();
-        } else if (completeRequestRepository.existsByFromCardAndToCard(toCard, fromCard)) {
-            return completeRequestRepository.findCompleteRequestByFromCardAndToCard(toCard, fromCard)
                     .get()
                     .getCompleteRequestId();
         } else {
