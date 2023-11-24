@@ -64,7 +64,11 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .from(suggestion)
             .join(getQcardByDirectionType(directionType), card)
             .on(getExpressionByDirectionType(directionType, cardId))
-            .where(cursorIdLessThan(cursorId), suggestionTypeEquals(suggestionType))
+            .where(
+                cursorIdLessThan(cursorId),
+                suggestionTypeEquals(suggestionType),
+                getQCardCounter(directionType).isActive.eq(true)
+            )
             .orderBy(
                     QueryDslUtil.getOrderSpecifier(
                             Sort.by(
