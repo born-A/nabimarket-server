@@ -308,7 +308,7 @@ public class CardService {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
-        cardRepository.delete(card);
+        card.deleteCard();
     }
 
     @Transactional

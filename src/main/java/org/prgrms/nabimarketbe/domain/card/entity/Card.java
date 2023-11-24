@@ -147,6 +147,10 @@ public class Card extends BaseEntity {
         this.status = CardStatus.TRADE_COMPLETE;
     }
 
+    public void deleteCard() {
+        this.isActive = false;
+    }
+
     public Boolean isPokeAvailable() {
         return pokeAvailable;
     }
