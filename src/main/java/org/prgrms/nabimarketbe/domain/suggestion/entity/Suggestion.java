@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
@@ -24,7 +25,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "suggestions")
+@Table(name = "suggestions",
+    uniqueConstraints={
+        @UniqueConstraint(
+            name= "complete_request_unique",
+            columnNames={"from_card", "to_card"}
+        )
+    })
 public class Suggestion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
