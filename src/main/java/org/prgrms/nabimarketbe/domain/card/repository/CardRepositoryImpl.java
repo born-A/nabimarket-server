@@ -102,7 +102,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
             .where(
                 cursorId(cursorId),
                 card.status.eq(status),
-                card.user.eq(user)
+                card.user.eq(user),
+                isCardActive()
             )
             .orderBy(
                     QueryDslUtil.getOrderSpecifier(
