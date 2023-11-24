@@ -45,7 +45,7 @@ class UserServiceTest {
     @Test
     void GetUserByTokenTest() {
         // given
-        User user = UserBuilder.createTestUser();
+        User user = UserBuilder.createTestEntity();
         UserResponseDTO<UserGetResponseDTO> expectedResponseDTO = new UserResponseDTO<>(UserGetResponseDTO.from(user));
 
         given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
@@ -64,8 +64,8 @@ class UserServiceTest {
     @Test
     void UpdateUserImageTest() {
         // given
-        UserProfileUpdateRequestDTO requestDTO = UserProfileUpdateRequestDTOBuilder.build();
-        User user = UserBuilder.createTestUser();
+        UserProfileUpdateRequestDTO requestDTO = UserProfileUpdateRequestDTOBuilder.createTestDTO();
+        User user = UserBuilder.createTestEntity();
 
         given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
         given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(user));
@@ -82,8 +82,8 @@ class UserServiceTest {
     @Test
     void UpdateUserNicknameTest() {
         // given
-        UserNicknameUpdateRequestDTO requestDTO = UserNicknameUpdateRequestDTOBuilder.build();
-        User user = UserBuilder.createTestUser();
+        UserNicknameUpdateRequestDTO requestDTO = UserNicknameUpdateRequestDTOBuilder.createTestDTO();
+        User user = UserBuilder.createTestEntity();
 
         given(checkService.parseToken(TEST_TOKEN)).willReturn(1L);
         given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(user));

@@ -3,7 +3,7 @@ package org.prgrms.nabimarketbe.setup.jwt;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 
 public class TokenResponseDTOBuilder {
-    public static TokenResponseDTO build() {
+    public static TokenResponseDTO createTestDTO() {
         return TokenResponseDTO.builder()
             .grantType("Bearer")
             .accessToken("testAccessToken")

@@ -4,7 +4,7 @@ import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 public class UserBuilder {
-    public static User createTestUser() {
+    public static User createTestEntity() {
         return User.builder()
             .accountId("testAccountId")
             .nickname("testNickname")

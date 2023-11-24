@@ -39,9 +39,9 @@ class SignServiceTest {
     @Test
     void UserSignInTest() {
         // given
-        SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTOBuilder.build();
-        User user = UserBuilder.createTestUser();
-        TokenResponseDTO tokenResponseDTO = TokenResponseDTOBuilder.build();
+        SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTOBuilder.createTestDTO();
+        User user = UserBuilder.createTestEntity();
+        TokenResponseDTO tokenResponseDTO = TokenResponseDTOBuilder.createTestDTO();
         UserGetResponseDTO userGetResponseDTO = UserGetResponseDTO.from(user);
 
         given(userRepository.findByAccountId(any())).willReturn(Optional.ofNullable(user));
