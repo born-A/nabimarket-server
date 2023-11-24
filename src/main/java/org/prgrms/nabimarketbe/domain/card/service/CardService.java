@@ -29,6 +29,7 @@ import org.prgrms.nabimarketbe.domain.item.entity.Item;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.domain.item.repository.ItemRepository;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.domain.suggestion.repository.SuggestionRepository;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
@@ -53,6 +54,8 @@ public class CardService {
     private final CategoryRepository categoryRepository;
 
     private final CardImageRepository cardImageRepository;
+
+    private final SuggestionRepository suggestionRepository;
 
     private final UserRepository userRepository;
 
@@ -244,7 +247,30 @@ public class CardService {
         List<CardSuggestionResponseDTO> suggestionResultCardList =
             getSuggestionResultCardList(suggestionTargetCard.getCardId(), cardListResponse);
 
-        return new CardListResponseDTO<>(suggestionResultCardList);
+        List<CardSuggestionResponseDTO> responseDTOList = getResponseDTOList(
+            suggestionResultCardList,
+            suggestionTargetCard
+        );
+
+        return new CardListResponseDTO<>(responseDTOList);
+    }
+
+    private List<CardSuggestionResponseDTO> getResponseDTOList(List<CardSuggestionResponseDTO> suggestionResultCardList, Card suggestionTargetCard) {
+        List<CardSuggestionResponseDTO> cardsToRemove = new ArrayList<>();
+
+        for (CardSuggestionResponseDTO c : suggestionResultCardList) {
+            Long cardId = c.getCardInfo().getCardId();
+            Card fromCard = cardRepository.findById(cardId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+            if (suggestionRepository.exists(fromCard, suggestionTargetCard)) {
+                cardsToRemove.add(c);
+            }
+        }
+
+        List<CardSuggestionResponseDTO> modifiableList = new ArrayList<>(suggestionResultCardList);
+        modifiableList.removeAll(cardsToRemove);
+        return modifiableList;
     }
 
     @Transactional(readOnly = true)
