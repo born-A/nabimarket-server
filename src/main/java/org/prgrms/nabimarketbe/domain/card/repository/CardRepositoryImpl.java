@@ -242,6 +242,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
         return card.cardTitle.contains(title);
     }
 
+    private BooleanExpression isCardActive() {
+        return card.isActive.eq(true);
+    }
+
     private String generateCursor(CardListReadResponseDTO cardListReadResponseDTO) {
         return cardListReadResponseDTO.getCreatedAt().toString()    // 디폴트는 생성일자 최신순 정렬
             .replace("T", "")
