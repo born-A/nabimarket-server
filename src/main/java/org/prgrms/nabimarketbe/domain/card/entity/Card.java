@@ -74,6 +74,9 @@ public class Card extends BaseEntity {
     @Column(name = "dib_count", nullable = false)
     private Integer dibCount;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
@@ -110,6 +113,7 @@ public class Card extends BaseEntity {
         this.status = CardStatus.TRADE_AVAILABLE;
         this.viewCount = 0;
         this.dibCount = 0;
+        this.isActive = true;
         this.item = item;
         this.user = user;
     }
