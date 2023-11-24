@@ -258,13 +258,13 @@ public class CardService {
     private List<CardSuggestionResponseDTO> getResponseDTOList(List<CardSuggestionResponseDTO> suggestionResultCardList, Card suggestionTargetCard) {
         List<CardSuggestionResponseDTO> cardsToRemove = new ArrayList<>();
 
-        for (CardSuggestionResponseDTO c : suggestionResultCardList) {
-            Long cardId = c.getCardInfo().getCardId();
+        for (CardSuggestionResponseDTO responseDTO : suggestionResultCardList) {
+            Long cardId = responseDTO.getCardInfo().getCardId();
             Card fromCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
             if (suggestionRepository.exists(fromCard, suggestionTargetCard)) {
-                cardsToRemove.add(c);
+                cardsToRemove.add(responseDTO);
             }
         }
 
