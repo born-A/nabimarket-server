@@ -195,7 +195,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
                 )
             )
             .from(card)
-            .where(statusEquals(CardStatus.TRADE_AVAILABLE))
+            .where(
+                statusEquals(CardStatus.TRADE_AVAILABLE),
+                isCardActive()
+            )
             .orderBy(card.viewCount.desc(), card.dibCount.desc())
             .limit(FAMOUS_CARD_SIZE)
             .fetch();
