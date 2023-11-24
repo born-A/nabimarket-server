@@ -148,7 +148,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
             )
             .from(card)
             .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
-            .where(card.user.userId.eq(userId))
+            .where(
+                card.user.userId.eq(userId),
+                isCardActive()
+            )
             .distinct()
             .on(suggestion.toCard.cardId.eq(targetCardId))
             .fetch();
