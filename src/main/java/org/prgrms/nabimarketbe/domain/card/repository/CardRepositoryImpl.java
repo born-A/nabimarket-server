@@ -65,7 +65,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
                 categoryEquals(category),
                 statusEquals(status),
                 priceRangeEquals(priceRange),
-                titleEquals(cardTitle)
+                titleEquals(cardTitle),
+                isCardActive()
             )
             .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), card))
             .limit(pageable.getPageSize())
