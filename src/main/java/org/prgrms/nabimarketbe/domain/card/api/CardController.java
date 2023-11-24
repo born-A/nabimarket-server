@@ -62,7 +62,8 @@ public class CardController {
     @GetMapping("/{cardId}")
     public ResponseEntity<SingleResult<CardUserResponseDTO>> getCardById(
         @RequestHeader(value = "Authorization", required = false) String token,
-        @PathVariable Long cardId) {
+        @PathVariable Long cardId
+    ) {
         CardUserResponseDTO cardSingleReadResponseDTO = cardService.getCardById(token, cardId);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
