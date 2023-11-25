@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "suggestions",
     uniqueConstraints={
         @UniqueConstraint(
-            name= "complete_request_unique",
+            name= "suggestion_unique",
             columnNames={"from_card", "to_card"}
         )
     })
