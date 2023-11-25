@@ -32,7 +32,6 @@ public class RandomNicknameGenerator {
         maxAttempts = 2,
         backoff = @Backoff(delay = 2000))
     public String generateRandomNickname() throws JsonProcessingException {
-        log.info("Try");
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(GENERATOR_URL)
             .queryParam("max_length", NICKNAME_MAX_LENGTH).build();
 
