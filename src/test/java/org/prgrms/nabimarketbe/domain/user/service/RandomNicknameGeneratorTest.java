@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,12 +29,9 @@ class RandomNicknameGeneratorTest {
     @MockBean
     RestTemplate restTemplate;
 
-    // @Autowired
-    // ObjectMapper objectMapper;
-
     @DisplayName("랜덤닉네임 생성 시에 RuntimeException 발생시 2번까지 재시도한다.")
     @Test
-    void testGenerateRandomNicknameWithRetry() throws Exception {
+    void testGenerateRandomNicknameWithRetry() {
         // given
         doThrow(new RuntimeException("Intended Retry Error")).when(restTemplate)
             .getForObject(anyString(), eq(String.class));
@@ -48,22 +42,4 @@ class RandomNicknameGeneratorTest {
         });
         verify(restTemplate, times(2)).getForObject(anyString(), eq(String.class));
     }
-
-    private RetryTemplate createRetryTemplate() {
-        RetryTemplate retryTemplate = new RetryTemplate();
-
-        // Setting up retry policy
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(2);
-
-        // Setting up backoff policy
-        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-        backOffPolicy.setBackOffPeriod(2000);
-
-        retryTemplate.setRetryPolicy(retryPolicy);
-        retryTemplate.setBackOffPolicy(backOffPolicy);
-
-        return retryTemplate;
-    }
-
 }
