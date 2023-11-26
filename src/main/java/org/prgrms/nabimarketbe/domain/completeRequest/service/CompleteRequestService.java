@@ -59,15 +59,19 @@ public class CompleteRequestService {
         Card toCard = cardRepository.findById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
+        Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard,toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
-        if (!suggestion.isAccepted()) {
-            throw new BaseException(ErrorCode.SUGGESTION_NOT_ACCEPTED);
+        if (completeRequestRepository.exists(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
         }
 
         if (checkService.isEqual(user.getUserId(), toCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_MYSELF_ERROR);
+        }
+
+        if (!suggestion.isAccepted()) {
+            throw new BaseException(ErrorCode.SUGGESTION_NOT_ACCEPTED);
         }
 
         CompleteRequest completeRequest = new CompleteRequest(fromCard, toCard);

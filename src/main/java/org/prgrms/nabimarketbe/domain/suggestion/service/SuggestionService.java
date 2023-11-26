@@ -57,6 +57,10 @@ public class SuggestionService {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
         }
 
+        if (suggestionRepository.exists(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
+        }
+
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
         if (!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
