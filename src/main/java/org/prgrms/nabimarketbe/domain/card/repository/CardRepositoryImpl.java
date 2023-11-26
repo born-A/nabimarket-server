@@ -65,7 +65,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
                 categoryEquals(category),
                 statusEquals(status),
                 priceRangeEquals(priceRange),
-                titleEquals(cardTitle)
+                titleEquals(cardTitle),
+                isCardActive()
             )
             .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), card))
             .limit(pageable.getPageSize())
@@ -101,7 +102,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
             .where(
                 cursorId(cursorId),
                 card.status.eq(status),
-                card.user.eq(user)
+                card.user.eq(user),
+                isCardActive()
             )
             .orderBy(
                     QueryDslUtil.getOrderSpecifier(
@@ -146,7 +148,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
             )
             .from(card)
             .leftJoin(suggestion).on(suggestion.fromCard.cardId.eq(card.cardId))
-            .where(card.user.userId.eq(userId))
+            .where(
+                card.user.userId.eq(userId),
+                isCardActive()
+            )
             .distinct()
             .on(suggestion.toCard.cardId.eq(targetCardId))
             .fetch();
@@ -190,7 +195,10 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
                 )
             )
             .from(card)
-            .where(statusEquals(CardStatus.TRADE_AVAILABLE))
+            .where(
+                statusEquals(CardStatus.TRADE_AVAILABLE),
+                isCardActive()
+            )
             .orderBy(card.viewCount.desc(), card.dibCount.desc())
             .limit(FAMOUS_CARD_SIZE)
             .fetch();
@@ -234,12 +242,16 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
         return item.priceRange.eq(priceRange);
     }
 
-    private BooleanExpression titleEquals(String title) { // TODO: 검색 단어를 '포함'한 제목 검색 가능
+    private BooleanExpression titleEquals(String title) {
         if (title == null) {
             return null;
         }
 
-        return card.cardTitle.eq(title);
+        return card.cardTitle.contains(title);
+    }
+
+    private BooleanExpression isCardActive() {
+        return card.isActive.eq(true);
     }
 
     private String generateCursor(CardListReadResponseDTO cardListReadResponseDTO) {
