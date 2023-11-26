@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.domain.card.entity.TradeType;
@@ -17,12 +18,14 @@ import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
 
 public record CardUpdateRequestDTO(
     @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Size(max = 30)
     String cardTitle,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     String thumbnail,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Size(max = 30)
     String itemName,
 
     @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
@@ -35,12 +38,14 @@ public record CardUpdateRequestDTO(
     CategoryEnum category,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Size(max = 30)
     String tradeArea,
 
     @NotNull(message = "비울 수 없는 값입니다.")
     Boolean pokeAvailable,
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
+    @Size(max = 255)
     String content,
 
     List<CardImageCreateRequestDTO> images
