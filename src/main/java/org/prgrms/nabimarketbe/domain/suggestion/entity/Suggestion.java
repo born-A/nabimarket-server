@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
-import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.global.BaseEntity;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
@@ -26,10 +25,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "suggestions",
-    uniqueConstraints={
+    uniqueConstraints = {
         @UniqueConstraint(
-            name= "suggestion_unique",
-            columnNames={"from_card", "to_card"}
+            name = "suggestion_unique",
+            columnNames = {"from_card", "to_card"}
         )
     })
 public class Suggestion extends BaseEntity {
@@ -79,11 +78,11 @@ public class Suggestion extends BaseEntity {
         }
     }
 
-    public String createSuggestionRequestMessage(User fromUser) {
+    public String createSuggestionRequestMessage() {
         String message = String.format(
             "%s에 대한 %s님의 새로운 제안이 도착하였습니다.",
             toCard.getItem().getItemName(),
-            fromUser.getNickname()
+            fromCard.getUser().getNickname()
         );
 
         return message;

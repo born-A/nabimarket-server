@@ -157,7 +157,7 @@ public class SuggestionService {
 
     private void createSuggestionEvent(Suggestion suggestion) {
         User receiver = suggestion.getToCard().getUser();
-        String message = suggestion.createSuggestionRequestMessage(suggestion.getFromCard().getUser());
+        String message = suggestion.createSuggestionRequestMessage();
         applicationEventPublisher.publishEvent(new NotificationCreateEvent(
             receiver,
             suggestion.getToCard(),

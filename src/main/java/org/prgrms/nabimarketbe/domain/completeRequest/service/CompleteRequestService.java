@@ -59,7 +59,7 @@ public class CompleteRequestService {
         Card toCard = cardRepository.findById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard,toCard)
+        Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
 
         if (completeRequestRepository.exists(fromCard, toCard)) {
@@ -209,7 +209,7 @@ public class CompleteRequestService {
         String message = completeRequest.createCompleteRequestDecisionMessage(isAccepted);
         applicationEventPublisher.publishEvent(new NotificationCreateEvent(
             receiver,
-            completeRequest.getToCard(),
+            completeRequest.getFromCard(),
             message
         ));
     }
