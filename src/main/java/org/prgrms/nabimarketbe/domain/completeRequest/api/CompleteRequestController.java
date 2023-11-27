@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.api;
 
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
+import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestUpdateDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.CompleteRequestInfoDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.wrapper.HistoryListReadLimitResponseDTO;
@@ -79,15 +80,13 @@ public class CompleteRequestController {
     @PutMapping("/confirm")
     public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> updateCompleteRequestStatus(
         @RequestHeader(name = "Authorization") String token,
-        @RequestParam Long fromCardId,
-        @RequestParam Long toCardId,
-        @RequestParam Boolean isAccepted
+        @RequestBody CompleteRequestUpdateDTO completeRequestUpdateDTO
     ) {
         CompleteRequestResponseDTO completeRequestDTO = completeRequestService.updateCompleteRequestStatus(
             token,
-            fromCardId,
-            toCardId,
-            isAccepted
+            completeRequestUpdateDTO.fromCardId(),
+            completeRequestUpdateDTO.toCardId(),
+            completeRequestUpdateDTO.isAccepted()
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(completeRequestDTO));

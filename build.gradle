@@ -43,10 +43,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'com.h2database:h2'
+    testCompileOnly 'com.mysql:mysql-connector-j'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     testImplementation 'org.springframework.security:spring-security-test'
@@ -70,6 +69,9 @@ dependencies {
 
     //Spring-Cloud-AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // redisson
+    implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
 
     // Google Firebase Control Message
     implementation 'com.google.firebase:firebase-admin:9.1.1'

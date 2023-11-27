@@ -39,7 +39,7 @@ public class Card extends BaseEntity {
     private Long cardId;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "card_title", nullable = false)
+    @Column(name = "card_title", nullable = false, length = 30)
     private String cardTitle;
 
     @Column(name = "thumbnail")
@@ -47,11 +47,11 @@ public class Card extends BaseEntity {
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 255)
     private String content;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "trade_area", nullable = false)
+    @Column(name = "trade_area", nullable = false, length = 30)
     private String tradeArea;
 
     @NotNull(message = "비울 수 없는 값입니다.")
@@ -74,6 +74,9 @@ public class Card extends BaseEntity {
     @Column(name = "dib_count", nullable = false)
     private Integer dibCount;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
@@ -84,14 +87,14 @@ public class Card extends BaseEntity {
 
     @Builder
     private Card(
-            String cardTitle,
-            String thumbnail,
-            String content,
-            String tradeArea,
-            Boolean pokeAvailable,
-            TradeType tradeType,
-            Item item,
-            User user
+        String cardTitle,
+        String thumbnail,
+        String content,
+        String tradeArea,
+        Boolean pokeAvailable,
+        TradeType tradeType,
+        Item item,
+        User user
     ) {
         if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank() || thumbnail.isBlank()) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
@@ -110,6 +113,7 @@ public class Card extends BaseEntity {
         this.status = CardStatus.TRADE_AVAILABLE;
         this.viewCount = 0;
         this.dibCount = 0;
+        this.isActive = true;
         this.item = item;
         this.user = user;
     }
@@ -141,6 +145,10 @@ public class Card extends BaseEntity {
 
     public void updateCardStatusToTradeComplete() {
         this.status = CardStatus.TRADE_COMPLETE;
+    }
+
+    public void deleteCard() {
+        this.isActive = false;
     }
 
     public Boolean isPokeAvailable() {

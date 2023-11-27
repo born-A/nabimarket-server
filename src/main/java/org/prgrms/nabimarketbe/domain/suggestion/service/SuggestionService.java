@@ -16,6 +16,7 @@ import org.prgrms.nabimarketbe.domain.user.service.CheckService;
 import org.prgrms.nabimarketbe.global.error.BaseException;
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.event.NotificationCreateEvent;
+import org.prgrms.nabimarketbe.global.redisson.DistributedLock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +39,10 @@ public class SuggestionService {
     private final ChatRoomService chatRoomService;
 
     @Transactional
+    @DistributedLock(key = "#lockName")
     public SuggestionResponseDTO createSuggestion(
         String token,
+        String lockName,
         String suggestionType,
         SuggestionRequestDTO requestDto
     ) {
@@ -50,11 +53,16 @@ public class SuggestionService {
         Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
+
         Card toCard = cardRepository.findById(requestDto.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (isAuthorEquals(fromCard, toCard)) {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
+        }
+
+        if (suggestionRepository.exists(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
         }
 
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
@@ -112,13 +120,13 @@ public class SuggestionService {
         Boolean isAccepted
     ) {
         Long userId = checkService.parseToken(token);
-        User toUser = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        Card toCard = cardRepository.findByCardIdAndUser(toCardId, toUser)
+        Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
