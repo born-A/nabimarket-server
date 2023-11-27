@@ -29,6 +29,7 @@ public class SuggestionController {
     ) {
         SuggestionResponseDTO suggestionResponseDTO = suggestionService.createSuggestion(
             token,
+            key,
             suggestionType,
             suggestionRequestDTO
         );
