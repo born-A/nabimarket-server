@@ -65,10 +65,6 @@ public class SuggestionService {
             throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
         }
 
-        if (isExist(fromCard, toCard)) {
-            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
-        }
-
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
         if (!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
@@ -89,11 +85,6 @@ public class SuggestionService {
         createSuggestionEvent(savedSuggestion);
 
         return SuggestionResponseDTO.from(savedSuggestion);
-    }
-
-    private boolean isExist(Card fromCard, Card toCard) {
-        return suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard).isPresent()
-            || suggestionRepository.findSuggestionByFromCardAndToCard(toCard, fromCard).isPresent();
     }
 
     @Transactional(readOnly = true)
