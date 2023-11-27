@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
 import org.prgrms.nabimarketbe.global.BaseEntity;
@@ -23,7 +24,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "complete_requests")
+@Table(name = "complete_requests",
+    uniqueConstraints={
+        @UniqueConstraint(
+            name= "complete_request_unique",
+            columnNames={"from_card", "to_card"}
+        )
+    })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompleteRequest extends BaseEntity {
     @Id

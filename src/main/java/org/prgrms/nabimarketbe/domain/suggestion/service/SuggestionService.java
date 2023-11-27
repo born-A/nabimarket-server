@@ -57,6 +57,10 @@ public class SuggestionService {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
         }
 
+        if (suggestionRepository.exists(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
+        }
+
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
         if (!suggestionTypeEnum.isSuggestionAvailable(fromCard.getItem(), toCard.getItem())) {
@@ -112,7 +116,7 @@ public class SuggestionService {
         Boolean isAccepted
     ) {
         Long userId = checkService.parseToken(token);
-        User user = userRepository.findById(userId)
+        User toUser = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         Card fromCard = cardRepository.findById(fromCardId)
