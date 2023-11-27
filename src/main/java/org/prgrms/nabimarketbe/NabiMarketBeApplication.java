@@ -6,10 +6,17 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.retry.annotation.EnableRetry;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @EnableRetry
 @EnableJpaAuditing
 @SpringBootApplication
 public class NabiMarketBeApplication {
+    @PostConstruct
+    public void setTimeZone() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(NabiMarketBeApplication.class);
