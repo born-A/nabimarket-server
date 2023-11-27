@@ -37,7 +37,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true, length = 30)
     private String accountId;
 
-    @Column(name = "nickname", nullable = false, length = 20)
+    @Column(name = "nickname", nullable = false, length = 20, unique = true)
     private String nickname;
 
     @Column(name = "user_image_url")
@@ -57,7 +57,7 @@ public class User extends BaseEntity implements UserDetails {
         String provider,
         String role
     ) {
-        if(accountId.isBlank() || nickname.isBlank() || provider.isBlank() || role.isBlank()) {
+        if (accountId.isBlank() || nickname.isBlank() || provider.isBlank() || role.isBlank()) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 

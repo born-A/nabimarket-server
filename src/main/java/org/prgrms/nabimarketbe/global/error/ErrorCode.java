@@ -12,6 +12,8 @@ public enum ErrorCode {
     INVALID_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR, "G0002", "잘못된 요청입니다."),
     EXTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G0003", "외부 서버 오류입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "U0001", "존재하지 않는 사용자입니다."),
+    USER_NOT_MATCHED(HttpStatus.INTERNAL_SERVER_ERROR, "UOO02", "적합한 사용자가 아닙니다."),
+    USER_NICKNAME_NOT_UNIQUE(HttpStatus.BAD_REQUEST, "UOO03", "이미 존재하는 닉네임입니다."),
     CARD_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "C0001", "존재하지 않는 카드입니다."),
     DIB_NOT_FOUND(HttpStatus.BAD_REQUEST, "D0001", "존재하지 않는 찜입니다."),
     DIB_MYSELF_ERROR(HttpStatus.BAD_REQUEST, "D0002", "자신의 카드는 찜할 수 없습니다."),

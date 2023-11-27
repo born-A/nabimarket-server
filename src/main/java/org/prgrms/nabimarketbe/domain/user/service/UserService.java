@@ -72,6 +72,9 @@ public class UserService {
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         String updateNickname = userUpdateRequestDTO.nickname();
+        if (userRepository.existsUserByNickname(updateNickname)) {
+            throw new BaseException(ErrorCode.USER_NICKNAME_NOT_UNIQUE);
+        }
         user.updateNickname(updateNickname);
 
         UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.from(user);
