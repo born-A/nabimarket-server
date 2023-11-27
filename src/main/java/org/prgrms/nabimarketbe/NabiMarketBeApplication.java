@@ -13,10 +13,10 @@ import java.util.TimeZone;
 @EnableJpaAuditing
 @SpringBootApplication
 public class NabiMarketBeApplication {
-	@PostConstruct
-	public void setTimeZone(){
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-	}
+    @PostConstruct
+    public void setTimeZone() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(NabiMarketBeApplication.class);
