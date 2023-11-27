@@ -22,7 +22,6 @@ public enum ErrorCode {
     SUGGESTION_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "S0002", "잘못된 제안 타입입니다."),
     SUGGESTION_NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "S0003", "수락된 제안이 아닙니다."),
     SUGGESTION_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "S0004", "제안이 이미 존재합니다"),
-    USER_NOT_MATCHED(HttpStatus.INTERNAL_SERVER_ERROR, "UOO02", "적합한 사용자가 아닙니다."),
     CARD_SUGGESTION_MYSELF_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C0002", "자신의 카드에는 제안을 할 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CA0001", "존재하지 않는 카테고리입니다."),
     COMPLETE_REQUEST_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CR0001", "존재하지 않는 거래 성사 요청입니다."),
