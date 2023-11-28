@@ -37,7 +37,6 @@ public class S3FileController {
         @RequestHeader("Authorization") String token,
         @RequestPart("file") MultipartFile file
     ) {
-        checkService.parseToken(token);
         String uploadUrl = s3FileUploadService.uploadFile(file);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(uploadUrl));
@@ -48,7 +47,6 @@ public class S3FileController {
         @RequestHeader("Authorization") String token,
         @RequestPart("files") List<MultipartFile> files
     ) {
-        checkService.parseToken(token);
         List<String> uploadUrls = s3FileUploadService.uploadFiles(files);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(uploadUrls));
