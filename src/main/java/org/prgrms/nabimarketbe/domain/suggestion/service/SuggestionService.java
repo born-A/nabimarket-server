@@ -1,6 +1,7 @@
 package org.prgrms.nabimarketbe.domain.suggestion.service;
 
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.chatroom.service.ChatRoomService;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.request.SuggestionRequestDTO;
@@ -62,6 +63,10 @@ public class SuggestionService {
 
         if (suggestionRepository.exists(fromCard, toCard)) {
             throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
+        }
+
+        if (fromCard.getStatus() == CardStatus.TRADE_COMPLETE || toCard.getStatus() == CardStatus.TRADE_COMPLETE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
         }
 
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
@@ -130,6 +135,10 @@ public class SuggestionService {
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
             .orElseThrow(() -> new BaseException(ErrorCode.SUGGESTION_NOT_FOUND));
+
+        if (fromCard.getStatus() == CardStatus.TRADE_COMPLETE || toCard.getStatus() == CardStatus.TRADE_COMPLETE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
+        }
 
         suggestion.decideSuggestion(isAccepted);
 
