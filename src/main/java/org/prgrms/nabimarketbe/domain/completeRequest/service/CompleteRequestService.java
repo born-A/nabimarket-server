@@ -3,6 +3,7 @@ package org.prgrms.nabimarketbe.domain.completeRequest.service;
 import org.prgrms.nabimarketbe.domain.card.dto.response.CardCondenseResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.dto.response.wrapper.CardUserSummaryResponseDTO;
 import org.prgrms.nabimarketbe.domain.card.entity.Card;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
@@ -64,6 +65,18 @@ public class CompleteRequestService {
 
         if (completeRequestRepository.exists(fromCard, toCard)) {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
+        }
+
+        if (completeRequestRepository.existsByFromCard(fromCard)) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_FROM_CARD_EXISTS);
+        }
+
+        if (completeRequestRepository.existsByToCard(toCard)) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_TO_CARD_EXISTS);
+        }
+
+        if (fromCard.getStatus() == CardStatus.TRADE_COMPLETE || toCard.getStatus() == CardStatus.TRADE_COMPLETE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
         }
 
         if (checkService.isEqual(user.getUserId(), toCard.getUser().getUserId())) {
