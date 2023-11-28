@@ -80,7 +80,6 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        // images 비어있을 경우..
         List<CardImage> images = cardCreateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
