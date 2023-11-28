@@ -53,7 +53,6 @@ public class SuggestionService {
         Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
-
         Card toCard = cardRepository.findById(requestDto.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
@@ -158,10 +157,10 @@ public class SuggestionService {
 
     private void createSuggestionEvent(Suggestion suggestion) {
         User receiver = suggestion.getToCard().getUser();
-        String message = suggestion.createSuggestionRequestMessage(suggestion.getFromCard().getUser());
+        String message = suggestion.createSuggestionRequestMessage();
         applicationEventPublisher.publishEvent(new NotificationCreateEvent(
             receiver,
-            suggestion.getFromCard(),
+            suggestion.getToCard(),
             message
         ));
     }
