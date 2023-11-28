@@ -9,7 +9,7 @@ import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionResponse
 import org.prgrms.nabimarketbe.domain.suggestion.entity.DirectionType;
 import org.prgrms.nabimarketbe.domain.suggestion.entity.SuggestionType;
 import org.prgrms.nabimarketbe.domain.suggestion.service.SuggestionService;
-import org.prgrms.nabimarketbe.global.redisson.LockKeyGenerator;
+import org.prgrms.nabimarketbe.global.util.KeyGenerator;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 
@@ -28,7 +28,7 @@ public class SuggestionController {
         @PathVariable String suggestionType,
         @RequestBody SuggestionRequestDTO suggestionRequestDTO
     ) {
-        String key = LockKeyGenerator.generateSuggestionKey(
+        String key = KeyGenerator.generateSuggestionLockKey(
             suggestionRequestDTO.fromCardId(),
             suggestionRequestDTO.toCardId()
         );
