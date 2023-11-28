@@ -33,7 +33,8 @@ public enum ErrorCode {
     BATCH_INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "B0001", "이미지 저장 중에 문제가 발생했습니다."),
     INVALID_ORDER_CONDITION(HttpStatus.INTERNAL_SERVER_ERROR, "O0001", "유효하지 않은 정렬 조건입니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "CH0001", "채팅방을 찾을 수 없습니다."),
-    CHAT_ROOM_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "CH0004", "이미 생성된 채팅방이 존재합니다.");
+    CHAT_ROOM_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "CH0004", "이미 생성된 채팅방이 존재합니다."),
+    UPLOAD_FILE_NAME_TOO_LONG(HttpStatus.INTERNAL_SERVER_ERROR, "UL0001", "이미 생성된 채팅방이 존재합니다.");
 
     private HttpStatus status;
     private String code;
