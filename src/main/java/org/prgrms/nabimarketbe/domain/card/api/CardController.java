@@ -19,6 +19,7 @@ import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.service.CardService;
 import org.prgrms.nabimarketbe.domain.category.entity.CategoryEnum;
 import org.prgrms.nabimarketbe.domain.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.global.util.KeyGenerator;
 import org.prgrms.nabimarketbe.global.util.OrderCondition;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
@@ -64,7 +65,13 @@ public class CardController {
         @RequestHeader(value = "Authorization", required = false) String token,
         @PathVariable Long cardId
     ) {
-        CardUserResponseDTO cardSingleReadResponseDTO = cardService.getCardById(token, cardId);
+        String cardViewLockKey = KeyGenerator.generateCardViewLockKey(cardId);
+
+        CardUserResponseDTO cardSingleReadResponseDTO = cardService.getCardById(
+            cardViewLockKey,
+            token,
+            cardId
+        );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(cardSingleReadResponseDTO));
     }

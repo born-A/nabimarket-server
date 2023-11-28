@@ -59,11 +59,13 @@ public class CardService {
 
     private final UserRepository userRepository;
 
-    private final CheckService checkService;
-
     private final DibRepository dibRepository;
 
     private final CardImageBatchRepository cardImageBatchRepository;
+
+    private final CheckService checkService;
+
+    private final CardViewCountService cardViewCountService;
 
     @Transactional
     public CardResponseDTO<CardCreateResponseDTO> createCard(
@@ -157,7 +159,8 @@ public class CardService {
     }
 
     @Transactional
-    public CardUserResponseDTO getCardById(
+    public CardUserResponseDTO getCardById (
+        String lockName,
         String token,
         Long cardId
     ) {
@@ -172,7 +175,12 @@ public class CardService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
             if (!checkService.isEqual(userId, card.getUser().getUserId())) {
-                card.updateViewCount();
+                cardViewCountService.increaseViewCount(
+                        lockName,
+                        userId,
+                        cardId
+                );
+
                 isMyDib = dibRepository.existsDibByCardAndUser(card, loginUser);
             }
         }
