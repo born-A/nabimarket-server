@@ -50,7 +50,7 @@ public class Card extends BaseEntity {
     @Column(name = "content", nullable = false, length = 255)
     private String content;
 
-    @Column(name = "trade_area", length = 30)
+    @Column(name = "trade_area", nullable = false, length = 30)
     private String tradeArea;
 
     @NotNull(message = "비울 수 없는 값입니다.")
@@ -99,7 +99,7 @@ public class Card extends BaseEntity {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
-        if (pokeAvailable == null || tradeType == null || item == null || user == null) {
+        if (pokeAvailable == null || tradeType == null || tradeArea == null || item == null || user == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
