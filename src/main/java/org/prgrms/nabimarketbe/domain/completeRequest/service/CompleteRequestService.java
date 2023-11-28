@@ -67,8 +67,7 @@ public class CompleteRequestService {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
         }
 
-        if (completeRequestRepository.existsByFromCard(fromCard, toCard) ||
-            completeRequestRepository.existsByToCard(fromCard, toCard)) {
+        if (completeRequestRepository.existsByFromCard(fromCard) || completeRequestRepository.existsByToCard(toCard)) {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
         }
 

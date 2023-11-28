@@ -30,13 +30,13 @@ public interface CompleteRequestRepository extends JpaRepository<CompleteRequest
         "select count(c.completeRequestId) > 0 "
             + "from CompleteRequest c "
             + "where c.fromCard = :fromCard "
-            + "or c.fromCard = :toCard")
-    Boolean existsByFromCard(@Param("fromCard") Card fromCard, @Param("toCard") Card toCard);
+            + "or c.toCard = :fromCard")
+    Boolean existsByFromCard(@Param("fromCard") Card fromCard);
 
     @Query(
         "select count(c.completeRequestId) > 0 "
             + "from CompleteRequest c "
-            + "where c.toCard = :fromCard "
-            + "or c.toCard = :toCard")
-    Boolean existsByToCard(@Param("toCard") Card toCard, @Param("fromCard") Card fromCard);
+            + "where c.toCard = :toCard "
+            + "or c.fromCard = :toCard")
+    Boolean existsByToCard(@Param("toCard") Card toCard);
 }
