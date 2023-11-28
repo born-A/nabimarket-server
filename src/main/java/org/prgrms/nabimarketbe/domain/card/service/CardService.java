@@ -268,7 +268,7 @@ public class CardService {
 
             if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE ||
                 suggestionRepository.exists(fromCard, suggestionTargetCard)) {
-                cardsToRemove.add(responseDTO);기
+                cardsToRemove.add(responseDTO);
             }
         }
 
