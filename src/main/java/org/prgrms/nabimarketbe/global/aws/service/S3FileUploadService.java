@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,11 @@ public class S3FileUploadService {
             throw new RuntimeException("단건 이미지 업로드를 실패하였습니다.");
         }
 
-        return amazonS3.getUrl(bucketName, fileName).toString();
+        String uploadedUrl = amazonS3.getUrl(bucketName, fileName).toString();
+
+        checkUrlLength(uploadedUrl);
+
+        return uploadedUrl;
     }
 
     public List<String> uploadFiles(
@@ -67,6 +73,8 @@ public class S3FileUploadService {
                 throw new RuntimeException("다건 이미지 업로드를 실패하였습니다.");
             }
             String uploadedUrl = amazonS3.getUrl(bucketName, fileName).toString();
+
+            checkUrlLength(uploadedUrl);
 
             imgUrlList.add(uploadedUrl);
         }
@@ -93,5 +101,11 @@ public class S3FileUploadService {
 
     private String generateFileName(MultipartFile file) {
         return UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+    }
+
+    private void checkUrlLength(String url) {
+        if (url.length() > 255) {
+            throw new BaseException(ErrorCode.UPLOAD_FILE_NAME_TOO_LONG);
+        }
     }
 }
