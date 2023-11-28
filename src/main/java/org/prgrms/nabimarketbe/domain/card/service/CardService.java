@@ -80,7 +80,6 @@ public class CardService {
 
         Card card = cardCreateRequestDTO.toCardEntity(item, user);
 
-        // images 비어있을 경우..
         List<CardImage> images = cardCreateRequestDTO.images()
             .stream()
             .map(i -> i.toCardImageEntity(card))
@@ -255,7 +254,10 @@ public class CardService {
         return new CardListResponseDTO<>(responseDTOList);
     }
 
-    private List<CardSuggestionResponseDTO> getResponseDTOList(List<CardSuggestionResponseDTO> suggestionResultCardList, Card suggestionTargetCard) {
+    private List<CardSuggestionResponseDTO> getResponseDTOList(
+        List<CardSuggestionResponseDTO> suggestionResultCardList,
+        Card suggestionTargetCard
+    ) {
         List<CardSuggestionResponseDTO> cardsToRemove = new ArrayList<>();
 
         for (CardSuggestionResponseDTO responseDTO : suggestionResultCardList) {
@@ -263,7 +265,8 @@ public class CardService {
             Card fromCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-            if (suggestionRepository.exists(fromCard, suggestionTargetCard)) {
+            if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE ||
+                suggestionRepository.exists(fromCard, suggestionTargetCard)) {
                 cardsToRemove.add(responseDTO);
             }
         }
