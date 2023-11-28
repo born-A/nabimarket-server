@@ -50,7 +50,6 @@ public class Card extends BaseEntity {
     @Column(name = "content", nullable = false, length = 255)
     private String content;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "trade_area", nullable = false, length = 30)
     private String tradeArea;
 
@@ -96,11 +95,11 @@ public class Card extends BaseEntity {
         Item item,
         User user
     ) {
-        if (cardTitle.isBlank() || content.isBlank() || tradeArea.isBlank() || thumbnail.isBlank()) {
+        if (cardTitle.isBlank() || content.isBlank() || thumbnail.isBlank()) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
-        if (pokeAvailable == null || tradeType == null || item == null || user == null) {
+        if (pokeAvailable == null || tradeType == null || tradeArea == null || item == null || user == null) {
             throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 

@@ -37,7 +37,7 @@ public record CardUpdateRequestDTO(
     @ValidEnum(enumClass = CategoryEnum.class, message = "유효하지 않은 카테고리입니다.")
     CategoryEnum category,
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
+    @NotNull
     @Size(max = 30)
     String tradeArea,
 

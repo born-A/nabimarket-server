@@ -57,17 +57,7 @@ public class SuggestionService {
         Card toCard = cardRepository.findById(requestDto.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
-        if (isAuthorEquals(fromCard, toCard)) {
-            throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
-        }
-
-        if (suggestionRepository.exists(fromCard, toCard)) {
-            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
-        }
-
-        if (fromCard.getStatus() == CardStatus.TRADE_COMPLETE || toCard.getStatus() == CardStatus.TRADE_COMPLETE) {
-            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
-        }
+        validateCard(fromCard, toCard);
 
         SuggestionType suggestionTypeEnum = SuggestionType.valueOf(suggestionType);
 
@@ -89,6 +79,24 @@ public class SuggestionService {
         createSuggestionEvent(savedSuggestion);
 
         return SuggestionResponseDTO.from(savedSuggestion);
+    }
+
+    private void validateCard(Card fromCard, Card toCard) {
+        if (isAuthorEquals(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
+        }
+
+        if (suggestionRepository.exists(fromCard, toCard)) {
+            throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
+        }
+
+        if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE || toCard.getStatus() == CardStatus.TRADE_AVAILABLE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
+        }
+
+        if (!fromCard.getIsActive() || !toCard.getIsActive()) {
+            throw new BaseException(ErrorCode.CARD_DEACTIVATED);
+        }
     }
 
     @Transactional(readOnly = true)

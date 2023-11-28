@@ -1,14 +1,12 @@
 package org.prgrms.nabimarketbe.domain.suggestion.repository;
 
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.core.types.dsl.StringTemplate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
+import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+
+import java.util.List;
+
 import org.prgrms.nabimarketbe.domain.card.dto.response.projection.CardInfoResponseDTO;
+import org.prgrms.nabimarketbe.domain.card.entity.CardStatus;
 import org.prgrms.nabimarketbe.domain.card.entity.QCard;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.SuggestionListReadResponseDTO;
 import org.prgrms.nabimarketbe.domain.suggestion.dto.response.projection.SuggestionDetailResponseDTO;
@@ -20,11 +18,15 @@ import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.util.QueryDslUtil;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static org.prgrms.nabimarketbe.domain.card.entity.QCard.card;
-import static org.prgrms.nabimarketbe.domain.completeRequest.entity.QCompleteRequest.completeRequest;
-import static org.prgrms.nabimarketbe.domain.suggestion.entity.QSuggestion.suggestion;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
@@ -67,16 +69,17 @@ public class SuggestionRepositoryImpl implements SuggestionRepositoryCustom {
             .where(
                 cursorIdLessThan(cursorId),
                 suggestionTypeEquals(suggestionType),
-                getQCardCounter(directionType).isActive.eq(true)
+                getQCardCounter(directionType).isActive.eq(true),
+                getQCardCounter(directionType).status.eq(CardStatus.TRADE_AVAILABLE)
             )
             .orderBy(
-                    QueryDslUtil.getOrderSpecifier(
-                            Sort.by(
-                                    Sort.Order.desc("createdDate"),
-                                    Sort.Order.desc("suggestionId")
-                            ),
-                            suggestion
-                    )
+                QueryDslUtil.getOrderSpecifier(
+                    Sort.by(
+                        Sort.Order.desc("createdDate"),
+                        Sort.Order.desc("suggestionId")
+                    ),
+                    suggestion
+                )
             )
             .limit(size)
             .fetch();
