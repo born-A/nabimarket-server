@@ -51,7 +51,7 @@ public class ChatRoomService {
                 FIRESTORE_MESSAGE_COLLECTION_NAME
         );
 
-        if (chatRoomRepository.existsChatRoomByFireStoreChatRoomPath(fireStoreChatRoomPath)) {
+        if (chatRoomRepository.existsChatRoomBySuggestion(suggestion)) {
             throw new BaseException(ErrorCode.CHAT_ROOM_EXISTS);
         }
 
