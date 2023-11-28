@@ -67,8 +67,12 @@ public class CompleteRequestService {
             throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
         }
 
-        if (completeRequestRepository.existsByFromCard(fromCard) || completeRequestRepository.existsByToCard(toCard)) {
-            throw new BaseException(ErrorCode.COMPLETE_REQUEST_EXISTS);
+        if (completeRequestRepository.existsByFromCard(fromCard)) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_FROM_CARD_EXISTS);
+        }
+
+        if (completeRequestRepository.existsByToCard(toCard)) {
+            throw new BaseException(ErrorCode.COMPLETE_REQUEST_TO_CARD_EXISTS);
         }
 
         if (fromCard.getStatus() == CardStatus.TRADE_COMPLETE || toCard.getStatus() == CardStatus.TRADE_COMPLETE) {
