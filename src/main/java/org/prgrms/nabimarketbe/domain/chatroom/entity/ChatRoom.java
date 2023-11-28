@@ -27,11 +27,11 @@ public class ChatRoom extends BaseEntity {
     private Long chatRoomId;
 
     @NotBlank
-    @Column(nullable = false, name = "firestore_chat_room_path")
+    @Column(nullable = false, name = "firestore_chat_room_path", unique = true)
     private String fireStoreChatRoomPath;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "suggestion_id")
+    @JoinColumn(nullable = false, name = "suggestion_id", unique = true)
     private Suggestion suggestion;
 
     public ChatRoom(
