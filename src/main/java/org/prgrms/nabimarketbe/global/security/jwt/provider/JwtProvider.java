@@ -1,15 +1,14 @@
 package org.prgrms.nabimarketbe.global.security.jwt.provider;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.impl.Base64UrlCodec;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
@@ -20,12 +19,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.Optional;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.impl.Base64UrlCodec;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -83,7 +87,6 @@ public class JwtProvider {
             () -> refreshTokenRepository.save(refreshTokenEntity)
         );
 
-
         return TokenResponseDTO.builder()
             .grantType("Bearer")
             .accessToken(accessToken)
@@ -121,20 +124,21 @@ public class JwtProvider {
     }
 
     // jwt 의 유효성 및 만료일자 확인
-    public boolean validationToken(String token) {
+    public void validationToken(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.error("잘못된 Jwt 서명입니다.");
+            throw new JwtException(ErrorCode.USER_TOKEN_NOT_VALID.getMessage());
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다.");
+            throw new JwtException(ErrorCode.USER_TOKEN_EXPIRED.getMessage());
         } catch (UnsupportedJwtException e) {
             log.error("지원하지 않는 토큰입니다.");
-        } catch (IllegalArgumentException e) {
+            throw new JwtException(ErrorCode.USER_TOKEN_NOT_SUPPORTED.getMessage());
+        } catch (Exception e) {
             log.error("잘못된 토큰입니다.");
+            throw new JwtException(ErrorCode.USER_TOKEN_NOT_VALID.getMessage());
         }
-
-        return false;
     }
 }
