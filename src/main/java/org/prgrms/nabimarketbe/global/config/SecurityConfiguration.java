@@ -4,6 +4,7 @@ import org.prgrms.nabimarketbe.domain.user.Role;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAccessDeniedHandler;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAuthenticationEntryPoint;
 import org.prgrms.nabimarketbe.global.security.jwt.filter.JwtAuthenticationFilter;
+import org.prgrms.nabimarketbe.global.security.jwt.filter.JwtExceptionFilter;
 import org.prgrms.nabimarketbe.global.security.jwt.provider.JwtProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,10 @@ public class SecurityConfiguration {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final JwtExceptionFilter jwtExceptionFilter;
+
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -51,14 +56,17 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-       return (web) -> web.ignoring().
-        antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/favicon.ico", "/error","/h2-console/**");
+        return (web) -> web.ignoring().
+            antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/favicon.ico", "/error",
+                "/h2-console/**");
     }
 
     @Bean
