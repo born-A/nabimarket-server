@@ -90,7 +90,7 @@ public class SuggestionService {
             throw new BaseException(ErrorCode.SUGGESTION_EXISTS);
         }
 
-        if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE || toCard.getStatus() == CardStatus.TRADE_AVAILABLE) {
+        if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE || toCard.getStatus() != CardStatus.TRADE_AVAILABLE) {
             throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
         }
 
