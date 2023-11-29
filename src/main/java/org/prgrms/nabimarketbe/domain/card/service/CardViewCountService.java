@@ -2,6 +2,7 @@ package org.prgrms.nabimarketbe.domain.card.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.global.redisson.DistributedLock;
 import org.prgrms.nabimarketbe.global.redisson.RedisDAO;
@@ -52,7 +53,7 @@ public class CardViewCountService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?링")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void flushCardViewCacheToRDB() {
         log.info("schedule start!");
         Set<String> cardViewCountKeys = redisDAO.getKeySet(KeyGenerator.CARD_VIEW_CACHE_PREFIX + "*");
