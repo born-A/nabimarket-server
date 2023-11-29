@@ -124,10 +124,16 @@ public class CompleteRequestService {
 
         if (!fromCard.getIsActive()) {
             completeRequest.deleteCompleteRequest();
-        } else {
-            updateStatus(isAccepted, completeRequest, fromCard, toCard);
-            createCompleteRequestDecisionEvent(completeRequest, isAccepted);
 
+            throw new BaseException(ErrorCode.CARD_DEACTIVATED);
+        } else {
+            updateStatus(
+                isAccepted,
+                completeRequest,
+                fromCard,
+                toCard
+            );
+            createCompleteRequestDecisionEvent(completeRequest, isAccepted);
         }
 
         return CompleteRequestResponseDTO.from(completeRequest);
