@@ -107,7 +107,7 @@ public class CompleteRequestService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findById(fromCardId)
+        Card fromCard = cardRepository.findCardById(fromCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)
@@ -122,9 +122,13 @@ public class CompleteRequestService {
             throw new BaseException(ErrorCode.USER_NOT_MATCHED);
         }
 
-        updateStatus(isAccepted, completeRequest, fromCard, toCard);
+        if (!fromCard.getIsActive()) {
+            completeRequest.deleteCompleteRequest();
+        } else {
+            updateStatus(isAccepted, completeRequest, fromCard, toCard);
+            createCompleteRequestDecisionEvent(completeRequest, isAccepted);
 
-        createCompleteRequestDecisionEvent(completeRequest, isAccepted);
+        }
 
         return CompleteRequestResponseDTO.from(completeRequest);
     }
