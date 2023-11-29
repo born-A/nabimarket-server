@@ -57,7 +57,7 @@ public class CompleteRequestService {
         Card fromCard = cardRepository.findByCardIdAndUser(requestDTO.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
-        Card toCard = cardRepository.findById(requestDTO.toCardId())
+        Card toCard = cardRepository.findActiveCardById(requestDTO.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Suggestion suggestion = suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard)
@@ -107,7 +107,7 @@ public class CompleteRequestService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findCardById(fromCardId)
+        Card fromCard = cardRepository.findExistingCardById(fromCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)

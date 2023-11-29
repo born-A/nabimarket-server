@@ -54,7 +54,7 @@ public class SuggestionService {
         Card fromCard = cardRepository.findByCardIdAndUser(requestDto.fromCardId(), user)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
-        Card toCard = cardRepository.findById(requestDto.toCardId())
+        Card toCard = cardRepository.findActiveCardById(requestDto.toCardId())
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         validateCard(fromCard, toCard);
@@ -108,7 +108,7 @@ public class SuggestionService {
         String cursorId,
         Integer size
     ) {
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findActiveCardById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (!checkService.isEqual(token, card.getUser().getUserId())) {
@@ -135,7 +135,7 @@ public class SuggestionService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card fromCard = cardRepository.findById(fromCardId)
+        Card fromCard = cardRepository.findActiveCardById(fromCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Card toCard = cardRepository.findByCardIdAndUser(toCardId, user)
