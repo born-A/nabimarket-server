@@ -37,7 +37,7 @@ public class DibService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-		Card card = cardRepository.findById(cardId)
+		Card card = cardRepository.findActiveCardById(cardId)
 			.orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
 		if(checkService.isEqual(userId, card.getUser().getUserId())) {
@@ -67,7 +67,7 @@ public class DibService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-		Card card = cardRepository.findById(cardId)
+		Card card = cardRepository.findActiveCardById(cardId)
 			.orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
 		Dib dib = dibRepository.findDibByUserAndCard(user, card)
