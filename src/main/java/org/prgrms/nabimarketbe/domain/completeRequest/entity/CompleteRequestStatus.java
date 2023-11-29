@@ -4,6 +4,5 @@ public enum CompleteRequestStatus {
     WAITING,
     ACCEPTED,
     REFUSED,
-
     DELETED
 }
