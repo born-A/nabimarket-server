@@ -12,8 +12,8 @@ public interface CompleteRequestRepository extends JpaRepository<CompleteRequest
     CompleteRequestRepositryCustom {
     @Query("select c "
         + "from CompleteRequest c "
-        + "where c.fromCard = :fromCard and c.toCard = :toCard "
-        + "or c.fromCard = :toCard and c.toCard = :fromCard")
+        + "where c.fromCard = :fromCard and c.toCard = :toCard and c.completeRequestStatus != 'REFUSED' "
+        + "or c.fromCard = :toCard and c.toCard = :fromCard and c.completeRequestStatus != 'REFUSED'")
     Optional<CompleteRequest> findCompleteRequestByFromCardAndToCard(
         @Param("fromCard") Card fromCard,
         @Param("toCard") Card toCard
@@ -22,21 +22,21 @@ public interface CompleteRequestRepository extends JpaRepository<CompleteRequest
     @Query(
         "select count(c.completeRequestId) > 0 "
             + "from CompleteRequest c "
-            + "where c.fromCard = :fromCard and c.toCard = :toCard "
-            + "or c.fromCard = :toCard and c.toCard = :fromCard")
+            + "where c.fromCard = :fromCard and c.toCard = :toCard and c.completeRequestStatus != 'REFUSED' "
+            + "or c.fromCard = :toCard and c.toCard = :fromCard and c.completeRequestStatus != 'REFUSED'")
     Boolean exists(@Param("fromCard") Card fromCard, @Param("toCard") Card toCard);
 
     @Query(
         "select count(c.completeRequestId) > 0 "
             + "from CompleteRequest c "
-            + "where c.fromCard = :fromCard "
-            + "or c.toCard = :fromCard")
+            + "where c.fromCard = :fromCard and c.completeRequestStatus != 'REFUSED' "
+            + "or c.toCard = :fromCard and c.completeRequestStatus != 'REFUSED'")
     Boolean existsByFromCard(@Param("fromCard") Card fromCard);
 
     @Query(
         "select count(c.completeRequestId) > 0 "
             + "from CompleteRequest c "
-            + "where c.toCard = :toCard "
-            + "or c.fromCard = :toCard")
+            + "where c.toCard = :toCard and c.completeRequestStatus != 'REFUSED' "
+            + "or c.fromCard = :toCard and c.completeRequestStatus != 'REFUSED'")
     Boolean existsByToCard(@Param("toCard") Card toCard);
 }
