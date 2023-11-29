@@ -14,4 +14,7 @@ public interface CardRepository extends JpaRepository<Card, Long>, CardRepositor
 
     @Query("SELECT c FROM Card c WHERE c.cardId = :cardId AND c.isActive = true")
     Optional<Card> findById(@Param("cardId") Long cardId);
+
+    @Query("SELECT c FROM Card c WHERE c.cardId = :cardId")
+    Optional<Card> findCardById(@Param("cardId") Long cardId);
 }
