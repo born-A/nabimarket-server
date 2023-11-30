@@ -159,7 +159,6 @@ public class CardService {
 
     @Transactional
     public CardUserResponseDTO getCardById (
-        String lockName,
         String token,
         Long cardId
     ) {
@@ -175,7 +174,6 @@ public class CardService {
 
             if (!checkService.isEqual(userId, card.getUser().getUserId())) {
                 cardViewCountService.increaseViewCount(
-                        lockName,
                         userId,
                         cardId
                 );

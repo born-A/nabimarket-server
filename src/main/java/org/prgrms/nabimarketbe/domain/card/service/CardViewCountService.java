@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.prgrms.nabimarketbe.domain.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.global.redisson.DistributedLock;
 import org.prgrms.nabimarketbe.global.redisson.RedisDAO;
 import org.prgrms.nabimarketbe.global.util.KeyGenerator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
@@ -24,9 +24,8 @@ public class CardViewCountService {
     private final CardRepository cardRepository;
 
     @Async("threadPoolTaskExecutor")
-    @DistributedLock(key = "#lockName")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void increaseViewCount(
-        String lockName,
         Long userId,
         Long cardId
     ) {
@@ -34,21 +33,12 @@ public class CardViewCountService {
         String cardViewCacheKey = KeyGenerator.generateCardViewCacheKey(cardId); // 조회수 key
         String readerCacheKey = KeyGenerator.generateCardReaderCacheKey(userId); // 유저 key
 
-        String viewCacheValue = redisDAO.getValue(cardViewCacheKey); // 기존 조회수 값 가져오기
-
-        if (viewCacheValue == null) {   // 조회수 정보가 캐시에 없을 경우
-            int viewCountById = cardRepository.getCardViewCountById(cardId);    // db 조회
-            viewCacheValue = String.valueOf(viewCountById);
-            redisDAO.setValues(cardViewCacheKey, viewCacheValue);   //
-        }
-
-        int viewCount = Integer.parseInt(viewCacheValue); // 가져온 값은 Integer로 변환
-
         // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어있지 않는다면,
         if (!redisDAO.getValuesList(readerCacheKey).contains(cardViewCacheKey)) {
-            redisDAO.setValuesList(readerCacheKey, cardViewCacheKey); // 유저 key로 해당 글 ID를 List 형태로 저장
-            viewCount++; // 조회수 증가
-            redisDAO.setValues(cardViewCacheKey, String.valueOf(viewCount)); // 글 ID key로 조회수 저장
+            // TODO: 캐시 데이터 삭제 주기 고려해보기
+            redisDAO.setValuesList(readerCacheKey, cardViewCacheKey);   // 유저 key로 해당 글 ID를 List 형태로 저장
+
+            redisDAO.increment(cardViewCacheKey); // 조회수 증가
         }
     }
 
@@ -62,11 +52,13 @@ public class CardViewCountService {
             return;
         }
 
-        for (String cardViewCountKey : cardViewCountKeys) {
+        for (String cardViewCountKey : cardViewCountKeys) { // TODO: 추후에 bulk update로 전환
             Long cardId = Long.valueOf(cardViewCountKey.split(":")[1]);
-            Integer cardViewCount = Integer.parseInt(redisDAO.getValue(cardViewCountKey));
+            Integer cardViewAdd = Integer.parseInt(redisDAO.getValue(cardViewCountKey));    // 조회수 증가값
 
             // DB에 캐시 데이터 반영
+            Integer cardViewCount = cardRepository.getCardViewCountById(cardId);    // 기존 조회수 값
+            cardViewCount = cardViewCount + cardViewAdd;    // 조회수 증가 적용
             cardRepository.updateViewCountByCardId(cardId, cardViewCount);
 
             // 캐시 데이터 삭제

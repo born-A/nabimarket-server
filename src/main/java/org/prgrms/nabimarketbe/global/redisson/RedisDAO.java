@@ -29,6 +29,11 @@ public class RedisDAO {
         return redisTemplate.keys(keyPattern);
     }
 
+    public void increment(String key) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.increment(key, 1);
+    }
+
     public void setValues(String key, String data) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         values.set(key, data);

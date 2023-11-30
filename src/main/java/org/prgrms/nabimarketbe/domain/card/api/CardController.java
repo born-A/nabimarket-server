@@ -65,10 +65,7 @@ public class CardController {
         @RequestHeader(value = "Authorization", required = false) String token,
         @PathVariable Long cardId
     ) {
-        String cardViewLockKey = KeyGenerator.generateCardViewLockKey(cardId);
-
         CardUserResponseDTO cardSingleReadResponseDTO = cardService.getCardById(
-            cardViewLockKey,
             token,
             cardId
         );
