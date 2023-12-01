@@ -112,7 +112,7 @@ public class CardService {
             throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
 
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findActiveCardById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_MATCHED));
 
         if (!checkService.isEqual(userId, card.getUser().getUserId())) {
@@ -162,7 +162,7 @@ public class CardService {
         String token,
         Long cardId
     ) {
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findActiveCardById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Boolean isMyDib = false;
@@ -237,8 +237,12 @@ public class CardService {
         User requestUser = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        Card suggestionTargetCard = cardRepository.findById(targetCardId)
+        Card suggestionTargetCard = cardRepository.findActiveCardById(targetCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
+
+        if (suggestionTargetCard.getStatus() != CardStatus.TRADE_AVAILABLE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
+        }
 
         if (checkService.isEqual(userId, suggestionTargetCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
@@ -268,7 +272,7 @@ public class CardService {
 
         for (CardSuggestionResponseDTO responseDTO : suggestionResultCardList) {
             Long cardId = responseDTO.getCardInfo().getCardId();
-            Card fromCard = cardRepository.findById(cardId)
+            Card fromCard = cardRepository.findActiveCardById(cardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
             if (fromCard.getStatus() != CardStatus.TRADE_AVAILABLE ||
@@ -312,7 +316,7 @@ public class CardService {
             throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
 
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findActiveCardById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (!checkService.isEqual(userId, card.getUser().getUserId())) {
@@ -336,7 +340,7 @@ public class CardService {
             throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
 
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findActiveCardById(cardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         if (!checkService.isEqual(userId, card.getUser().getUserId())) {
@@ -351,7 +355,7 @@ public class CardService {
         Long targetId,
         List<CardSuggestionResponseDTO> cardList
     ) {
-        Card targetCard = cardRepository.findById(targetId)
+        Card targetCard = cardRepository.findActiveCardById(targetId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
         Boolean pokeAvailable = targetCard.getPokeAvailable();

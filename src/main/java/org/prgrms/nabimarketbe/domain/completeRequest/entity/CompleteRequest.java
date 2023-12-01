@@ -91,4 +91,8 @@ public class CompleteRequest extends BaseEntity {
     public void refuseCompleteRequest() {
         this.completeRequestStatus = CompleteRequestStatus.REFUSED;
     }
+
+    public void deleteCompleteRequest() {
+        this.completeRequestStatus = CompleteRequestStatus.DELETED;
+    }
 }
