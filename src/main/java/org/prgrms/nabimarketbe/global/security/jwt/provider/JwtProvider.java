@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.prgrms.nabimarketbe.global.security.entity.RefreshToken;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.AccessTokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.dto.TokenResponseDTO;
 import org.prgrms.nabimarketbe.global.security.jwt.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +55,24 @@ public class JwtProvider {
         secretKey = Base64UrlCodec.BASE64URL.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
+    @Transactional
+    public AccessTokenResponseDTO createAccessTokenDTO(Long userPk, String role) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
+        claims.put(ROLE, role);
+
+        Date now = new Date();
+
+        String accessToken = Jwts.builder()
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + accessTokenValidMillisecond))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+
+        return new AccessTokenResponseDTO(accessToken);
+    }
+
     // Jwt 생성
     @Transactional
     public TokenResponseDTO createTokenDTO(Long userPk, String role) {
@@ -74,6 +93,8 @@ public class JwtProvider {
 
         String refreshToken = Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
+            .setIssuedAt(now)
             .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
@@ -121,6 +142,12 @@ public class JwtProvider {
     // HTTP Request 의 Header 에서 Token Parsing -> "Authorization: jwt"
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
+    }
+
+    public Long parseUserId(String token) {
+        Claims claims = parseClaims(token);
+
+        return Long.valueOf(claims.getSubject());
     }
 
     // jwt 의 유효성 및 만료일자 확인
