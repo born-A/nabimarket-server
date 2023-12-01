@@ -73,6 +73,9 @@ dependencies {
     // redisson
     implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // Google Firebase Control Message
     implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
