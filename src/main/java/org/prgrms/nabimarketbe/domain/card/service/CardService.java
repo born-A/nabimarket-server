@@ -234,6 +234,10 @@ public class CardService {
         Card suggestionTargetCard = cardRepository.findActiveCardById(targetCardId)
             .orElseThrow(() -> new BaseException(ErrorCode.CARD_NOT_FOUND));
 
+        if (suggestionTargetCard.getStatus() != CardStatus.TRADE_AVAILABLE) {
+            throw new BaseException(ErrorCode.CARD_TRADE_COMPLETE);
+        }
+
         if (checkService.isEqual(userId, suggestionTargetCard.getUser().getUserId())) {
             throw new BaseException(ErrorCode.CARD_SUGGESTION_MYSELF_ERROR);
         }

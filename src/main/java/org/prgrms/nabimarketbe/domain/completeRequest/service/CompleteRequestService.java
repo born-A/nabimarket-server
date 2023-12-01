@@ -124,8 +124,6 @@ public class CompleteRequestService {
 
         if (!fromCard.getIsActive()) {
             completeRequest.deleteCompleteRequest();
-
-            throw new BaseException(ErrorCode.CARD_DEACTIVATED);
         } else {
             updateStatus(
                 isAccepted,
