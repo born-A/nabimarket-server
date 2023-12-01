@@ -1,17 +1,17 @@
-package org.prgrms.nabimarketbe.oauth2.kakao.api;
+package org.prgrms.nabimarketbe.domain.oauth2.kakao.api;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.prgrms.nabimarketbe.domain.oauth2.kakao.dto.KakaoProfile;
+import org.prgrms.nabimarketbe.domain.oauth2.kakao.service.OAuth2Service;
 import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,22 +37,22 @@ public class OAuth2Controller {
 
     private final Environment env;
 
-    private final OAuth2Service OAuth2Service;
+    private final OAuth2Service oAuth2Service;
 
     private final SignService signService;
 
     @GetMapping("/login")
     public void socialLogin(HttpServletResponse response) throws IOException {
-        StringBuilder loginUri = OAuth2Service.createUri();
+        StringBuilder loginUri = oAuth2Service.createUri();
         response.sendRedirect(String.valueOf(loginUri));
     }
 
     @GetMapping(value = "/redirect")
     public ResponseEntity<SingleResult<UserLoginResponseDTO>> redirectKakao(@RequestParam String code) {
-        KakaoProfile profile = OAuth2Service.getResultProfile(code);
+        KakaoProfile profile = oAuth2Service.getResultProfile(code);
         if (profile == null)
             throw new RuntimeException("카카오에 해당 회원이 없습니다.");
-        
+
         SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTO.builder()
             .accountId(profile.getId())
             .provider("KAKAO")
