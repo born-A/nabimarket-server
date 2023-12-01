@@ -5,7 +5,9 @@ import org.prgrms.nabimarketbe.domain.user.dto.request.UserProfileUpdateRequestD
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.domain.user.service.UserService;
+import org.prgrms.nabimarketbe.global.security.jwt.dto.AccessTokenResponseDTO;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
+
+    private final SignService signService;
 
     @GetMapping
     public ResponseEntity<SingleResult<UserResponseDTO<UserGetResponseDTO>>> getUserByToken(
@@ -56,5 +60,14 @@ public class UserController {
         );
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(userResponseDTO));
+    }
+
+    @GetMapping("/re-issue")
+    public ResponseEntity<SingleResult<AccessTokenResponseDTO>> reissue(
+        @RequestHeader("Authorization") String refreshToken
+    ) {
+        AccessTokenResponseDTO accessTokenResponseDTO = signService.reissue(refreshToken);
+
+        return ResponseEntity.ok(ResponseFactory.getSingleResult(accessTokenResponseDTO));
     }
 }
