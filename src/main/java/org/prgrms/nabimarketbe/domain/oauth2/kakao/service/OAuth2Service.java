@@ -1,7 +1,7 @@
-package org.prgrms.nabimarketbe.oauth2.kakao.service;
+package org.prgrms.nabimarketbe.domain.oauth2.kakao.service;
 
-import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.oauth2.kakao.dto.RetKakaoOAuth;
+import org.prgrms.nabimarketbe.domain.oauth2.kakao.dto.KakaoProfile;
+import org.prgrms.nabimarketbe.domain.oauth2.kakao.dto.RetKakaoOAuth;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -37,10 +37,10 @@ public class OAuth2Service {
 
     public StringBuilder createUri() {
         StringBuilder loginUri = new StringBuilder()
-                .append(env.getProperty("social.kakao.url.login"))
-                .append("?response_type=code")
-                .append("&client_id=").append(kakaoClientId)
-                .append("&redirect_uri=").append(kakaoRedirectUri);
+            .append(env.getProperty("social.kakao.url.login"))
+            .append("?response_type=code")
+            .append("&client_id=").append(kakaoClientId)
+            .append("&redirect_uri=").append(kakaoRedirectUri);
 
         return loginUri;
     }
@@ -52,7 +52,8 @@ public class OAuth2Service {
 
         String requestUrl = env.getProperty("social.kakao.url.profile");
 
-        if (requestUrl == null) throw new RuntimeException("CommunicationException");
+        if (requestUrl == null)
+            throw new RuntimeException("CommunicationException");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
 
@@ -79,7 +80,8 @@ public class OAuth2Service {
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");
-        if (requestUri == null) throw new RuntimeException("CommunicationException");
+        if (requestUri == null)
+            throw new RuntimeException("CommunicationException");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 

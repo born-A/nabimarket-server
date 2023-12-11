@@ -1,9 +1,9 @@
-package org.prgrms.nabimarketbe.oauth2.google.service;
+package org.prgrms.nabimarketbe.domain.oauth2.google.service;
 
+import org.prgrms.nabimarketbe.domain.oauth2.google.domain.OAuth2;
+import org.prgrms.nabimarketbe.domain.oauth2.google.dto.GoogleOAuth2TokenDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
-import org.prgrms.nabimarketbe.oauth2.google.domain.OAuth2;
-import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleOAuth2TokenDTO;
-import org.prgrms.nabimarketbe.oauth2.google.dto.GoogleUserInfoDTO;
+import org.prgrms.nabimarketbe.domain.oauth2.google.dto.GoogleUserInfoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

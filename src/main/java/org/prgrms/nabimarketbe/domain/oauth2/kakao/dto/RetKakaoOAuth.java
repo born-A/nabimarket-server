@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.oauth2.kakao.dto;
+package org.prgrms.nabimarketbe.domain.oauth2.kakao.dto;
 
 import lombok.Getter;
 

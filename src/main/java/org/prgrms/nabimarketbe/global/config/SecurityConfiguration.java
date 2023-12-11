@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.global.config;
 
-import org.prgrms.nabimarketbe.domain.user.Role;
+import org.prgrms.nabimarketbe.domain.user.entity.Role;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAccessDeniedHandler;
 import org.prgrms.nabimarketbe.global.security.handler.CustomAuthenticationEntryPoint;
 import org.prgrms.nabimarketbe.global.security.jwt.filter.JwtAuthenticationFilter;
