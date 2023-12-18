@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "구글 소셜 로그인", description = "소셜 로그인(구글)")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

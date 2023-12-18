@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "카카오 소셜 로그인", description = "소셜 로그인(카카오)")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
