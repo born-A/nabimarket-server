@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.user;
+package org.prgrms.nabimarketbe.domain.user.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

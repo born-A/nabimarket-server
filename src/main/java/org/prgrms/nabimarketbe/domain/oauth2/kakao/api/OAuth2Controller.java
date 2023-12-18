@@ -39,22 +39,22 @@ public class OAuth2Controller {
 
     private final Environment env;
 
-    private final OAuth2Service OAuth2Service;
+    private final OAuth2Service oAuth2Service;
 
     private final SignService signService;
 
     @GetMapping("/login")
     public void socialLogin(HttpServletResponse response) throws IOException {
-        StringBuilder loginUri = OAuth2Service.createUri();
+        StringBuilder loginUri = oAuth2Service.createUri();
         response.sendRedirect(String.valueOf(loginUri));
     }
 
     @GetMapping(value = "/redirect")
     public ResponseEntity<SingleResult<UserLoginResponseDTO>> redirectKakao(@RequestParam String code) {
-        KakaoProfile profile = OAuth2Service.getResultProfile(code);
+        KakaoProfile profile = oAuth2Service.getResultProfile(code);
         if (profile == null)
             throw new RuntimeException("카카오에 해당 회원이 없습니다.");
-        
+
         SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTO.builder()
             .accountId(profile.getId())
             .provider("KAKAO")

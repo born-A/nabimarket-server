@@ -2,7 +2,7 @@ package org.prgrms.nabimarketbe.domain.user.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-import org.prgrms.nabimarketbe.domain.user.Role;
+import org.prgrms.nabimarketbe.domain.user.entity.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 import lombok.Builder;

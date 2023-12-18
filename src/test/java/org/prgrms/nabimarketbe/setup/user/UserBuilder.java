@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.setup.user;
 
-import org.prgrms.nabimarketbe.domain.user.Role;
+import org.prgrms.nabimarketbe.domain.user.entity.Role;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 
 public class UserBuilder {

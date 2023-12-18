@@ -1,6 +1,7 @@
-package org.prgrms.nabimarketbe.oauth2.kakao.service;
+package org.prgrms.nabimarketbe.domain.oauth2.kakao.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
