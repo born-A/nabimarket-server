@@ -1,17 +1,18 @@
-package org.prgrms.nabimarketbe.domain.oauth2.kakao.api;
+package org.prgrms.nabimarketbe.oauth2.kakao.api;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.prgrms.nabimarketbe.domain.oauth2.kakao.dto.KakaoProfile;
-import org.prgrms.nabimarketbe.domain.oauth2.kakao.service.OAuth2Service;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.prgrms.nabimarketbe.domain.user.dto.request.SocialUserInfoDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserLoginResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.service.SignService;
 import org.prgrms.nabimarketbe.global.util.ResponseFactory;
 import org.prgrms.nabimarketbe.global.util.model.CommonResult;
 import org.prgrms.nabimarketbe.global.util.model.SingleResult;
+import org.prgrms.nabimarketbe.oauth2.kakao.dto.KakaoProfile;
+import org.prgrms.nabimarketbe.oauth2.kakao.service.OAuth2Service;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "카카오 소셜 로그인", description = "소셜 로그인(카카오)")
 @Slf4j
 @RestController
 @RequiredArgsConstructor

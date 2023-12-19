@@ -1,5 +1,9 @@
 package org.prgrms.nabimarketbe.domain.completeRequest.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.request.CompleteRequestUpdateDTO;
 import org.prgrms.nabimarketbe.domain.completeRequest.dto.response.CompleteRequestResponseDTO;
@@ -23,15 +27,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "거래 성사", description = "거래 성사 요청 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/complete-requests")
 public class CompleteRequestController {
     private final CompleteRequestService completeRequestService;
 
+    @Operation(summary = "거래 성사 요청", description = "거래 성사 요청을 보냅니다.")
     @PostMapping
     public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> createCompleteRequest(
+        @Parameter(name = "Authorization", description = "로그인 성공 후 AccessToken", required = true, in = ParameterIn.HEADER)
         @RequestHeader(name = "Authorization") String token,
+        @Parameter(description = "거래 성사 요청값", required = true)
         @RequestBody CompleteRequestDTO completeRequestDTO
     ) {
         CompleteRequestResponseDTO completeRequestResponseDTO = completeRequestService.createCompleteRequest(
@@ -42,17 +50,25 @@ public class CompleteRequestController {
         return ResponseEntity.ok(ResponseFactory.getSingleResult(completeRequestResponseDTO));
     }
 
+    @Operation(summary = "거래 성사 히스토리", description = "성사된 거래의 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<SingleResult<HistoryListReadLimitResponseDTO>> getHistoryBySize(@RequestParam Integer size) {
+    public ResponseEntity<SingleResult<HistoryListReadLimitResponseDTO>> getHistoryBySize(
+        @Parameter(description = "페이지 size", required = true)
+        @RequestParam Integer size
+    ) {
         HistoryListReadLimitResponseDTO historyListReadLimitResponseDTO = completeRequestService.getHistoryBySize(size);
 
         return ResponseEntity.ok(ResponseFactory.getSingleResult(historyListReadLimitResponseDTO));
     }
 
+    @Operation(summary = "유저별 거래 성사 내역 조회", description = "유저 별 성사된 거래의 목록을 조회합니다.")
     @GetMapping("/user")
     public ResponseEntity<SingleResult<HistoryListReadPagingResponseDTO>> getHistoryByUser(
+        @Parameter(name = "Authorization", description = "로그인 성공 후 AccessToken", required = true, in = ParameterIn.HEADER)
         @RequestHeader("Authorization") String token,
+        @Parameter(description = "커서 id")
         @RequestParam(required = false) String cursorId,
+        @Parameter(description = "페이지 size", required = true)
         @RequestParam Integer size
     ){
         HistoryListReadPagingResponseDTO historyByUser = completeRequestService.getHistoryByUser(
@@ -64,9 +80,13 @@ public class CompleteRequestController {
         return ResponseEntity.ok(ResponseFactory.getSingleResult(historyByUser));
     }
 
+
+    @Operation(summary = "거래 성사 요청 단건 조회", description = "거래 성사 요청 단건 조회합니다.")
     @GetMapping("/{completeRequestId}")
     public ResponseEntity<SingleResult<CompleteRequestInfoDTO>> getCompleteRequestById(
+        @Parameter(name = "Authorization", description = "로그인 성공 후 AccessToken", required = true, in = ParameterIn.HEADER)
         @RequestHeader(name = "Authorization") String token,
+        @Parameter(description = "거래 성사 요청 id(pk)", required = true)
         @PathVariable Long completeRequestId
     ) {
         CompleteRequestInfoDTO completeRequestById = completeRequestService.getCompleteRequestById(
@@ -77,9 +97,12 @@ public class CompleteRequestController {
         return ResponseEntity.ok((ResponseFactory.getSingleResult(completeRequestById)));
     }
 
+    @Operation(summary = "거래 성사 요청 응답", description = "들어온 거래 성사 요청에 대해 응답합니다.")
     @PutMapping("/confirm")
     public ResponseEntity<SingleResult<CompleteRequestResponseDTO>> updateCompleteRequestStatus(
+        @Parameter(name = "Authorization", description = "로그인 성공 후 AccessToken", required = true, in = ParameterIn.HEADER)
         @RequestHeader(name = "Authorization") String token,
+        @Parameter(description = "거래 성사 요청에 대한 응답", required = true)
         @RequestBody CompleteRequestUpdateDTO completeRequestUpdateDTO
     ) {
         CompleteRequestResponseDTO completeRequestDTO = completeRequestService.updateCompleteRequestStatus(
