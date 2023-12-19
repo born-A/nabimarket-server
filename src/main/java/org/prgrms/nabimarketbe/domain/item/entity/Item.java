@@ -1,17 +1,26 @@
 package org.prgrms.nabimarketbe.domain.item.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.prgrms.nabimarketbe.domain.category.entity.Category;
+import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.global.BaseEntity;
-import org.prgrms.nabimarketbe.domain.category.entity.Category;
-import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "items")
@@ -23,24 +32,22 @@ public class Item extends BaseEntity {
     @Column(name = "item_id", nullable = false)
     private Long itemId;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
-    @ValidEnum(enumClass = PriceRange.class, message = "유효하지 않은 가격대입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "price_range", nullable = false)
     private PriceRange priceRange;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
     @Builder
-    public Item(
-            String itemName,
-            PriceRange priceRange,
-            Category category
+    private Item(
+        String itemName,
+        PriceRange priceRange,
+        Category category
     ) {
         if (itemName.isBlank()) {
             throw new BaseException(ErrorCode.UNKNOWN);
@@ -50,6 +57,16 @@ public class Item extends BaseEntity {
             throw new BaseException(ErrorCode.UNKNOWN);
         }
 
+        this.itemName = itemName;
+        this.priceRange = priceRange;
+        this.category = category;
+    }
+
+    public void updateItem(
+        String itemName,
+        PriceRange priceRange,
+        Category category
+    ) {
         this.itemName = itemName;
         this.priceRange = priceRange;
         this.category = category;

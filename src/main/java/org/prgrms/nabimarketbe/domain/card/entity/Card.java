@@ -1,22 +1,35 @@
 package org.prgrms.nabimarketbe.domain.card.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.prgrms.nabimarketbe.global.BaseEntity;
-import org.prgrms.nabimarketbe.domain.item.entity.Item;
-import org.prgrms.nabimarketbe.global.annotation.ValidEnum;
-import org.prgrms.nabimarketbe.global.error.BaseException;
-import org.prgrms.nabimarketbe.global.error.ErrorCode;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.prgrms.nabimarketbe.domain.item.entity.Item;
+import org.prgrms.nabimarketbe.domain.user.entity.User;
+import org.prgrms.nabimarketbe.global.BaseEntity;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
-@Table
+@Table(name = "cards")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Card extends BaseEntity {
@@ -26,32 +39,28 @@ public class Card extends BaseEntity {
     private Long cardId;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "card_title", nullable = false)
+    @Column(name = "card_title", nullable = false, length = 30)
     private String cardTitle;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "thumbnail_image", nullable = false)
-    private String thumbNailImage;
+    @Column(name = "thumbnail")
+    private String thumbnail;
 
     @NotBlank(message = "공백을 허용하지 않습니다.")
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 255)
     private String content;
 
-    @NotBlank(message = "공백을 허용하지 않습니다.")
-    @Column(name = "trade_area", nullable = false)
+    @Column(name = "trade_area", nullable = false, length = 30)
     private String tradeArea;
 
     @NotNull(message = "비울 수 없는 값입니다.")
-    @Column(name = "poke", nullable = false)
-    private Boolean poke;
+    @Column(name = "poke_available", nullable = false)
+    private Boolean pokeAvailable;
 
-    @ValidEnum(enumClass = TradeType.class, message = "유효하지 않은 거래 방식입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "trade_type", nullable = false)
     private TradeType tradeType;
 
-    @ValidEnum(enumClass = CardStatus.class, message = "유효하지 않은 카드 상태입니다.")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CardStatus status;
@@ -64,37 +73,100 @@ public class Card extends BaseEntity {
     @Column(name = "dib_count", nullable = false)
     private Integer dibCount;
 
-    @OneToOne
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Card(
-            String cardTitle,
-            String thumbNailImage,
-            String content,
-            String tradeArea,
-            Boolean poke,
-            TradeType tradeType,
-            Item item
+    private Card(
+        String cardTitle,
+        String thumbnail,
+        String content,
+        String tradeArea,
+        Boolean pokeAvailable,
+        TradeType tradeType,
+        Item item,
+        User user
     ) {
-        if (cardTitle.isBlank() || thumbNailImage.isBlank() || content.isBlank() || tradeArea.isBlank()) {
-            throw new BaseException(ErrorCode.UNKNOWN);
+        if (cardTitle.isBlank() || content.isBlank() || thumbnail.isBlank()) {
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
-        if (poke == null || tradeType == null || item == null) {
-            throw new BaseException(ErrorCode.UNKNOWN);
+        if (pokeAvailable == null || tradeType == null || tradeArea == null || item == null || user == null) {
+            throw new BaseException(ErrorCode.INVALID_REQUEST);
         }
 
         this.cardTitle = cardTitle;
-        this.thumbNailImage = thumbNailImage;
+        this.thumbnail = thumbnail;
         this.content = content;
         this.tradeArea = tradeArea;
-        this.poke = poke;
+        this.pokeAvailable = pokeAvailable;
         this.tradeType = tradeType;
         this.status = CardStatus.TRADE_AVAILABLE;
         this.viewCount = 0;
         this.dibCount = 0;
+        this.isActive = true;
         this.item = item;
+        this.user = user;
+    }
+
+    public void updateThumbnail(String url) {
+        this.thumbnail = url;
+    }
+
+    public void updateViewCount() {
+        this.viewCount += 1;
+    }
+
+    // TODO : dibCount 동시성
+    public void increaseDibCount() {
+        this.dibCount += 1;
+    }
+
+    public void decreaseDibCount() {
+        this.dibCount -= 1;
+    }
+
+    public void updateCardStatusToTradeAvailable() {
+        this.status = CardStatus.TRADE_AVAILABLE;
+    }
+
+    public void updateCardStatusToReserved() {
+        this.status = CardStatus.RESERVED;
+    }
+
+    public void updateCardStatusToTradeComplete() {
+        this.status = CardStatus.TRADE_COMPLETE;
+    }
+
+    public void deleteCard() {
+        this.isActive = false;
+    }
+
+    public Boolean isPokeAvailable() {
+        return pokeAvailable;
+    }
+
+    public void updateCard(
+        String cardTitle,
+        String thumbnail,
+        Boolean pokeAvailable,
+        String content,
+        TradeType tradeType,
+        String tradeArea
+    ) {
+        this.cardTitle = cardTitle;
+        this.thumbnail = thumbnail;
+        this.pokeAvailable = pokeAvailable;
+        this.content = content;
+        this.tradeType = tradeType;
+        this.tradeArea = tradeArea;
     }
 }

@@ -1,67 +1,84 @@
 package org.prgrms.nabimarketbe.domain.user.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
 
-import org.prgrms.nabimarketbe.domain.user.dto.request.UserRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserNicknameUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.request.UserProfileUpdateRequestDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.dto.response.UserResponseDTO;
+import org.prgrms.nabimarketbe.domain.user.dto.response.UserUpdateResponseDTO;
 import org.prgrms.nabimarketbe.domain.user.entity.User;
 import org.prgrms.nabimarketbe.domain.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
+import org.prgrms.nabimarketbe.global.error.BaseException;
+import org.prgrms.nabimarketbe.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final S3FileUploadService s3FileUploadService;
+
+    private final CheckService checkService;
 
     @Transactional(readOnly = true)
-    public UserResponseDTO findById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
+    public UserResponseDTO<UserGetResponseDTO> getUserByToken(String token) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        return UserResponseDTO.from(user);
-    }
+        UserGetResponseDTO userGetResponseDTO = UserGetResponseDTO.from(user);
+        UserResponseDTO<UserGetResponseDTO> userResponseDTO = new UserResponseDTO<>(userGetResponseDTO);
 
-    @Transactional(readOnly = true)
-    public UserResponseDTO findByAccountId(String accountId) {
-        User user = userRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-        return UserResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponseDTO findByNickname(String nickname) {
-        User user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-
-        return UserResponseDTO.from(user);
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAllUser() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponseDTO::from)
-                .collect(Collectors.toList());
+        return userResponseDTO;
     }
 
     @Transactional
-    public Long update(Long id, UserRequestDTO userRequestDTO) {
-        User modifiedUser = userRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("해당 회원이 없습니다."));
-        modifiedUser.updateNickname(userRequestDTO.getNickName());
+    public UserResponseDTO<UserUpdateResponseDTO> updateUserImageUrl(
+        String token,
+        UserProfileUpdateRequestDTO userProfileUpdateRequestDTO
+    ) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
-        return id;
+        String imageUrl = userProfileUpdateRequestDTO.imageUrl();
+
+        if (user.getImageUrl() != null) {
+            String url = user.getImageUrl();
+            s3FileUploadService.deleteImage(url);
+        }
+
+        user.updateImageUrl(imageUrl);
+        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.from(user);
+
+        return new UserResponseDTO<>(userUpdateResponseDTO);
     }
 
     @Transactional
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    public UserResponseDTO<UserUpdateResponseDTO> updateUserNickname(
+        String token,
+        @Valid UserNicknameUpdateRequestDTO userUpdateRequestDTO
+    ) {
+        Long userId = checkService.parseToken(token);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+        String updateNickname = userUpdateRequestDTO.nickname();
+        if (userRepository.existsUserByNickname(updateNickname)) {
+            throw new BaseException(ErrorCode.USER_NICKNAME_NOT_UNIQUE);
+        }
+        user.updateNickname(updateNickname);
+
+        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.from(user);
+
+        return new UserResponseDTO<>(userUpdateResponseDTO);
     }
 }

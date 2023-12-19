@@ -5,6 +5,11 @@ plugins {
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
+// SNAPSHOT-plain 생성 막기위함
+jar {
+    enabled = false
+}
+
 group = 'org.prgrms'
 version = '0.0.1-SNAPSHOT'
 
@@ -26,15 +31,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework:spring-aspects'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'com.mysql:mysql-connector-j'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -54,6 +66,18 @@ dependencies {
 
     // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    //Spring-Cloud-AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // redisson
+    implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Google Firebase Control Message
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 
 // Qtype 생성 경로
@@ -65,7 +89,7 @@ querydsl {
 sourceSets {
     main.java.srcDir querydslDir
 }
-compileQuerydsl{
+compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
 configurations {
@@ -73,6 +97,10 @@ configurations {
         extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath
+}
+
+test {
+    useJUnitPlatform()
 }
 
 tasks.named('test') {

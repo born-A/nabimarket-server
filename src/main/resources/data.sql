@@ -1,0 +1,9 @@
+insert ignore into categories(category_id, category_name) values (1, 'MALE_CLOTHES');
+insert ignore into categories(category_id, category_name) values (2, 'FEMALE_CLOTHES');
+insert ignore into categories(category_id, category_name) values (3, 'GOODS_ACCESSORY');
+insert ignore into categories(category_id, category_name) values (4, 'SHOES');
+insert ignore into categories(category_id, category_name) values (5, 'SPORTS');
+insert ignore into categories(category_id, category_name) values (6, 'BOOKS');
+insert ignore into categories(category_id, category_name) values (7, 'ELECTRONICS');
+insert ignore into categories(category_id, category_name) values (8, 'FURNITURE_INTERIOR');
+insert ignore into categories(category_id, category_name) values (9, 'HOME_ELECTRONICS');
