@@ -1,14 +1,15 @@
-package org.prgrms.nabimarketbe.global.redisson;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Component;
+package org.prgrms.nabimarketbe.redisson;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class RedisDAO {
 
     public List<String> getValuesList(String key) {
         Long len = redisTemplate.opsForList().size(key);
-        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len-1);
+        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len - 1);
     }
 
     public Set<String> getKeySet(String keyPattern) {

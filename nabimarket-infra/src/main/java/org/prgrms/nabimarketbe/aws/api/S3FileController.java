@@ -2,28 +2,23 @@ package org.prgrms.nabimarketbe.global.aws.api;
 
 import java.util.List;
 
+import org.prgrms.nabimarketbe.aws.service.S3FileUploadService;
+import org.prgrms.nabimarketbe.model.ResponseFactory;
+import org.prgrms.nabimarketbe.model.SingleResult;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.prgrms.nabimarketbe.domain.user.service.CheckService;
-import org.prgrms.nabimarketbe.global.aws.service.S3FileUploadService;
-
-import org.prgrms.nabimarketbe.global.util.ResponseFactory;
-import org.prgrms.nabimarketbe.global.util.model.SingleResult;
-
-import org.springframework.http.ResponseEntity;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "이미지 업로드", description = "이미지 업로드를 위한 API 입니다.")
 @RestController
@@ -32,8 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class S3FileController {
     private final S3FileUploadService s3FileUploadService;
-
-    private final CheckService checkService;
 
     @Operation(summary = "이미지 단건 업로드", description = "하나의 이미지 파일을 업로드합니다.")
     @PostMapping("/single")

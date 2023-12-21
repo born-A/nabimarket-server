@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.config;
+package org.prgrms.nabimarketbe.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +23,9 @@ public class AWSConfig {
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(iamAccessKey, iamSecretKey);
-        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
-                .build();
+        return (AmazonS3Client)AmazonS3ClientBuilder.standard()
+            .withRegion(region)
+            .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+            .build();
     }
 }

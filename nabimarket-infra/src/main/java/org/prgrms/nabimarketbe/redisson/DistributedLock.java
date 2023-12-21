@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.redisson;
+package org.prgrms.nabimarketbe.redisson;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

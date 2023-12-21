@@ -1,0 +1,50 @@
+/**
+ * Infra
+ */
+group 'org.prgrms'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // redisson
+//    compile 'org.redisson:redisson:3.24.3'
+    implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Google Firebase Control Message
+    api 'com.google.firebase:firebase-admin:9.1.1'
+
+    // Spring-Cloud-AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // aspects
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+//    implementation 'org.springframework:spring-aspects'
+
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // common
+    implementation project(':nabimarket-common')
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+}
+
+test {
+    useJUnitPlatform()
+}

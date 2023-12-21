@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.redisson;
+package org.prgrms.nabimarketbe.redisson;
 
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;

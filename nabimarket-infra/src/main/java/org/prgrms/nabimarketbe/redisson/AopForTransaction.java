@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.redisson;
+package org.prgrms.nabimarketbe.redisson;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;
