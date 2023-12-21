@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.annotation;
+package org.prgrms.nabimarketbe.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -19,7 +19,7 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
         if (enumValues != null) {
             for (Object enumValue : enumValues) {
                 if (value.equals(enumValue.toString())
-                        || (this.annotation.ignoreCase() && value.equalsIgnoreCase(enumValue.toString()))) {
+                    || (this.annotation.ignoreCase() && value.equalsIgnoreCase(enumValue.toString()))) {
                     result = true;
                     break;
                 }

@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.error;
+package org.prgrms.nabimarketbe.error;
 
 import org.springframework.http.HttpStatus;
 

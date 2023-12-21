@@ -1,8 +1,4 @@
-package org.prgrms.nabimarketbe.global.util;
-
-import org.prgrms.nabimarketbe.global.util.model.CommonResponse;
-import org.prgrms.nabimarketbe.global.util.model.CommonResult;
-import org.prgrms.nabimarketbe.global.util.model.SingleResult;
+package org.prgrms.nabimarketbe.model;
 
 public class ResponseFactory {
     // 단일건 결과 처리 메소드

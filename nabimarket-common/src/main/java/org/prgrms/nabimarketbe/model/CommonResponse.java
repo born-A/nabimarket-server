@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.util.model;
+package org.prgrms.nabimarketbe.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

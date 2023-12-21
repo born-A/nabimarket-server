@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.global.util;
+package org.prgrms.nabimarketbe.util;
 
 public class KeyGenerator {
     public static final String CARD_VIEW_CACHE_PREFIX = "CARD-VIEW-CACHE:";
