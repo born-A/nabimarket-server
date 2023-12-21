@@ -1,1 +1,6 @@
 rootProject.name = 'nabi-market-be'
+
+include 'nabimarket-api'
+include 'nabimarket-domain'
+include 'nabimarket-common'
+include 'nabimarket-infra'

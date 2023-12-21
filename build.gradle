@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.17'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'io.spring.dependency-management' version '1.1.3'
+    id 'java-library'
 }
 
 // SNAPSHOT-plain 생성 막기위함
@@ -28,81 +28,34 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.retry:spring-retry'
-    implementation 'org.springframework:spring-aspects'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'com.auth0:java-jwt:4.4.0'
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    testCompileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'com.mysql:mysql-connector-j'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
-    testImplementation 'org.springframework.security:spring-security-test'
-
-    // querydsl 추가
-    implementation "com.querydsl:querydsl-jpa:5.0.0"
-    implementation "com.querydsl:querydsl-apt:5.0.0"
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    // Json을 결과로 매핑하기 위한 의존성
-    implementation 'com.google.code.gson:gson:2.8.8'
-
-    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.5.4'
-
-    // 다국어 제공을 위한 i18n을 yml 파일로 적용하기 위한 의존성
-    implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
-
-    // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
-    //Spring-Cloud-AWS
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
-    // redisson
-    implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
-
-    // redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-    // Google Firebase Control Message
-    implementation 'com.google.firebase:firebase-admin:9.1.1'
+    // testImplementation 'org.springframework.security:spring-security-test'
+    // testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// Qtype 생성 경로
-def querydslDir = "$buildDir/generated/querydsl"
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+// 각 모듈에 적용할 공통 설정
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+
+    dependencies { // 롬복은 공통적으로 사용하는 의존성이니 여기서 끌어다 사용
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // testCompileOnly 'org.projectlombok:lombok'
+        // testAnnotationProcessor 'org.projectlombok:lombok'
     }
-    querydsl.extendsFrom compileClasspath
-}
 
-test {
-    useJUnitPlatform()
-}
+    tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
+        enabled = false
+    }
 
-tasks.named('test') {
-    useJUnitPlatform()
+    tasks.named('jar') { //빌드할 때 jar 파일로 하겠다는 의미
+        enabled = true
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
