@@ -1,0 +1,17 @@
+package org.prgrms.nabimarketbe.user.dto.response;
+
+import org.prgrms.nabimarketbe.security.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.user.entity.User;
+
+public record UserLoginResponseDTO(
+    UserGetResponseDTO userInfo,
+    TokenResponseDTO token
+) {
+    public static UserLoginResponseDTO of(User user, TokenResponseDTO tokenResponseDTO) {
+        UserGetResponseDTO userGetResponseDto = UserGetResponseDTO.from(user);
+
+        UserLoginResponseDTO response = new UserLoginResponseDTO(userGetResponseDto, tokenResponseDTO);
+
+        return response;
+    }
+}

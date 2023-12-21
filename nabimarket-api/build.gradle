@@ -1,0 +1,30 @@
+/**
+ * API
+ */
+group 'org.prgrms'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // retry
+    implementation 'org.springframework.retry:spring-retry'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+    implementation project(':nabimarket-common')
+    implementation project(':nabimarket-domain')
+    implementation project(':nabimarket-infra')
+
+//    // Json을 결과로 매핑하기 위한 의존성
+//    implementation 'com.google.code.gson:gson:2.8.8'
+}
