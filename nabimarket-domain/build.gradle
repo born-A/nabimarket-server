@@ -1,0 +1,69 @@
+/**
+ * Domain
+ */
+plugins {
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+group 'org.prgrms'
+version '0.0.1-SNAPSHOT'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    // testCompileOnly 'com.mysql:mysql-connector-j'
+
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // JPA
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // QueryDsl
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
+
+    // Mysql
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // security
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
+    // TODO: 둘 중 사용하는 것만 남기기
+    api 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'com.auth0:java-jwt:4.4.0'
+
+    // Json을 결과로 매핑하기 위한 의존성
+    implementation 'com.google.code.gson:gson:2.8.8'
+
+    // common
+    implementation project(':nabimarket-common')
+}
+
+// Qtype 생성 경로
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
