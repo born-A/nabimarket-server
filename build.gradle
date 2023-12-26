@@ -58,8 +58,15 @@ subprojects {
 project(':nabimarket-api') {
     dependencies {
         implementation project(':nabimarket-common')
-        implementation project(':nabimarket-domain')
+        implementation project(':nabimarket-application')
         implementation project(':nabimarket-infra')
+    }
+}
+
+project(':nabimarket-application') {
+    dependencies {
+        implementation project(':nabimarket-domain')
+        implementation project(':nabimarket-common')
     }
 }
 
@@ -74,3 +81,4 @@ project(':nabimarket-infra') {
         implementation project(':nabimarket-common')
     }
 }
+
