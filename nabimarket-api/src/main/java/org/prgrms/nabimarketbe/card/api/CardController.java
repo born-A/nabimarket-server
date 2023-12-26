@@ -1,25 +1,19 @@
-package org.prgrms.nabimarketbe.domain.card.api;
+package org.prgrms.nabimarketbe.card.api;
 
 import java.util.List;
 
+import org.prgrms.nabimarketbe.card.dto.request.CardCreateRequestDTO;
 import org.prgrms.nabimarketbe.card.dto.request.CardStatusUpdateRequestDTO;
 import org.prgrms.nabimarketbe.card.dto.request.CardUpdateRequestDTO;
 import org.prgrms.nabimarketbe.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardUserResponseDTO;
-import org.prgrms.nabimarketbe.card.entity.CardStatus;
-import org.prgrms.nabimarketbe.card.projection.CardFamousResponseDTO;
-import org.prgrms.nabimarketbe.card.projection.CardListResponseDTO;
-import org.prgrms.nabimarketbe.card.projection.CardPagingResponseDTO;
-import org.prgrms.nabimarketbe.card.projection.CardSuggestionResponseDTO;
+
 import org.prgrms.nabimarketbe.card.service.CardService;
-import org.prgrms.nabimarketbe.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.item.entity.PriceRange;
 import org.prgrms.nabimarketbe.model.CommonResult;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
-import org.prgrms.nabimarketbe.util.OrderCondition;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +45,7 @@ public class CardController {
         @Parameter(name = "Authorization", description = "로그인 성공 후 AccessToken", required = true, in = ParameterIn.HEADER)
         @RequestHeader("Authorization") String token,
         @Parameter(description = "카드 등록 요청값", required = true)
-        @RequestBody org.prgrms.nabimarketbe.domain.card.dto.request.CardCreateRequestDTO cardCreateRequestDTO
+        @RequestBody CardCreateRequestDTO cardCreateRequestDTO
     ) {
         CardResponseDTO<CardCreateResponseDTO> card = cardService.createCard(token, cardCreateRequestDTO);
 
@@ -78,7 +72,7 @@ public class CardController {
     @GetMapping
     public ResponseEntity<SingleResult<CardPagingResponseDTO>> getCardsByCondition(
         @Parameter(description = "카테고리")
-        @RequestParam(required = false) CategoryEnum category,
+        @RequestParam(required = false) CategoryEnumDTO category,
         @Parameter(description = "가격대")
         @RequestParam(required = false) PriceRange priceRange,
         @Parameter(description = "카드 상태(거래 가능, 예약중, 거래 완료)")

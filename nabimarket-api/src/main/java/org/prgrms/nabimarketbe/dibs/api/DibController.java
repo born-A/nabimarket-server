@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.domain.dibs.api;
 
-import org.prgrms.nabimarketbe.dibs.dto.response.DibCreateResponseDTO;
+import org.prgrms.nabimarketbe.dibs.response.DibCreateResponseDTO;
 import org.prgrms.nabimarketbe.dibs.service.DibService;
 import org.prgrms.nabimarketbe.dibs.wrapper.DibListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.dibs.wrapper.DibResponseDTO;
