@@ -210,6 +210,6 @@ nabimarket-api/src/main/resources/application-local.yml
 nabimarket-api/src/main/resources/application-jwt.yml
 nabimarket-api/src/main/resources/application-dev.yml
 nabimarket-api/src/main/resources/firebase/*
-nabimarket-domain/src/main/resources/application-test.yml
+nabimarket-domain/src/test/resources/application-test.yml
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle,intellij
