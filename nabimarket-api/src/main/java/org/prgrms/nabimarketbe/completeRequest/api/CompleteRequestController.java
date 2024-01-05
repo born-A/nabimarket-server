@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.completeRequest.api;
+package org.prgrms.nabimarketbe.completeRequest.api;
 
 import org.prgrms.nabimarketbe.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.completeRequest.dto.request.CompleteRequestUpdateDTO;
