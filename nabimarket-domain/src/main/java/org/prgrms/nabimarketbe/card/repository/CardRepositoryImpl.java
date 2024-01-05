@@ -81,6 +81,47 @@ public class CardRepositoryImpl implements CardRepositoryCustom, CursorPaging {
     }
 
     @Override
+    public CardPagingResponseDTO getCardsByConditionAndOffset(
+        CategoryEnum category,
+        PriceRange priceRange,
+        List<CardStatus> status,
+        String cardTitle,
+        Pageable pageable
+    ) {
+        List<CardListReadResponseDTO> cardList = jpaQueryFactory.select(
+                Projections.fields(
+                    CardListReadResponseDTO.class,
+                    card.cardId,
+                    card.cardTitle,
+                    item.itemName,
+                    item.priceRange,
+                    card.thumbnail,
+                    card.status,
+                    card.createdDate.as("createdAt"),
+                    card.modifiedDate.as("modifiedAt")
+                )
+            )
+            .from(card)
+            .leftJoin(item).on(card.item.itemId.eq(item.itemId))
+            .where(
+                categoryEquals(category),
+                statusEquals(status),
+                priceRangeEquals(priceRange),
+                titleEquals(cardTitle),
+                isCardActive()
+            )
+            .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), card))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        String nextCursor =
+            cardList.size() < pageable.getPageSize() ? null : generateCursor(cardList.get(cardList.size() - 1));
+
+        return new CardPagingResponseDTO(cardList, nextCursor);
+    }
+
+    @Override
     public CardPagingResponseDTO getMyCardsByStatus(
         User user,
         CardStatus status,

@@ -21,6 +21,14 @@ public interface CardRepositoryCustom {
         Pageable pageable
     );
 
+    CardPagingResponseDTO getCardsByConditionAndOffset(
+        CategoryEnum category,
+        PriceRange priceRange,
+        List<CardStatus> status,
+        String title,
+        Pageable pageable
+    );
+
     CardPagingResponseDTO getMyCardsByStatus(
         User user,
         CardStatus status,
