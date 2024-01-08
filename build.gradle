@@ -36,8 +36,11 @@ subprojects {
         // web
         implementation 'org.springframework.boot:spring-boot-starter-web'
 
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+        // test
+        implementation 'org.springframework.boot:spring-boot-starter-test'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     }
 
     // gradle 빌드시에는 각 프로젝트를 실행가능한 jar형태로 만들게 되는데, module-common 프로젝트의 경우 main메소드가 없음
