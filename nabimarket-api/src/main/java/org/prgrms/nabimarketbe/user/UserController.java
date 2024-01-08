@@ -1,8 +1,8 @@
-package org.prgrms.nabimarketbe.domain.user.api;
+package org.prgrms.nabimarketbe.user;
 
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
-import org.prgrms.nabimarketbe.security.jwt.dto.AccessTokenResponseDTO;
+import org.prgrms.nabimarketbe.jwt.dto.AccessTokenResponseDTO;
 import org.prgrms.nabimarketbe.user.dto.request.UserNicknameUpdateRequestDTO;
 import org.prgrms.nabimarketbe.user.dto.request.UserProfileUpdateRequestDTO;
 import org.prgrms.nabimarketbe.user.dto.response.UserGetResponseDTO;

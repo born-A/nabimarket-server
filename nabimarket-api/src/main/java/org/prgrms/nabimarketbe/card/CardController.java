@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.card.api;
+package org.prgrms.nabimarketbe.card;
 
 import java.util.List;
 
@@ -9,8 +9,15 @@ import org.prgrms.nabimarketbe.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardUserResponseDTO;
-
+import org.prgrms.nabimarketbe.jpa.card.entity.CardStatus;
+import org.prgrms.nabimarketbe.jpa.card.projection.CardFamousResponseDTO;
+import org.prgrms.nabimarketbe.jpa.card.projection.CardListResponseDTO;
+import org.prgrms.nabimarketbe.jpa.card.projection.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.card.projection.CardSuggestionResponseDTO;
 import org.prgrms.nabimarketbe.card.service.CardService;
+import org.prgrms.nabimarketbe.jpa.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.jpa.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.jpa.util.OrderCondition;
 import org.prgrms.nabimarketbe.model.CommonResult;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
@@ -72,7 +79,7 @@ public class CardController {
     @GetMapping
     public ResponseEntity<SingleResult<CardPagingResponseDTO>> getCardsByCondition(
         @Parameter(description = "카테고리")
-        @RequestParam(required = false) CategoryEnumDTO category,
+        @RequestParam(required = false) CategoryEnum category,
         @Parameter(description = "가격대")
         @RequestParam(required = false) PriceRange priceRange,
         @Parameter(description = "카드 상태(거래 가능, 예약중, 거래 완료)")

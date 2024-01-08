@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.domain.notifiaction.api;
+package org.prgrms.nabimarketbe.notification;
 
 import javax.validation.Valid;
 
@@ -8,7 +8,7 @@ import org.prgrms.nabimarketbe.model.SingleResult;
 import org.prgrms.nabimarketbe.notification.dto.request.NotificationReadRequestDTO;
 import org.prgrms.nabimarketbe.notification.dto.response.NotificationUnreadCountResponseDTO;
 import org.prgrms.nabimarketbe.notification.service.NotificationService;
-import org.prgrms.nabimarketbe.notification.wrapper.NotificationPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.notification.projection.NotificationPagingResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;

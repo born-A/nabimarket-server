@@ -1,12 +1,12 @@
-package org.prgrms.nabimarketbe.domain.completeRequest.api;
+package org.prgrms.nabimarketbe.completeRequest;
 
 import org.prgrms.nabimarketbe.completeRequest.dto.request.CompleteRequestDTO;
 import org.prgrms.nabimarketbe.completeRequest.dto.request.CompleteRequestUpdateDTO;
 import org.prgrms.nabimarketbe.completeRequest.dto.response.CompleteRequestResponseDTO;
 import org.prgrms.nabimarketbe.completeRequest.service.CompleteRequestService;
-import org.prgrms.nabimarketbe.completeRequest.wrapper.CompleteRequestInfoDTO;
-import org.prgrms.nabimarketbe.completeRequest.wrapper.HistoryListReadLimitResponseDTO;
-import org.prgrms.nabimarketbe.completeRequest.wrapper.HistoryListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.completerequest.wrapper.CompleteRequestInfoDTO;
+import org.prgrms.nabimarketbe.jpa.completerequest.wrapper.HistoryListReadLimitResponseDTO;
+import org.prgrms.nabimarketbe.jpa.completerequest.wrapper.HistoryListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
 import org.springframework.http.ResponseEntity;

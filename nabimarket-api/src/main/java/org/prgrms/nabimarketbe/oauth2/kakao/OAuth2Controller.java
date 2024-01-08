@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.oauth2.kakao.api;
+package org.prgrms.nabimarketbe.oauth2.kakao;
 
 import java.io.IOException;
 

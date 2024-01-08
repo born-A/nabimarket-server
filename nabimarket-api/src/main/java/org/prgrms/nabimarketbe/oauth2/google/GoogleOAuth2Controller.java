@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.oauth2.google.api;
+package org.prgrms.nabimarketbe.oauth2.google;
 
 import java.io.IOException;
 

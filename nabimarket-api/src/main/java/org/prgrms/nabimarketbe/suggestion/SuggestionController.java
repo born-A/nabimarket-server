@@ -1,15 +1,15 @@
-package org.prgrms.nabimarketbe.suggestion.api;
+package org.prgrms.nabimarketbe.suggestion;
 
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
 import org.prgrms.nabimarketbe.suggestion.dto.request.SuggestionRequestDTO;
 import org.prgrms.nabimarketbe.suggestion.dto.request.SuggestionUpdateRequestDTO;
 import org.prgrms.nabimarketbe.suggestion.dto.response.SuggestionResponseDTO;
-import org.prgrms.nabimarketbe.suggestion.entity.DirectionType;
-import org.prgrms.nabimarketbe.suggestion.entity.SuggestionType;
-import org.prgrms.nabimarketbe.suggestion.projection.SuggestionListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.suggestion.entity.DirectionType;
+import org.prgrms.nabimarketbe.jpa.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.jpa.suggestion.projection.SuggestionListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.suggestion.service.SuggestionService;
-import org.prgrms.nabimarketbe.util.KeyGenerator;
+import org.prgrms.nabimarketbe.jpa.util.KeyGenerator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
