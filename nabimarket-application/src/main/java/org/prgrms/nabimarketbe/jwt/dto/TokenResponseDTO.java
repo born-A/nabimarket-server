@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.security.jwt.dto;
+package org.prgrms.nabimarketbe.jwt.dto;
 
 import lombok.*;
 

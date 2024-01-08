@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.cardimage.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-import org.prgrms.nabimarketbe.card.entity.Card;
-import org.prgrms.nabimarketbe.cardImage.entity.CardImage;
+import org.prgrms.nabimarketbe.jpa.card.entity.Card;
+import org.prgrms.nabimarketbe.jpa.cardImage.entity.CardImage;
 
 public record CardImageCreateRequestDTO(
     @NotBlank

@@ -2,9 +2,9 @@ package org.prgrms.nabimarketbe.suggestion.dto.response;
 
 import java.time.LocalDateTime;
 
-import org.prgrms.nabimarketbe.suggestion.entity.Suggestion;
-import org.prgrms.nabimarketbe.suggestion.entity.SuggestionStatus;
-import org.prgrms.nabimarketbe.suggestion.entity.SuggestionType;
+import org.prgrms.nabimarketbe.jpa.suggestion.entity.Suggestion;
+import org.prgrms.nabimarketbe.jpa.suggestion.entity.SuggestionStatus;
+import org.prgrms.nabimarketbe.jpa.suggestion.entity.SuggestionType;
 
 import lombok.Builder;
 

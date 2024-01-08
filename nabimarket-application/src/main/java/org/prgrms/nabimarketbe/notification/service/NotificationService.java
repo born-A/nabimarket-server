@@ -2,16 +2,16 @@ package org.prgrms.nabimarketbe.notification.service;
 
 import java.util.List;
 
-import org.prgrms.nabimarketbe.card.entity.Card;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
+import org.prgrms.nabimarketbe.jpa.card.entity.Card;
+import org.prgrms.nabimarketbe.jpa.notification.entity.Notification;
+import org.prgrms.nabimarketbe.jpa.notification.projection.NotificationPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.notification.repository.NotificationRepository;
+import org.prgrms.nabimarketbe.jpa.user.entity.User;
+import org.prgrms.nabimarketbe.jpa.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.notification.dto.request.NotificationReadRequestDTO;
 import org.prgrms.nabimarketbe.notification.dto.response.NotificationUnreadCountResponseDTO;
-import org.prgrms.nabimarketbe.notification.entity.Notification;
-import org.prgrms.nabimarketbe.notification.repository.NotificationRepository;
-import org.prgrms.nabimarketbe.notification.wrapper.NotificationPagingResponseDTO;
-import org.prgrms.nabimarketbe.user.entity.User;
-import org.prgrms.nabimarketbe.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.user.service.CheckService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

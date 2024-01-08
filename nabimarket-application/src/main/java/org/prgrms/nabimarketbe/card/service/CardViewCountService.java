@@ -3,9 +3,9 @@ package org.prgrms.nabimarketbe.card.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.prgrms.nabimarketbe.card.repository.CardRepository;
+import org.prgrms.nabimarketbe.jpa.card.repository.CardRepository;
 import org.prgrms.nabimarketbe.redisson.RedisDAO;
-import org.prgrms.nabimarketbe.util.KeyGenerator;
+import org.prgrms.nabimarketbe.jpa.util.KeyGenerator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.security.handler;
+package org.prgrms.nabimarketbe.jwt.handler;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.security.jwt.filter;
+package org.prgrms.nabimarketbe.jwt.filter;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.prgrms.nabimarketbe.security.jwt.provider.JwtProvider;
+import org.prgrms.nabimarketbe.jwt.provider.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

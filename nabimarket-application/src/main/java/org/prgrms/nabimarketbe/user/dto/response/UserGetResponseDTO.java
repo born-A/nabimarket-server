@@ -2,7 +2,7 @@ package org.prgrms.nabimarketbe.user.dto.response;
 
 import java.time.LocalDateTime;
 
-import org.prgrms.nabimarketbe.user.entity.User;
+import org.prgrms.nabimarketbe.jpa.user.entity.User;
 
 import lombok.Builder;
 

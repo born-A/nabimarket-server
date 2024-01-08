@@ -7,14 +7,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.prgrms.nabimarketbe.annotation.ValidEnum;
-import org.prgrms.nabimarketbe.card.entity.Card;
-import org.prgrms.nabimarketbe.card.entity.TradeType;
-import org.prgrms.nabimarketbe.cardImage.dto.request.CardImageCreateRequestDTO;
-import org.prgrms.nabimarketbe.category.entity.Category;
-import org.prgrms.nabimarketbe.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.item.entity.Item;
-import org.prgrms.nabimarketbe.item.entity.PriceRange;
-import org.prgrms.nabimarketbe.user.entity.User;
+import org.prgrms.nabimarketbe.cardimage.dto.request.CardImageCreateRequestDTO;
+import org.prgrms.nabimarketbe.jpa.card.entity.Card;
+import org.prgrms.nabimarketbe.jpa.card.entity.TradeType;
+import org.prgrms.nabimarketbe.jpa.category.entity.Category;
+import org.prgrms.nabimarketbe.jpa.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.jpa.item.entity.Item;
+import org.prgrms.nabimarketbe.jpa.item.entity.PriceRange;
+import org.prgrms.nabimarketbe.jpa.user.entity.User;
 
 public record CardUpdateRequestDTO(
     @NotBlank(message = "공백을 허용하지 않습니다.")

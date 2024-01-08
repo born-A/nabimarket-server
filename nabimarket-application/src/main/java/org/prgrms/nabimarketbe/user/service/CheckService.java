@@ -2,7 +2,7 @@ package org.prgrms.nabimarketbe.user.service;
 
 import java.util.Objects;
 
-import org.prgrms.nabimarketbe.security.jwt.provider.JwtProvider;
+import org.prgrms.nabimarketbe.jwt.provider.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;

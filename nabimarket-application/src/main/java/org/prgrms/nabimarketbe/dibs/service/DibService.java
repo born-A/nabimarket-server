@@ -1,16 +1,16 @@
 package org.prgrms.nabimarketbe.dibs.service;
 
-import org.prgrms.nabimarketbe.card.entity.Card;
-import org.prgrms.nabimarketbe.card.repository.CardRepository;
-import org.prgrms.nabimarketbe.dibs.response.DibCreateResponseDTO;
-import org.prgrms.nabimarketbe.dibs.entity.Dib;
-import org.prgrms.nabimarketbe.dibs.repository.DibRepository;
-import org.prgrms.nabimarketbe.dibs.wrapper.DibListReadPagingResponseDTO;
-import org.prgrms.nabimarketbe.dibs.wrapper.DibResponseDTO;
+import org.prgrms.nabimarketbe.dibs.dto.response.DibCreateResponseDTO;
+import org.prgrms.nabimarketbe.dibs.dto.wrapper.DibResponseDTO;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
-import org.prgrms.nabimarketbe.user.entity.User;
-import org.prgrms.nabimarketbe.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.jpa.card.entity.Card;
+import org.prgrms.nabimarketbe.jpa.card.repository.CardRepository;
+import org.prgrms.nabimarketbe.jpa.dibs.entity.Dib;
+import org.prgrms.nabimarketbe.jpa.dibs.projection.DibListReadPagingResponseDTO;
+import org.prgrms.nabimarketbe.jpa.dibs.repository.DibRepository;
+import org.prgrms.nabimarketbe.jpa.user.entity.User;
+import org.prgrms.nabimarketbe.jpa.user.repository.UserRepository;
 import org.prgrms.nabimarketbe.user.service.CheckService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

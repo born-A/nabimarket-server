@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.security.jwt.provider;
+package org.prgrms.nabimarketbe.jwt.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.prgrms.nabimarketbe.error.ErrorCode;
-import org.prgrms.nabimarketbe.security.entity.RefreshToken;
-import org.prgrms.nabimarketbe.security.jwt.dto.AccessTokenResponseDTO;
-import org.prgrms.nabimarketbe.security.jwt.dto.TokenResponseDTO;
-import org.prgrms.nabimarketbe.security.jwt.repository.RefreshTokenRepository;
+import org.prgrms.nabimarketbe.jpa.refreshtoken.entity.RefreshToken;
+import org.prgrms.nabimarketbe.jwt.dto.AccessTokenResponseDTO;
+import org.prgrms.nabimarketbe.jwt.dto.TokenResponseDTO;
+import org.prgrms.nabimarketbe.jpa.refreshtoken.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
