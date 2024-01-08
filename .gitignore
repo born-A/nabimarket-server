@@ -211,4 +211,7 @@ nabimarket-api/src/main/resources/application-jwt.yml
 nabimarket-api/src/main/resources/application-dev.yml
 nabimarket-api/src/main/resources/firebase/*
 
+*.yml
+!nabimarket-api/src/main/resources/application.yml
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle,intellij
