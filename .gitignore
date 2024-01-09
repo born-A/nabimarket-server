@@ -204,11 +204,14 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
-src/main/resources/application-test.yml
-src/main/resources/application-prod.yml
-src/main/resources/application-local.yml
-src/main/resources/application-jwt.yml
-src/main/resources/application-dev.yml
-src/main/resources/firebase/*
+nabimarket-api/src/main/resources/application-test.yml
+nabimarket-api/src/main/resources/application-prod.yml
+nabimarket-api/src/main/resources/application-local.yml
+nabimarket-api/src/main/resources/application-jwt.yml
+nabimarket-api/src/main/resources/application-dev.yml
+nabimarket-api/src/main/resources/firebase/*
+
+*.yml
+!nabimarket-api/src/main/resources/application.yml
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle,intellij

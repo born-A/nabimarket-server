@@ -1,0 +1,28 @@
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+    // retry
+    implementation 'org.springframework.retry:spring-retry'
+
+    /* api */
+    // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Google Firebase Control Message
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+    // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '8.3'
+}
+
+tasks.register("prepareKotlinBuildScriptModel") {}
