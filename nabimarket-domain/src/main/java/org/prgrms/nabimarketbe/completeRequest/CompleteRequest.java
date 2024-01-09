@@ -2,13 +2,13 @@ package org.prgrms.nabimarketbe.completeRequest;
 
 import lombok.Getter;
 
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.card.Card;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
 
 @Getter
-public class CompleteRequest extends BasePOJO {
+public class CompleteRequest extends BaseDomain {
     private Long completeRequestId;
 
     private Card fromCard;

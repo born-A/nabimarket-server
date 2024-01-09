@@ -2,13 +2,13 @@ package org.prgrms.nabimarketbe.cardimage;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.card.Card;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
 
 @Getter
-public class CardImage extends BasePOJO {
+public class CardImage extends BaseDomain {
     private Long cardImageId;
     private String imageUrl;
     private Card card;

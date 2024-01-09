@@ -2,14 +2,14 @@ package org.prgrms.nabimarketbe.card;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
 import org.prgrms.nabimarketbe.item.Item;
 import org.prgrms.nabimarketbe.user.User;
 
 @Getter
-public class Card extends BasePOJO {
+public class Card extends BaseDomain {
     private Long cardId;
     private String cardTitle;
     private String thumbnail;

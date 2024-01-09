@@ -1,13 +1,13 @@
 package org.prgrms.nabimarketbe.notification;
 
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.card.Card;
 import org.prgrms.nabimarketbe.user.User;
 
 import lombok.Getter;
 
 @Getter
-public class Notification extends BasePOJO {
+public class Notification extends BaseDomain {
     private Long notificationId;
 
     private String content;

@@ -2,7 +2,7 @@ package org.prgrms.nabimarketbe;
 
 import java.time.LocalDateTime;
 
-public class BasePOJO {
+public class BaseDomain {
     private LocalDateTime createdDate;
 
     private LocalDateTime modifiedDate;

@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.item;
 
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.category.Category;
 
 import org.prgrms.nabimarketbe.error.ErrorCode;
@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class Item extends BasePOJO {
+public class Item extends BaseDomain {
     private String itemName;
 
     private PriceRange priceRange;

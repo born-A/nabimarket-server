@@ -3,13 +3,13 @@ package org.prgrms.nabimarketbe.suggestion;
 import lombok.Builder;
 import lombok.Getter;
 
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 import org.prgrms.nabimarketbe.card.Card;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
 
 @Getter
-public class Suggestion extends BasePOJO {
+public class Suggestion extends BaseDomain {
     private Long suggestionId;
 
     private SuggestionType suggestionType;

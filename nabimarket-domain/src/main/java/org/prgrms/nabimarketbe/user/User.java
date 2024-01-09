@@ -5,10 +5,10 @@ import lombok.Getter;
 
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
-import org.prgrms.nabimarketbe.BasePOJO;
+import org.prgrms.nabimarketbe.BaseDomain;
 
 @Getter
-public class User extends BasePOJO {
+public class User extends BaseDomain {
     private Long userId;
 
     private String accountId;
