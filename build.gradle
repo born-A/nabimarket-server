@@ -58,7 +58,15 @@ subprojects {
 project(':nabimarket-api') {
     dependencies {
         implementation project(':nabimarket-common')
+        implementation project(':nabimarket-application')
+        implementation project(':nabimarket-infra')
+    }
+}
+
+project(':nabimarket-application') {
+    dependencies {
         implementation project(':nabimarket-domain')
+        implementation project(':nabimarket-common')
         implementation project(':nabimarket-infra')
     }
 }
@@ -72,5 +80,12 @@ project(':nabimarket-domain') {
 project(':nabimarket-infra') {
     dependencies {
         implementation project(':nabimarket-common')
+        implementation project(':nabimarket-domain')
     }
 }
+
+wrapper {
+    gradleVersion = '8.3'
+    distributionUrl = distributionUrl.replace("bin", "all")
+}
+

@@ -1,6 +1,28 @@
 /**
  * Infra
  */
+plugins {
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+// Qtype 생성 경로
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+
 dependencies {
     // redisson
     implementation "org.redisson:redisson-spring-boot-starter:3.21.1"
@@ -9,7 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Google Firebase Control Message
-    api 'com.google.firebase:firebase-admin:9.1.1'
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
 
     // Spring-Cloud-AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
@@ -19,4 +41,23 @@ dependencies {
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+    // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // QueryDsl
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
+
+    // Mysql
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // jwt 의존성 - JWT의 생성 및 유효성 검사와 관련된 기본적인 기능
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }

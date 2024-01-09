@@ -4,3 +4,5 @@ include 'nabimarket-api'
 include 'nabimarket-domain'
 include 'nabimarket-common'
 include 'nabimarket-infra'
+include 'nabimarket-application'
+
