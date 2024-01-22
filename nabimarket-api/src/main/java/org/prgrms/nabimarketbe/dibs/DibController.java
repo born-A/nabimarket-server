@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.dibs;
 
 import org.prgrms.nabimarketbe.dibs.dto.response.DibCreateResponseDTO;
 import org.prgrms.nabimarketbe.dibs.service.DibService;
-import org.prgrms.nabimarketbe.jpa.dibs.projection.DibListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.dibs.dto.wrapper.DibResponseDTO;
+import org.prgrms.nabimarketbe.dibs.wrapper.DibListReadPagingResponseDTO;
 import org.prgrms.nabimarketbe.model.CommonResult;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;

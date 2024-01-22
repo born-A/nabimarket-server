@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.user.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-import org.prgrms.nabimarketbe.jpa.user.entity.Role;
-import org.prgrms.nabimarketbe.jpa.user.entity.User;
+import org.prgrms.nabimarketbe.user.entity.Role;
+import org.prgrms.nabimarketbe.user.entity.User;
 
 import lombok.Builder;
 

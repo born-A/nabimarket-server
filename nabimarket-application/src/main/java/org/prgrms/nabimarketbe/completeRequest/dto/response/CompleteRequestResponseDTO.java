@@ -2,8 +2,8 @@ package org.prgrms.nabimarketbe.completeRequest.dto.response;
 
 import java.time.LocalDateTime;
 
-import org.prgrms.nabimarketbe.jpa.completerequest.entity.CompleteRequest;
-import org.prgrms.nabimarketbe.jpa.completerequest.entity.CompleteRequestStatus;
+import org.prgrms.nabimarketbe.completeRequest.entity.CompleteRequest;
+import org.prgrms.nabimarketbe.completeRequest.entity.CompleteRequestStatus;
 
 import lombok.Builder;
 
