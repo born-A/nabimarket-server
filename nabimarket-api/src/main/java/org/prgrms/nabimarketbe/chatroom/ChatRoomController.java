@@ -1,7 +1,8 @@
 package org.prgrms.nabimarketbe.chatroom;
 
-import org.prgrms.nabimarketbe.jpa.chatroom.projection.list.ChatRoomListWrapper;
-import org.prgrms.nabimarketbe.jpa.chatroom.projection.single.ChatRoomInfoWrapper;
+
+import org.prgrms.nabimarketbe.chatroom.projection.list.ChatRoomListWrapper;
+import org.prgrms.nabimarketbe.chatroom.projection.single.ChatRoomInfoWrapper;
 import org.prgrms.nabimarketbe.chatroom.service.ChatRoomService;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;

@@ -5,13 +5,14 @@ import javax.validation.Valid;
 import org.prgrms.nabimarketbe.aws.service.S3FileUploadService;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
-import org.prgrms.nabimarketbe.jpa.user.entity.User;
-import org.prgrms.nabimarketbe.jpa.user.repository.UserRepository;
+
 import org.prgrms.nabimarketbe.user.dto.request.UserNicknameUpdateRequestDTO;
 import org.prgrms.nabimarketbe.user.dto.request.UserProfileUpdateRequestDTO;
 import org.prgrms.nabimarketbe.user.dto.response.UserGetResponseDTO;
 import org.prgrms.nabimarketbe.user.dto.response.UserResponseDTO;
 import org.prgrms.nabimarketbe.user.dto.response.UserUpdateResponseDTO;
+import org.prgrms.nabimarketbe.user.entity.User;
+import org.prgrms.nabimarketbe.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

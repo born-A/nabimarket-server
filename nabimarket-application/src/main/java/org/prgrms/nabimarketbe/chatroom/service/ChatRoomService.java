@@ -3,15 +3,16 @@ package org.prgrms.nabimarketbe.chatroom.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.prgrms.nabimarketbe.card.entity.Card;
+import org.prgrms.nabimarketbe.chatroom.entity.ChatRoom;
+import org.prgrms.nabimarketbe.chatroom.projection.list.ChatRoomListWrapper;
+import org.prgrms.nabimarketbe.chatroom.projection.single.ChatRoomInfoWrapper;
+import org.prgrms.nabimarketbe.chatroom.repository.ChatRoomRepository;
+import org.prgrms.nabimarketbe.completeRequest.repository.CompleteRequestRepository;
 import org.prgrms.nabimarketbe.error.BaseException;
 import org.prgrms.nabimarketbe.error.ErrorCode;
-import org.prgrms.nabimarketbe.jpa.card.entity.Card;
-import org.prgrms.nabimarketbe.jpa.chatroom.entity.ChatRoom;
-import org.prgrms.nabimarketbe.jpa.chatroom.projection.list.ChatRoomListWrapper;
-import org.prgrms.nabimarketbe.jpa.chatroom.projection.single.ChatRoomInfoWrapper;
-import org.prgrms.nabimarketbe.jpa.chatroom.repository.ChatRoomRepository;
-import org.prgrms.nabimarketbe.jpa.completerequest.repository.CompleteRequestRepository;
-import org.prgrms.nabimarketbe.jpa.suggestion.entity.Suggestion;
+
+import org.prgrms.nabimarketbe.suggestion.entity.Suggestion;
 import org.prgrms.nabimarketbe.user.service.CheckService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -60,6 +60,7 @@ project(':nabimarket-api') {
         implementation project(':nabimarket-common')
         implementation project(':nabimarket-application')
         implementation project(':nabimarket-infra')
+        compileOnly project(':nabimarket-domain') // domain의 projection dto를 알기 위한 의존성
     }
 }
 

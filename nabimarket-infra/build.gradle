@@ -1,28 +1,6 @@
 /**
  * Infra
  */
-plugins {
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-
-// Qtype 생성 경로
-def querydslDir = "$buildDir/generated/querydsl"
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-
-
 dependencies {
     // redisson
     implementation "org.redisson:redisson-spring-boot-starter:3.21.1"

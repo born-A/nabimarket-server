@@ -9,18 +9,20 @@ import org.prgrms.nabimarketbe.card.dto.response.CardCreateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.CardUpdateResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardResponseDTO;
 import org.prgrms.nabimarketbe.card.dto.response.wrapper.CardUserResponseDTO;
-import org.prgrms.nabimarketbe.jpa.card.entity.CardStatus;
-import org.prgrms.nabimarketbe.jpa.card.projection.CardFamousResponseDTO;
-import org.prgrms.nabimarketbe.jpa.card.projection.CardListResponseDTO;
-import org.prgrms.nabimarketbe.jpa.card.projection.CardPagingResponseDTO;
-import org.prgrms.nabimarketbe.jpa.card.projection.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.card.entity.CardStatus;
+import org.prgrms.nabimarketbe.card.projection.CardFamousResponseDTO;
+import org.prgrms.nabimarketbe.card.projection.CardListResponseDTO;
+import org.prgrms.nabimarketbe.card.projection.CardPagingResponseDTO;
+import org.prgrms.nabimarketbe.card.projection.CardSuggestionResponseDTO;
+import org.prgrms.nabimarketbe.category.entity.CategoryEnum;
+import org.prgrms.nabimarketbe.item.entity.PriceRange;
+
 import org.prgrms.nabimarketbe.card.service.CardService;
-import org.prgrms.nabimarketbe.jpa.category.entity.CategoryEnum;
-import org.prgrms.nabimarketbe.jpa.item.entity.PriceRange;
-import org.prgrms.nabimarketbe.jpa.util.OrderCondition;
+
 import org.prgrms.nabimarketbe.model.CommonResult;
 import org.prgrms.nabimarketbe.model.ResponseFactory;
 import org.prgrms.nabimarketbe.model.SingleResult;
+import org.prgrms.nabimarketbe.util.OrderCondition;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

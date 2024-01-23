@@ -1,4 +1,4 @@
-package org.prgrms.nabimarketbe.aws.api;
+package org.prgrms.nabimarketbe.global.aws.api;
 
 import java.util.List;
 

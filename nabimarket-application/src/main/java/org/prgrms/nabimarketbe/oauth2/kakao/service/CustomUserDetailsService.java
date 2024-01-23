@@ -1,6 +1,6 @@
 package org.prgrms.nabimarketbe.oauth2.kakao.service;
 
-import org.prgrms.nabimarketbe.jpa.user.repository.UserRepository;
+import org.prgrms.nabimarketbe.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

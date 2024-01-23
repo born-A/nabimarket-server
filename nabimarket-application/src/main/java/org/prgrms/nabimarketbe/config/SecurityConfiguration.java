@@ -1,11 +1,11 @@
 package org.prgrms.nabimarketbe.config;
 
-import org.prgrms.nabimarketbe.jpa.user.entity.Role;
 import org.prgrms.nabimarketbe.jwt.filter.JwtAuthenticationFilter;
 import org.prgrms.nabimarketbe.jwt.filter.JwtExceptionFilter;
 import org.prgrms.nabimarketbe.jwt.handler.CustomAccessDeniedHandler;
 import org.prgrms.nabimarketbe.jwt.handler.CustomAuthenticationEntryPoint;
 import org.prgrms.nabimarketbe.jwt.provider.JwtProvider;
+import org.prgrms.nabimarketbe.user.entity.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
