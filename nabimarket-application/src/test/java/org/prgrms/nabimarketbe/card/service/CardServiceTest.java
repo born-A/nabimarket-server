@@ -316,4 +316,20 @@ class CardServiceTest {
         // then
         assertThat(card.getStatus()).isEqualTo(statusUpdateRequest.status());
     }
+
+    @Test
+    @DisplayName("유저는 자신의 카드를 비활성화시킬 수 있다.")
+    void deleteCardById() {
+        // given
+        when(checkService.parseToken(token)).thenReturn(userId);
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(cardRepository.findActiveCardById(cardId)).thenReturn(Optional.of(card));
+        when(checkService.isEqual(userId, card.getUser().getUserId())).thenReturn(true);
+
+        // when
+        cardService.deleteCardById(token, cardId);
+
+        // then
+        assertThat(card.getIsActive()).isEqualTo(false);
+    }
 }
