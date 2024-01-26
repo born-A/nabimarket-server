@@ -1,5 +1,5 @@
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:5.9.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
@@ -21,8 +21,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '8.3'
 }
-
-tasks.register("prepareKotlinBuildScriptModel") {}
