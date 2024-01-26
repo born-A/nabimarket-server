@@ -249,4 +249,53 @@ class CardServiceTest {
             .usingRecursiveComparison()
             .isEqualTo(expectedResponse);
     }
+
+    @Test
+    @DisplayName("특정 카드에 대한 정보를 조회한다.")
+    void getCardById() {
+        // given
+        String token = null;
+
+        when(cardRepository.findActiveCardById(cardId)).thenReturn(Optional.of(card));
+        when(cardImageRepository.findAllByCard(card)).thenReturn(images);
+
+        CardUserResponseDTO expectedResponse = new CardUserResponseDTO(
+            new CardDetailResponseDTO(
+                cardId,
+                "macbook pro 교환 원해요",
+                "thumbnail_img_url",
+                CategoryEnum.ELECTRONICS,
+                "apple macbook pro",
+                true,
+                createdDate,
+                modifiedDate,
+                0,
+                PriceRange.PRICE_RANGE_FOUR,
+                "상태 최상입니다.",
+                CardStatus.TRADE_AVAILABLE,
+                TradeType.DIRECT_DEALING,
+                "서울",
+                0,
+                false,
+                Arrays.asList(
+                    new CardImageSingleReadResponseDTO("url1"),
+                    new CardImageSingleReadResponseDTO("url2"),
+                    new CardImageSingleReadResponseDTO("url3")
+                )
+            ),
+            new UserSummaryResponseDTO(
+                userId,
+                "doby",
+                "img_url"
+            )
+        );
+
+        // when
+        CardUserResponseDTO actualResponse = cardService.getCardById(token, cardId);
+
+        // then
+        assertThat(actualResponse)
+            .usingRecursiveComparison()
+            .isEqualTo(expectedResponse);
+    }
 }
