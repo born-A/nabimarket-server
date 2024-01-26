@@ -38,7 +38,7 @@ jobs:
       # application.properties를 프로젝트에 포함
       - name: Make application.properties
         run: |
-          cd ./src/main/resources
+          cd nabimarket-api/src/main/resources
           touch ./application.properties
 
           echo "${{ secrets.DATABASE_PROPERTIES }}" >> ./application.properties
