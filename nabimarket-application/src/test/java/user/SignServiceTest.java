@@ -39,7 +39,7 @@ class SignServiceTest {
 
     @DisplayName("사용자는 소셜로그인 이후 받아온 정보로 나비장터에 로그인을 할 수 있다.")
     @Test
-    void UserSignInTest() {
+    void signIn_test() {
         // given
         SocialUserInfoDTO socialUserInfoDTO = SocialUserInfoDTOBuilder.createTestDTO();
         User user = UserBuilder.createTestEntity();

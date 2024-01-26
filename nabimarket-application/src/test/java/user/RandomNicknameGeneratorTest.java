@@ -32,7 +32,7 @@ class RandomNicknameGeneratorTest {
 
     @DisplayName("랜덤닉네임 생성 시에 RuntimeException 발생시 2번까지 재시도한다.")
     @Test
-    void testGenerateRandomNicknameWithRetry() {
+    void generateRandomNickname_with_retry() {
         // given
         doThrow(new RuntimeException("Intended Retry Error")).when(restTemplate)
             .getForObject(anyString(), eq(String.class));
