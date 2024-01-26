@@ -298,4 +298,22 @@ class CardServiceTest {
             .usingRecursiveComparison()
             .isEqualTo(expectedResponse);
     }
+
+    @Test
+    @DisplayName("유저는 자신의 카드의 상태값을 변경할 수 있다.")
+    void updateCardStatusById() {
+        // given
+        CardStatusUpdateRequestDTO statusUpdateRequest = new CardStatusUpdateRequestDTO(CardStatus.RESERVED);
+
+        when(checkService.parseToken(token)).thenReturn(userId);
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(cardRepository.findActiveCardById(cardId)).thenReturn(Optional.of(card));
+        when(checkService.isEqual(userId, card.getUser().getUserId())).thenReturn(true);
+
+        // when
+        cardService.updateCardStatusById(token, cardId, statusUpdateRequest);
+
+        // then
+        assertThat(card.getStatus()).isEqualTo(statusUpdateRequest.status());
+    }
 }
