@@ -185,4 +185,68 @@ class CardServiceTest {
             .usingRecursiveComparison()
             .isEqualTo(expectCardResponse);
     }
+
+    @Test
+    @DisplayName("유저가 자신의 카드 정보를 수정한다.")
+    void updateCardById() {
+        // given
+        CardUpdateRequestDTO updateRequest = new CardUpdateRequestDTO(
+            "galaxy book 교환 원해요",
+            "thumbnail_img_url",
+            "galaxy book",
+            PriceRange.PRICE_RANGE_FIVE,
+            TradeType.SHIPPING,
+            CategoryEnum.ELECTRONICS,
+            "서울",
+            true,
+            "상태 최상입니다.",
+            Arrays.asList(
+                new CardImageCreateRequestDTO("url1"),
+                new CardImageCreateRequestDTO("url2"),
+                new CardImageCreateRequestDTO("url3")
+            )
+        );
+
+        when(checkService.parseToken(token)).thenReturn(userId);
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(cardRepository.findActiveCardById(cardId)).thenReturn(Optional.of(card));
+        when(checkService.isEqual(userId, card.getUser().getUserId())).thenReturn(true);
+        when(categoryRepository.findCategoryByCategoryName(updateRequest.category())).thenReturn(Optional.of(category));
+
+        CardResponseDTO<CardUpdateResponseDTO> expectedResponse = new CardResponseDTO<>(
+            new CardUpdateResponseDTO(
+                cardId,
+                "galaxy book 교환 원해요",
+                "thumbnail_img_url",
+                "galaxy book",
+                PriceRange.PRICE_RANGE_FIVE,
+                TradeType.SHIPPING,
+                CategoryEnum.ELECTRONICS,
+                "서울",
+                true,
+                "상태 최상입니다.",
+                0,
+                0,
+                createdDate,
+                modifiedDate,
+                Arrays.asList(
+                    new CardImageUpdateResponseDTO("url1"),
+                    new CardImageUpdateResponseDTO("url2"),
+                    new CardImageUpdateResponseDTO("url3")
+                )
+            )
+        );
+
+        // when
+        CardResponseDTO<CardUpdateResponseDTO> actualResponse = cardService.updateCardById(
+            token,
+            cardId,
+            updateRequest
+        );
+
+        // then
+        assertThat(actualResponse)
+            .usingRecursiveComparison()
+            .isEqualTo(expectedResponse);
+    }
 }
