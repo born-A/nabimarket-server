@@ -125,4 +125,64 @@ class CardServiceTest {
             new CardImage("url3", card)
         );
     }
+
+    @Test
+    @DisplayName("유저가 새로운 카드를 생성한다.")
+    void createCard() {
+        // given
+        CardCreateRequestDTO createRequest = new CardCreateRequestDTO(
+            "macbook pro 교환 원해요",
+            "thumbnail_img_url",
+            "apple macbook pro",
+            PriceRange.PRICE_RANGE_FOUR,
+            TradeType.DIRECT_DEALING,
+            "서울",
+            CategoryEnum.ELECTRONICS,
+            true,
+            "상태 최상입니다.",
+            Arrays.asList(
+                new CardImageCreateRequestDTO("url1"),
+                new CardImageCreateRequestDTO("url2"),
+                new CardImageCreateRequestDTO("url3")
+            )
+        );
+
+        when(checkService.parseToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
+        when(categoryRepository.findCategoryByCategoryName(createRequest.category())).thenReturn(Optional.of(category));
+        when(itemRepository.save(any())).thenReturn(item);
+        when(cardRepository.save(any())).thenReturn(card);
+
+        CardResponseDTO<CardCreateResponseDTO> expectCardResponse = new CardResponseDTO<>(
+            new CardCreateResponseDTO(
+                cardId,
+                "macbook pro 교환 원해요",
+                "thumbnail_img_url",
+                "apple macbook pro",
+                PriceRange.PRICE_RANGE_FOUR,
+                TradeType.DIRECT_DEALING,
+                CategoryEnum.ELECTRONICS,
+                "서울",
+                true,
+                "상태 최상입니다.",
+                0,
+                0,
+                createdDate,
+                modifiedDate,
+                Arrays.asList(
+                    new CardImageCreateResponseDTO("url1"),
+                    new CardImageCreateResponseDTO("url2"),
+                    new CardImageCreateResponseDTO("url3")
+                )
+            )
+        );
+
+        // when
+        CardResponseDTO<CardCreateResponseDTO> actualCardResponse = cardService.createCard(token, createRequest);
+
+        // then
+        assertThat(actualCardResponse)
+            .usingRecursiveComparison()
+            .isEqualTo(expectCardResponse);
+    }
 }
