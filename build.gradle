@@ -9,6 +9,13 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
+}
+
 // 각 모듈에 적용할 공통 설정
 subprojects {
     group = 'org.prgrms'
@@ -35,13 +42,13 @@ subprojects {
 
         // web
         implementation 'org.springframework.boot:spring-boot-starter-web'
-
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 
-    // gradle 빌드시에는 각 프로젝트를 실행가능한 jar형태로 만들게 되는데, module-common 프로젝트의 경우 main메소드가 없음
-    // 단순히 참조용 클래스들만 있는 프로젝트를 위해 아래와 같은 설정(bootJar, jar)들을 추가함
+//    // gradle 빌드시에는 각 프로젝트를 실행가능한 jar형태로 만들게 되는데, module-common 프로젝트의 경우 main메소드가 없음
+//    // 단순히 참조용 클래스들만 있는 프로젝트를 위해 아래와 같은 설정(bootJar, jar)들을 추가함
     bootJar {
         enabled = false
     }
