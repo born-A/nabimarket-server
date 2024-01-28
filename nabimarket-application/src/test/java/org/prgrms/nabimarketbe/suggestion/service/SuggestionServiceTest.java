@@ -39,6 +39,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.intThat;
 import static org.mockito.Mockito.when;
 
 
@@ -175,7 +176,7 @@ public class SuggestionServiceTest {
             .thenReturn(Optional.of(toCard));
         when(suggestionRepository.save(any())).thenReturn(suggestion);
 
-        SuggestionResponseDTO expectedSuggestion = new SuggestionResponseDTO(
+        SuggestionResponseDTO intended = new SuggestionResponseDTO(
             suggestionId,
             suggestionType,
             fromCardId,
@@ -193,7 +194,7 @@ public class SuggestionServiceTest {
         );
 
         //then
-        assertThat(result).isEqualTo(expectedSuggestion);
+        assertThat(result).isEqualTo(intended);
     }
 
     @Test
@@ -212,7 +213,7 @@ public class SuggestionServiceTest {
         when(suggestionRepository.findSuggestionByFromCardAndToCard(fromCard, toCard))
             .thenReturn(Optional.of(suggestion));
 
-        SuggestionResponseDTO expectedSuggestion = new SuggestionResponseDTO(
+        SuggestionResponseDTO intended = new SuggestionResponseDTO(
             suggestionId,
             suggestionType,
             fromCardId,
@@ -230,7 +231,7 @@ public class SuggestionServiceTest {
         );
 
         //then
-        assertThat(result).isEqualTo(expectedSuggestion);
+        assertThat(result).isEqualTo(intended);
     }
 
     @Test
