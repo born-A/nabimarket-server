@@ -78,7 +78,7 @@ class CompleteRequestServiceTest {
 
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         tokenA = "tokenA";
         tokenB = "tokenB";
 
@@ -168,7 +168,7 @@ class CompleteRequestServiceTest {
 
     @Test
     @DisplayName("거래 성사 요청이 생성된다.")
-    public void createCompleteRequest() {
+    void createCompleteRequest() {
         //given
         CompleteRequestDTO completeRequestDTO = new CompleteRequestDTO(
             fromCardId,
@@ -209,7 +209,7 @@ class CompleteRequestServiceTest {
 
     @Test
     @DisplayName("사용자 B가 거래 성사 요청을 수락하여 거래 성사 요청의 상태가 바뀐다.")
-    public void updateSuggestionStatus() {
+    void updateSuggestionStatus() {
         //given
         Boolean isAccepted = true;
 
@@ -242,7 +242,7 @@ class CompleteRequestServiceTest {
 
     @Test
     @DisplayName("거래 성사 내역을 id로 조회할 수 있다.")
-    public void getCompleteRequestById() {
+    void getCompleteRequestById() {
         //given
         when(checkService.parseToken(tokenA)).thenReturn(fromUserId);
         when(userRepository.existsById(fromUserId)).thenReturn(true);

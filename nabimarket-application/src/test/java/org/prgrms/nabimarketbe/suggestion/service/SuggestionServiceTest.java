@@ -39,9 +39,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.intThat;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 public class SuggestionServiceTest {
@@ -79,7 +77,7 @@ public class SuggestionServiceTest {
     private Suggestion suggestion;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         tokenA = "tokenA";
 
         SuggestionType suggestionType = SuggestionType.OFFER;
@@ -163,7 +161,7 @@ public class SuggestionServiceTest {
 
     @Test
     @DisplayName("사용자 A는 사용자 B에게 제안을 한다.")
-    public void createSuggestion() {
+    void createSuggestion() {
         //given
         SuggestionType suggestionType = SuggestionType.OFFER;
         SuggestionRequestDTO suggestionRequestDTO = new SuggestionRequestDTO(fromCardId, toCardId);
@@ -199,7 +197,7 @@ public class SuggestionServiceTest {
 
     @Test
     @DisplayName("사용자 B는 사용자 A의 제안을 승낙하여 제안의 상태가 바뀐다.")
-    public void updateSuggestionStatus() {
+    void updateSuggestionStatus() {
         //given
         Boolean isAccepted = true;
         SuggestionType suggestionType = SuggestionType.OFFER;
@@ -236,7 +234,7 @@ public class SuggestionServiceTest {
 
     @Test
     @DisplayName("특정 제안 유형의 제안을 조회한다.")
-    public void getSuggestionsByType() {
+    void getSuggestionsByType() {
         //given
         DirectionType directionType = DirectionType.SEND;
         SuggestionType suggestionType = SuggestionType.OFFER;
